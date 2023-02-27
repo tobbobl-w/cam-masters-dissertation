@@ -15,15 +15,15 @@ stop() # Remove if running the whole thing through
 
 # I don't think there is consumption data but there is income data
 # And there is pension data and hopefully annuity data as well
-if (!dir.exists("Data/ELSA/elsa_unziped/UKDA-5050-tab/tab/")) {
+if (!dir.exists("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/")) {
     readLines("Do you want to unzip the ELSA files")
     unzip(
-        zipfile = "Data/ELSA/5050tab_BDDEA8F799D95FB6A9F6FB5ADBE43D55F7B50718D8615C88A14F94298AADF043_V1.zip",
-        exdir = "Data/ELSA/elsa_unziped"
+        zipfile = "../../data/ELSA/5050tab_BDDEA8F799D95FB6A9F6FB5ADBE43D55F7B50718D8615C88A14F94298AADF043_V1.zip",
+        exdir = "../../data/ELSA/elsa_unziped"
     )
 }
 
-financial_files <- dir("Data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+financial_files <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
     pattern = "wave",
     full.names = T
 ) %>%

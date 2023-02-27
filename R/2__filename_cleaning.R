@@ -31,13 +31,13 @@ GuessYear <- function(zipfilename) {
 }
 
 files_and_year <- lapply(
-    dir("Data/ZIP_files/", full.names = T),
+    dir("../../data/ZIP_files/", full.names = T),
     GuessYear
 ) %>%
     rbindlist()
 
 # Great same numer of years as files
-length(files_and_year$year) == length(dir("Data/ZIP_files"))
+length(files_and_year$year) == length(dir("../../data/ZIP_files"))
 
 data_start_year <- 2003
 data_end_year <- 2020
@@ -46,10 +46,10 @@ all(files_and_year$year == c(data_start_year:data_end_year))
 
 # Now we can extract
 # First clean up the data folder
-dir.create("Data/unziped_data")
+dir.create("../../data/unziped_data")
 
-files_and_year[, long_name := paste0("Data/ZIP_files/", filename)]
-files_and_year[, newfolder_name := paste0("Data/unzipped_data/", year)]
+files_and_year[, long_name := paste0("../../data/ZIP_files/", filename)]
+files_and_year[, newfolder_name := paste0("../../data/unzipped_data/", year)]
 
 for (i in seq_along(files_and_year$long_name)) {
     unzip(
@@ -66,7 +66,7 @@ for (i in seq_along(files_and_year$long_name)) {
 # Let's copy and paste them all into one folder so then we can easily check if needed
 
 # Rough list of dervived household variables
-dvhh_filenames <- list.files("Data/unzipped_data",
+dvhh_filenames <- list.files("../../data/unzipped_data",
     recursive = TRUE,
     full.names = TRUE
 ) %>%
@@ -76,11 +76,11 @@ dvhh_filenames <- list.files("Data/unzipped_data",
 
 # Missing 2005
 
-dir.create("Data/derived_files/")
-file.copy(dvhh_filenames, "Data/derived_files/", overwrite = TRUE)
+dir.create("../../data/derived_files/")
+file.copy(dvhh_filenames, "../../data/derived_files/", overwrite = TRUE)
 
 # Rough list of dervived person level files
-pers_filenames <- list.files("Data/unzipped_data",
+pers_filenames <- list.files("../../data/unzipped_data",
     recursive = TRUE,
     full.names = TRUE
 ) %>%
@@ -88,4 +88,4 @@ pers_filenames <- list.files("Data/unzipped_data",
     grep("\\.tab$", ., value = T) %>%
     .[!grepl("2015_quarter_1", .)]
 
-file.copy(pers_filenames, "Data/derived_files/", overwrite = TRUE)
+file.copy(pers_filenames, "../../data/derived_files/", overwrite = TRUE)

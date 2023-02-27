@@ -1,20 +1,21 @@
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
+
 library(data.table)
 library(dplyr)
 library(readxl)
 
 # Item expenditure data set
-item_expend <- fread("Data/2011_UKDA-7272-tab/tab/2011_dv_set89_ukanon.tab")
+item_expend <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dv_set89_ukanon.tab")
 
 # Household info
-household_info <- fread("Data/2011_UKDA-7272-tab/tab/2011_dvhh_ukanon.tab")
+household_info <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dvhh_ukanon.tab")
 
 # Individual info
-household_members_info <- fread("Data/2011_UKDA-7272-tab/tab/2011_dvper_ukanon_v2.tab")
+household_members_info <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dvper_ukanon_v2.tab")
 
 # Expenditure look up
-expend_lookup <- read_excel("Data/2011_UKDA-7272-tab/mrdoc/excel/7272volume_d_expenditure_codes_2011.xls", sheet = "Part 1")
+expend_lookup <- read_excel("../../data/2011_UKDA-7272-tab/mrdoc/excel/7272volume_d_expenditure_codes_2011.xls", sheet = "Part 1")
 library(httpgd)
 install.packages("httpgd")
 regions <- fread("Gor_name, Gor

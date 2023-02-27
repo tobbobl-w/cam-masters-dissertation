@@ -3,7 +3,7 @@ library(data.table)
 library(dplyr)
 library(ggplot2)
 
-all_data <- fread("Data/clean_data/joined_household_individual.csv")
+all_data <- fread("../../data/clean_data/joined_household_individual.csv")
 names(all_data)
 
 # Plot mean annuity income

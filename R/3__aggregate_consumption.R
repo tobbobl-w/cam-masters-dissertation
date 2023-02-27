@@ -7,10 +7,10 @@ library(ggplot2)
 # Join consumption data from the various waves of data
 # Hopefully this isnt too difficult
 
-dir("Data/household_files")
+dir("../../data/household_files")
 
-test_hh <- fread("Data/derived_files/2014_dvhh_ukanon.tab")
-test_person <- fread("Data/derived_files/2014_dvper_ukanon.tab")
+test_hh <- fread("../../data/derived_files/2014_dvhh_ukanon.tab")
+test_person <- fread("../../data/derived_files/2014_dvper_ukanon.tab")
 
 
 # So we need the age variable from the person files
@@ -28,7 +28,7 @@ joined_data <- full_join(consumption_data, age_data,
 
 ## Ok so we want to do the aboce for all years
 
-derived_files <- dir("Data/derived_files")
+derived_files <- dir("../../data/derived_files")
 
 str_extract_all(derived_files, "\\d{4}")
 # Do 2019-20 data refer to 2019 or 2020 - always the lower year.
@@ -36,7 +36,7 @@ str_extract_all(derived_files, "\\d{4}")
 JoinYear <- function(year_of_data = 2004) {
     files_for_year <- grep(year_of_data, derived_files, value = T)
 
-    full_name_for_files <- paste0("Data/derived_files/", files_for_year)
+    full_name_for_files <- paste0("../../data/derived_files/", files_for_year)
 
     # household file
     hh_file <- grep("dvhh", full_name_for_files, value = T)
@@ -70,9 +70,9 @@ all_data <- lapply(
     mutate(birth_year = data_wave - age) %>%
     mutate(age_in_2014 = birth_year - 2014)
 
-if (!dir.exists("Data/clean_data")) dir.create("Data/clean_data")
+if (!dir.exists("../../data/clean_data")) dir.create("../../data/clean_data")
 
 fwrite(
     all_data,
-    "Data/clean_data/joined_household_individual.csv"
+    "../../data/clean_data/joined_household_individual.csv"
 )
