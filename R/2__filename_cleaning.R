@@ -1,5 +1,9 @@
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+
 library(stringr)
 library(data.table)
+
 
 # I put all the raw data from UKDS into ZIP files and then the code does the rest of the renaming 
 

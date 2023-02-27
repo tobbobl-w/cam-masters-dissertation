@@ -3,9 +3,10 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 
-
 # Join consumption data from the various waves of data
 # Hopefully this isnt too difficult
+
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 dir("../../data/household_files")
 
@@ -76,3 +77,16 @@ fwrite(
     all_data,
     "../../data/clean_data/joined_household_individual.csv"
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
