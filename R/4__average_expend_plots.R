@@ -123,17 +123,24 @@ colour = pre_post_reform_group)) +
 geom_point() + 
 geom_line()
 
-difference_plot = age_plot_pre_post %>% 
+difference_plot <-  age_plot_pre_post %>% 
     tidyr::pivot_wider(
     names_from = pre_post_reform_group, 
     values_from = mean_expend)    %>% 
     mutate(difference = `Post-Reform` - `Pre-Reform`)
 
+look <- ggplot(difference_plot, aes(x = age, y = difference)) + 
+geom_point() + 
+geom_line()
 
 
 
 ggsave("look.pdf", look)
 
+
+# Ok that is kind of interesting. 
+
+# Can i write out a value function
 
 
 
