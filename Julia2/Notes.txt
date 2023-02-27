@@ -1,0 +1,22 @@
+# p007p	Normal gross wage, salary- anonymised	 dvper
+# gor	Government Office Region	 dvhh	gor	Yes
+# hhold	Household	 dvhh		No
+# incanon	Anonymised household income and allowances	 dvhh 		Yes
+
+# a003	Household Reference Person	dvper	a003	Yes
+# case is the variable we join on
+
+### From 2014
+p600	COICOP: Total consumption expenditure	 dvhh		Yes
+p600c	COICOP: Total consumption expenditure	 dvhh		Yes
+p600t	COICOP: Total consumption expenditure	 dvhh		Yes
+
+a005p	Age - anonymised	dvper		Yes
+
+b346	Annuity / trust / covenant - last net payment	dvper		Yes
+
+
+
+
+
+
