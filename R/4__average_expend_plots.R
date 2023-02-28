@@ -41,7 +41,7 @@ by_data_wave <- ggplot(
         colour = "Birth Year"
     )
 if (!dir.exists("plots")) dir.create("plots")
-ggsave("plots/avg_expend_data_wave.pdf", plot = by_data_wave, )
+ggsave("../../plots/avg_expend_data_wave.pdf", plot = by_data_wave, )
 
 # Plot consumption at age 65 for all cohorts
 
@@ -62,7 +62,7 @@ consumption_at_65 <- ggplot(
     )
 
 ggsave(
-    "plots/average_expend_at_65.pdf",
+    "../../plots/average_expend_at_65.pdf",
     consumption_at_65
 )
 
@@ -92,7 +92,7 @@ expiture_by_age_and_birth_year <- ggplot(
     )
 
 ggsave(
-    "plots/expditure_by_age_and_birth_year.pdf",
+    "../../plots/expenditure_by_age_and_birth_year.pdf",
     expiture_by_age_and_birth_year
 )
 
@@ -111,34 +111,38 @@ age_plot_pre_post <- summarised_data %>%
     ungroup() %>%
     mutate(pre_post_reform_group = case_when(
         age_in_2014 >= 65 & age_in_2014 <= 70 ~ "Pre-Reform",
-    age_in_2014 <= 65 & age_in_2014 >60 ~ "Post-Reform" 
-    ))   %>% 
-    filter(!is.na(pre_post_reform_group)) %>% 
-    group_by(pre_post_reform_group, age) %>% 
-    summarise(mean_expend = mean(mean_expend)) 
-    
-        
-look <- ggplot(age_plot_pre_post, aes(x = age, y = mean_expend, 
-colour = pre_post_reform_group)) + 
-geom_point() + 
-geom_line()
+        age_in_2014 <= 65 & age_in_2014 > 60 ~ "Post-Reform"
+    )) %>%
+    filter(!is.na(pre_post_reform_group)) %>%
+    group_by(pre_post_reform_group, age) %>%
+    summarise(mean_expend = mean(mean_expend))
 
-difference_plot <-  age_plot_pre_post %>% 
+
+look <- ggplot(age_plot_pre_post, aes(
+    x = age, y = mean_expend,
+    colour = pre_post_reform_group
+)) +
+    geom_point() +
+    geom_line()
+
+difference_plot <- age_plot_pre_post %>%
     tidyr::pivot_wider(
-    names_from = pre_post_reform_group, 
-    values_from = mean_expend)    %>% 
+        names_from = pre_post_reform_group,
+        values_from = mean_expend
+    ) %>%
     mutate(difference = `Post-Reform` - `Pre-Reform`)
 
-look <- ggplot(difference_plot, aes(x = age, y = difference)) + 
-geom_point() + 
-geom_line()
+look <- ggplot(difference_plot, aes(x = age, y = difference)) +
+    geom_point() +
+    geom_line()
 
 
 
-ggsave("look.pdf", look)
+ggsave("../../plots/look.pdf", look)
 
+# Ok that is kind of interesting.
+# The biggest difference in consumption spending comes at age 65
 
-# Ok that is kind of interesting. 
 
 # Can i write out a value function
 
