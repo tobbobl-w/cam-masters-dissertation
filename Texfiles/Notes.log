@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=pdflatex 2022.11.16)  28 FEB 2023 13:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=pdflatex 2022.11.16)  28 FEB 2023 13:47
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -237,15 +237,15 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/Users/tjlei/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] (Notes.aux) ) 
 Here is how much of TeX's memory you used:
- 4237 strings out of 475306
- 65291 string characters out of 2774833
- 414661 words of memory out of 3000000
- 25660 multiletter control sequences out of 15000+600000
- 473745 words of font info for 45 fonts, out of 8000000 for 9000
+ 4238 strings out of 475306
+ 65306 string characters out of 2774833
+ 415661 words of memory out of 3000000
+ 25661 multiletter control sequences out of 15000+600000
+ 474052 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,6n,62p,623b,204s stack positions out of 10000i,1000n,20000p,200000b,80000s
  <C:\Users\tjlei\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/tjlei/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/tjlei/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/tjlei/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/tjlei/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on Notes.pdf (1 page, 55502 bytes).
+Output written on Notes.pdf (1 page, 58585 bytes).
 PDF statistics:
  32 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
