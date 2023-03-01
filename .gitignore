@@ -42,3 +42,8 @@ Thumbs.db
 .bbl 
 .aux 
 .fdb_latexmk 
+
+
+# R ###
+.Rhistory
+
