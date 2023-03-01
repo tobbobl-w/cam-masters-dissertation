@@ -36,14 +36,16 @@
 ehthumbs.db
 Thumbs.db
 
+
 # LATEX files #
-.fls 
-.log 
-.bbl 
-.aux 
-.fdb_latexmk 
+*.fls
+*.log
+*.bbl
+*.aux
+*.fdb_latexmk
 
 
 # R ###
-.Rhistory
+*.Rhistory
+
 
