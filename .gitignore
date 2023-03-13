@@ -41,6 +41,7 @@ Thumbs.db
 *.fls
 *.log
 *.bbl
+*.blg
 *.aux
 *.fdb_latexmk
 
