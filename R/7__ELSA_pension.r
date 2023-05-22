@@ -26,9 +26,9 @@ pension_files <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
 head(pension_files)
 
 
-fread(financial_files[[1]]) %>%
+fread(pension_files[[1]]) %>%
     names() %>%
-    grep("exp", ., value = T)
+    grep("", ., value = T)
 
 # Join across waves I think. Is there a unique joiner in each household
 lapply(financial_files, \(x) "idauniq" %in% names(fread(x)))
@@ -40,12 +40,14 @@ ReadAndSetWave <- function(filename) {
     return(data)
 }
 
-all_finance <- lapply(financial_files, ReadAndSetWave) %>%
+all_pension <- lapply(pension_files, ReadAndSetWave) %>%
     rbindlist(fill = T, use.names = T)
 
-# threr is partner income
+# there is partner income
 
-all_finance
+head(all_pension)
 
-## aim is to figure out what change there was in the spending habit of retirees.
-# where is the documentation?
+# do annuity rates change in the data
+
+# was eric french's value function iteration paper based on elsa data
+# could i do that?

@@ -1,4 +1,4 @@
-# This script will sort out the ELSA data.
+# This script will unzip the elsa zip file
 
 library(data.table)
 library(dplyr)
@@ -25,36 +25,3 @@ if (!dir.exists("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/")) {
         exdir = "../../data/ELSA/elsa_unziped"
     )
 }
-
-
-financial_files <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
-    pattern = "wave",
-    full.names = T
-) %>%
-    grep("financial_", ., value = T)
-
-
-
-fread(financial_files[[1]]) %>%
-    names() %>%
-    grep("exp", ., value = T)
-
-# Join across waves I think. Is there a unique joiner in each household
-lapply(financial_files, \(x) "idauniq" %in% names(fread(x)))
-
-ReadAndSetWave <- function(filename) {
-    wave <- str_extract("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_5_financial_derived_variables.tab", "wave_\\d{1}")
-    data <- fread(filename)
-    data[, wave := wave]
-    return(data)
-}
-
-all_finance <- lapply(financial_files, ReadAndSetWave) %>%
-    rbindlist(fill = T, use.names = T)
-
-
-
-all_finance
-
-## aim is to figure out what change there was in the spending habit of retirees.
-# where is the documentation?
