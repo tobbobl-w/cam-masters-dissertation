@@ -50,3 +50,9 @@ head(all_pension)
 # could i do that?
 
 # for that I need medical spending data as well, is that in ELSA?
+# No it is not in elsa but it is in fes I think
+# so then I could estimate a model of medical spending outside of the model
+# and then match on asset distribution as de nardi et al do?
+
+# Why is this research interesting -- no satisfactory life-cycle model that explains the
+# dec

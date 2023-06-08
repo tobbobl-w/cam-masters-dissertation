@@ -4,7 +4,7 @@ library(stringr)
 library(ggplot2)
 
 # Join consumption data from the various waves of data
-# Hopefully this isnt too difficult
+# Hopefully this isn't too difficult
 
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
@@ -18,6 +18,7 @@ test_person <- fread("../../data/derived_files/2014_dvper_ukanon.tab")
 # And the consumption variable from the household files
 
 # Is case still the joining variable
+
 
 
 consumption_data <- test_hh[, .(case, total_expend = P600)]
@@ -77,16 +78,3 @@ fwrite(
     all_data,
     "../../data/clean_data/joined_household_individual.csv"
 )
-
-
-
-
-
-
-
-
-
-
-
-
-

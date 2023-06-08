@@ -6,16 +6,31 @@ library(dplyr)
 library(readxl)
 
 # Item expenditure data set
-item_expend <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dv_set89_ukanon.tab")
+item_expend <- fread("../../data/unzipped_data/2011/UKDA-7272-tab/tab/2011_dv_set89_ukanon.tab")
 
 # Household info
-household_info <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dvhh_ukanon.tab")
+household_info <- fread("../../data/unzipped_data/2011/UKDA-7272-tab/tab/2011_dvhh_ukanon.tab")
+
+mean(household_info$C62112[household_info$C62112 > 0])
+grep("C62112", names(household_info), value = T)
+"C63111"
+
+
 
 # Individual info
-household_members_info <- fread("../../data/2011_UKDA-7272-tab/tab/2011_dvper_ukanon_v2.tab")
+household_members_info <- fread("../../data/unzipped_data/2011/UKDA-7272-tab/tab/2011_dvper_ukanon_v2.tab")
+
+household_members_info$FS6212
+
 
 # Expenditure look up
-expend_lookup <- read_excel("../../data/2011_UKDA-7272-tab/mrdoc/excel/7272volume_d_expenditure_codes_2011.xls", sheet = "Part 1")
+expend_lookup <- read_excel("../../data/unzipped_data/2011/UKDA-7272-tab/mrdoc/excel/7272volume_d_expenditure_codes_2011.xls", sheet = "Part 1")
+
+names(expend_lookup)
+
+grep("medical", expend_lookup$EFSDescription)
+expend_lookup[6170, ]
+
 library(httpgd)
 install.packages("httpgd")
 regions <- fread("Gor_name, Gor

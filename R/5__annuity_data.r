@@ -32,5 +32,3 @@ ggplot(
     )
 ) +
     geom_point()
-
-
