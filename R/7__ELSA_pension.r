@@ -7,14 +7,11 @@ library(stringr)
 # Set the correct working directory.
 # Note you need to run the whole script to get this to work.
 # I.e crtl+shift+enter.
-cur_dir <- getSrcDirectory(function(x) {
-    x
-})
+rand_func <- function(x) x
+cur_dir <- getSrcDirectory(rand_func)
+getwd()
 setwd(cur_dir)
 stop() # Remove if running the whole thing through
-
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
 
 pension_files <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
     pattern = "wave",
@@ -51,3 +48,5 @@ head(all_pension)
 
 # was eric french's value function iteration paper based on elsa data
 # could i do that?
+
+# for that I need medical spending data as well, is that in ELSA?

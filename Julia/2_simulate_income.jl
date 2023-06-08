@@ -10,7 +10,6 @@ using Distributions
 # So I just want to simulate some arima paths
 
 
-
 # Get shock distribution
 perm = Normal(1, 1)
 trans = Normal(0.1, 2)
