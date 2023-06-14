@@ -1,0 +1,3 @@
+var documenterSearchIndex = {"docs":
+[{"location":"#This-is-uk_rsp-Documentation","page":"This is uk_rsp Documentation","title":"This is uk_rsp Documentation","text":"","category":"section"},{"location":"","page":"This is uk_rsp Documentation","title":"This is uk_rsp Documentation","text":"Welcome to the documentation page. ","category":"page"},{"location":"","page":"This is uk_rsp Documentation","title":"This is uk_rsp Documentation","text":"note: Quick-Glimpse Tutorial\nThis tutorial just offered a quick glimpse on Julia's built-in documentation system, make sure to read the docs for more.","category":"page"},{"location":"","page":"This is uk_rsp Documentation","title":"This is uk_rsp Documentation","text":"uk_rsp\r\nadd_function(a, b)","category":"page"}]
+}

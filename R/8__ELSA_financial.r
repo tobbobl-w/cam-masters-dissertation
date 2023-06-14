@@ -11,11 +11,13 @@ cur_dir <- getSrcDirectory(function(x) {
 setwd(cur_dir)
 stop() # Remove if running the whole thing through
 
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
 ReadAndSetWave <- function(filename) {
+    # Read a tab file and set a wave number.
+
+    # Extract wave number from filename
     wave <- str_extract(filename, "wave_\\d{1}")
     data <- fread(filename)
+    # Set wave in data
     data[, wave := wave]
     return(data)
 }
