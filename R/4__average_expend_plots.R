@@ -2,8 +2,6 @@ library(data.table)
 library(dplyr)
 library(ggplot2)
 
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
 all_data <- fread("../../data/clean_data/joined_household_individual.csv")
 names(all_data)
 

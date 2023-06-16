@@ -4,16 +4,9 @@ library(data.table)
 library(dplyr)
 library(stringr)
 
-# Set the correct working directory.
-# Note you need to run the whole script to get this to work.
-# I.e crtl+shift+enter.
-cur_dir <- getSrcDirectory(function(x) {
-    x
-})
-setwd(cur_dir)
-stop() # Remove if running the whole thing through
+install.packages("stringr")
 
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
 
 # I don't think there is consumption data but there is income data
 # there must be consumption data

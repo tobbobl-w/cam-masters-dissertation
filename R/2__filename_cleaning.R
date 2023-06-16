@@ -1,6 +1,3 @@
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
-
 library(stringr)
 library(data.table)
 
