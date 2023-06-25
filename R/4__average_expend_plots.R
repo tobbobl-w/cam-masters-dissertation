@@ -5,6 +5,13 @@ library(ggplot2)
 all_data <- fread("../../data/clean_data/joined_household_individual.csv")
 names(all_data)
 
+all_data %>%
+    group_by(data_wave) %>%
+    filter(age == 65) %>%
+    summarise(n())
+# Ok fewer people of that age per wave than in elsa.
+
+
 summarised_data <- all_data %>%
     filter(data_wave != 2020) %>% # Filter 2020 because it has strange data
     group_by(data_wave, age) %>%
@@ -39,7 +46,7 @@ by_data_wave <- ggplot(
         colour = "Birth Year"
     )
 if (!dir.exists("plots")) dir.create("plots")
-ggsave("../../plots/avg_expend_data_wave.pdf", plot = by_data_wave, )
+ggsave("../../plots/avg_expend_data_wave.pdf", plot = by_data_wave)
 
 # Plot consumption at age 65 for all cohorts
 

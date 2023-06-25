@@ -7,9 +7,6 @@ library(ggplot2)
 # Join consumption data from the various waves of data
 # Hopefully this isn't too difficult
 
-setwd(dirname(rstudioapi::getSourceEditorContext()$path))
-
-dir("../../data/household_files")
 
 test_hh <- fread("../../data/derived_files/2014_dvhh_ukanon.tab")
 test_person <- fread("../../data/derived_files/2014_dvper_ukanon.tab")

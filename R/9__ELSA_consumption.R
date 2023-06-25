@@ -2,49 +2,88 @@ library(data.table)
 library(dplyr)
 library(stringr)
 
-# Set the correct working directory.
-# Note you need to run the whole script to get this to work.
-# I.e crtl+shift+enter.
-cur_dir <- getSrcDirectory(function(x) {
-    x
-})
-setwd(cur_dir)
-stop() # Remove if you want to run from source.
-
 source("__ELSA_functions.R")
 
-ELSA_dir("wave_1")
-
-wave_8_data <- ReadAndSetWave("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_9_elsa_data_eul_v1.tab")
-
-names(wave_8_data)
-
-search_names <- function(data, string) {
-    grep(string, names(data), value = TRUE)
-}
-
-search_names(wave_8_data, "capam")
+elsa <- fread("../../data/ELSA/elsa_to_use/elsa_ifs_finance.csv")
 
 # These are social care related expenditures.
-wave_8_data$capam[wave_8_data$capam > 0]
-wave_8_data$cahsc[wave_8_data$cahsc > 0]
+elsa$capam[elsa$capam > 0]
+elsa$cahsc[elsa$cahsc > 0]
 
 
-# Slight aside
-# to make searching for variables in the documentation easier I will
-# convert rtf files to excel
-# this isn't working
-dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/mrdoc/ukda_data_dictionaries/elsa_eol_w3_archive_v1_ukda_data_dictionary.rtf")
+elsa[foodint == 1, mean(foodinl, na.rm = T)]
+elsa[foodint == 1, mean(foodinu, na.rm = T)]
 
-ReadRTF("../../data/ELSA/elsa_unziped/UKDA-5050-tab/mrdoc/ukda_data_dictionaries/elsa_eol_w3_archive_v1_ukda_data_dictionary.rtf")
+elsa[foodoutt == 1, mean(foodoutu, na.rm = T)]
+elsa[foodoutt == 1, mean(foodoutl, na.rm = T)]
+
+elsa[, mean(leisuret == 1, na.rm = T)] # leisure and clothes are weird.
+# what data does fes have.
+
+# these are all the elsa sub categories
+# I will only use data that have
+# low
+elsa[, .(mean(foodoutt == 1 & foodint == 1 & clothest == 1 & leisuret == 1, na.rm = T))]
 
 
-Lines <- readLines("../../data/ELSA/elsa_unziped/UKDA-5050-tab/mrdoc/ukda_data_dictionaries/elsa_eol_w3_archive_v1_ukda_data_dictionary.rtf") # nolint
-pat <- "^\\\\f0.*\\\\cf0 "
-g <- grep(pat, Lines, value = TRUE)
-noq <- gsub("\\\\'", "'", g)
+foodinl
+foodinu
+foodint
 
-head(Lines, n = 20)
+foodoutl
+foodoutu
+foodoutt
 
-clean <- sub("\\\\.*", "", sub(pat, "", noq))
-return(clean)
+clothesl
+clothesu
+clothest
+
+leisurel
+leisureu
+leisuret
+
+transfersl
+transfersu
+transferst
+
+
+# these are energy use variables
+usesgas
+useselec
+usescoal
+usespara
+usesoil
+useswood
+usesotherf
+gaselect
+gaselecl
+gaselecu
+gaselecmeth
+gast
+gasl
+gasu
+gasmeth
+elect
+elecl
+elecu
+elecmeth
+coall
+coalu
+coalt
+paral
+parau
+parat
+oill
+oilu
+oilt
+woodl
+woodu
+woodt
+otherfl
+otherfu
+otherft
+
+
+
+# also can see if more people think that they are going to pass on a larger bequest as a result
+# of the change. Could also make predictions using the models.
