@@ -6,35 +6,36 @@ library(readxl)
 library(tidyr)
 library(lubridate)
 library(haven)
+library(patchwork)
 
 source("__ELSA_functions.R")
 
 
 # harmonised data from ucla.
 # This is harmonised with HRS.
-harm <- read_dta(
-    "../../data/ELSA/elsa_unziped/UKDA-5050-tab/code/stata_output_files/H_ELSA_g2_stata12.dta"
+
+names_harm <- read_dta(
+    "../../data/ELSA/elsa_unziped/UKDA-5050-tab/code/stata_output_files/H_ELSA_g2_stata12.dta",
+    n_max = 1
+) %>%
+    names()
+writeLines(names_harm, "name_check.txt")
+###
+
+# Old code to read in dta and save as csv.
+# harm <- read_dta(
+#     "../../data/ELSA/elsa_unziped/UKDA-5050-tab/code/stata_output_files/H_ELSA_g2_stata12.dta"
+# )
+# setDT(harm)
+# fwrite(
+#     harm,
+#     "../../data/ELSA/elsa_unziped/UKDA-5050-tab/code/stata_output_files/H_ELSA_g2_stata12.csv"
+# )
+
+harm <- fread(
+    "../../data/ELSA/elsa_unziped/UKDA-5050-tab/code/stata_output_files/H_ELSA_g2_stata12.csv"
 )
 
-
-setDT(harm)
-
-nrow(harm)
-ncol(harm)
-
-table(harm$pn)
-
-"R1PTYP1_E" %in% names(harm)
-"r1ptyp1_e" %in% names(harm)
-"r1ptyp1_e" %in% names(harm)
-grep("ptyp\\d{1}_e", names(harm), value = T)
-# This is type of pension fot a given job.
-# We can observe this in the period before retirement.
-
-table(harm$r1ptyp1_e)
-head(names(harm))
-
-writeLines(names(harm), "name_check.txt")
 
 # need to make a years till retirement variable.
 # R1RETEMP 1 for retired and 0 if not.
@@ -47,8 +48,12 @@ writeLines(names(harm), "name_check.txt")
 # make data long.
 # multiple columns at once.
 search_names(harm, "rabyear")
+class(harm$r1ptyp1_e)
+table(harm$r1ptyp1_e, useNA = "ifany")
 
 harm[inw1 == 1, .(head(r1iwindm), head(r1iwindy))]
+
+
 
 harm_long <- melt(
     harm,
@@ -58,14 +63,16 @@ harm_long <- melt(
         "r\\d{1}ptyp2_e", "r\\d{1}ptyp3_e",
         "r\\d{1}retage", "r\\d{1}wretage",
         "r\\d{1}agey", "inw\\d{1}$",
-        "r\\d{1}iwindm", "r\\d{1}iwindy"
+        "r\\d{1}iwindm", "r\\d{1}iwindy",
+        "hh\\d{1}ctot1m"
     ),
     value.name = c(
         "retired", "pension_type_job1",
         "pension_type_job2", "pension_type_job3",
         "retired_age", "expected_retired_age",
         "age_at_interview", "in_wave",
-        "date_month", "date_year"
+        "date_month", "date_year",
+        "total_monthly_consumption"
     )
 )
 
@@ -163,43 +170,208 @@ are_ret_expec_correct <- function() {
 }
 
 are_ret_expec_correct()
-
-
 # Ok there are bits and bobs that are a bit weird but
 # over 50% of people are correct within 2 years.
 
 
+ret_by_year <- function() {
+    # Now plot total retirements in the sample by year
+    # and plot expected retirements by year on the same graph.
+    exp_ret_year_dt <- harm_long[,
+        .(
+            exp_ret_age = expected_retired_age[!is.na(expected_retired_age)][1],
+            ret_age = retired_age[!is.na(retired_age)][1]
+        ),
+        by = .(idauniq, rabyear)
+    ][, ":="(exp_ret_year = exp_ret_age + rabyear,
+        ret_year = ret_age + rabyear)][order(rabyear)]
+    # Now from this calculate retirements and expected retirements by year.
+    # Can we do this at once?
 
-# But this is actually only a problem if someone switches around 2012.
-# How many people switched around that time.
+    exp_and_ret_dt <- rbindlist(
+        list(
+            exp_ret_year_dt[!is.na(exp_ret_year), .(count = .N),
+                by = .(year = exp_ret_year)
+            ][, type := "expected_retirements"],
+            exp_ret_year_dt[!is.na(ret_year), .(count = .N),
+                by = .(year = ret_year)
+            ][, type := "real_retirements"]
+        )
+    )
 
-exp_ret_year_dt <- harm_long[!is.na(expected_retired_age),
-    .(exp_ret_age = expected_retired_age[1]),
-    by = .(idauniq, rabyear)
-][, exp_ret_year := exp_ret_age + rabyear][order(rabyear)]
+    # Plot count of real retirements and
+    # expected retirements on the same graph.
+    # this doesnt tell us whether expected retirements are generally later than
+    # real retirements or not.
+    exp_and_ret_dt[year %in% c(2005:2020)] %>%
+        ggplot(aes(x = year, y = count, colour = type)) +
+        geom_point() +
+        geom_line()
+}
 
-exp_ret_year_dt[, .(expected_retirements = .N),
-    by = .(exp_ret_year)
-][order(expected_retirements)][exp_ret_year %in% c(2005:2020)] %>%
-    ggplot(aes(x = exp_ret_year, y = expected_retirements)) +
-    geom_point() +
-    geom_line()
-# bit weird that we get the drop and then the peak in 2013.
-# we only have expected retirement age for people who have worked.
-# does this change the situation and generate the bump shape.
+ret_by_year()
+
+# Want a histogram of differences between actual year of retirement
+# and expected first year of retirement.
 
 
-# now check actual retirements
-ret_year_dt <- harm_long[!is.na(retired_age),
-    .(ret_age = retired_age[1]),
-    by = .(idauniq, rabyear)
-][, ret_year := ret_age + rabyear][order(rabyear)]
+harm_long[]
 
-ret_year_dt[, .(retirements = .N),
-    by = .(ret_year)
-][order(retirements)][ret_year %in% c(2005:2020)] %>%
-    ggplot(aes(x = ret_year, y = retirements)) +
-    geom_point() +
-    geom_line()
-# could have just plotted these on the same graph.
-# real retirements follows similar trend, but the hump is a bit earlier i think.
+retirement_ages_dt <- harm_long[, .(
+    expected_retirement_age =
+        expected_retired_age[!is.na(expected_retired_age)][1],
+    real_retirement_age =
+        retired_age[!is.na(retired_age)][1]
+), by = .(idauniq)]
+
+retirement_ages_dt[, .(
+    mean(is.na(expected_retirement_age)),
+    mean(is.na(real_retirement_age)),
+    mean(!is.na(expected_retirement_age) & !is.na(real_retirement_age))
+)]
+# Only 15% of observations have both an expected.
+# and real retirement age.
+
+ret_age_differences <- function() {
+    ret_differences <- retirement_ages_dt[
+        !is.na(expected_retirement_age) & !is.na(real_retirement_age)
+    ][, difference := expected_retirement_age - real_retirement_age]
+
+    ggplot(ret_differences, aes(x = difference)) +
+        geom_histogram(bins = 60) +
+        labs(
+            title = "Density of expected age minus real retirement age",
+            x = "Expected retirement age minus real retirement age"
+        )
+    # strong right tail where expected age is greater than real
+}
+ret_age_differences()
+
+
+# Is there consumption data in here as well?
+
+harm_long[, head(total_monthly_consumption)]
+# what are we regressing
+# just monthly consumption on lots of controls, one of which is the
+# only really care about values near the kink.
+# and therfore the interview must have been conducted in that time period.
+# It would be good to have the theoeretical model
+# because there are predictions about consumption paths as well of time since retirement.
+
+# and then simulations from lockwood paper and the restd paper recently
+
+
+
+# Pension differences
+# check people who aren't retired.
+
+harm_long %>% names()
+
+year_of_ret_summary <- function() {
+    # does year of retirement change?
+    # seems to much to deal with tbh.
+    # probably worth checking though.
+    # want within variance.
+
+
+    ret_age_summary <- harm_long[retired == 1 & !is.na(retired_age)][, .(
+        sd_ret = sd(retired_age),
+        max_ret = max(retired_age),
+        min_ret = min(retired_age),
+        med_ret = median(retired_age),
+        count_ret = length(unique(retired_age))
+    ), by = .(idauniq)]
+    # [sort(count_ret)]
+    # histograms for each one about from sd.
+
+    library(patchwork)
+
+    max_hist <- ggplot(
+        ret_age_summary,
+        aes(x = max_ret)
+    ) +
+        geom_histogram()
+    # surely not?
+
+    min_hist <- ggplot(
+        ret_age_summary,
+        aes(x = min_ret)
+    ) +
+        geom_histogram()
+
+    med_hist <- ggplot(
+        ret_age_summary,
+        aes(x = min_ret)
+    ) +
+        geom_histogram()
+
+    sd_hist <- ggplot(
+        ret_age_summary[sd_ret > 0],
+        aes(x = sd_ret)
+    ) +
+        geom_histogram() +
+        labs(title = "Histogram of SDs for ")
+
+
+
+
+    (max_hist + min_hist) /
+        (med_hist + sd_hist + (wrap_elements(gridExtra::tableGrob(data.frame(table(ret_age_summary$count_ret) / nrow(ret_age_summary) * 100)))
+        )
+        )
+    # Nice most are just one and all those distributions look ok.
+}
+
+year_of_ret_summary()
+
+
+
+
+# Plot pension types over time by age.
+# want number of people whos primary pension is different types
+
+pen_type_eve_retirment <- function() {
+    # Pension type is only there for people who are working
+    # So we just look at the last non-missing pension type for each individual
+    # first filtering IDs by them being retired.
+
+    harm_long[, ":="(
+        retired_in_sample = as.integer(any(retired == 1, na.rm = T)),
+        first_retirement_age = retired_age[!is.na(retired_age)][1]
+    ),
+    by = .(idauniq)
+    ]
+    pension_before_retirement <-
+        harm_long[retired_in_sample == 1][!is.na(pension_type_job1)][, .SD[c(.N)], by = idauniq]
+
+    pension_before_retirement[, head(first_retirement_age)]
+
+    pension_before_retirement[, .(count_pensions = .N),
+        by = .(date_year, pension_type_job1 = factor(pension_type_job1))
+    ] %>%
+        ggplot(aes(x = date_year, y = count_pensions, colour = pension_type_job1)) +
+        geom_point() +
+        geom_line()
+    # so much missing pension data.
+    # I think I need to read the pension documentation
+    # so that I have a better idea of what is actually going on.
+    # not sure if counting by interview date is a good idea.
+}
+
+harm_long[!is.na(pension_type_job1), length(unique(idauniq))] / length(unique(harm_long$idauniq))
+# 28% I have some sort of pension data for
+table(harm_long$pension_type_job1, useNA = "always")
+
+
+# Is it the type of thing they only do once
+# No it is collected for people who have a job.
+
+
+harm_long[!is.na(pension_type_job1)][, .(num_waves = sum(in_wave)), by = .(idauniq)]
+harm_long[idauniq == 100054]
+
+table(harm_long[, pension_type_job1], useNA = "ifany")
+
+harm_long[, .(mean(total_monthly_consumption, na.rm = T), sd(total_monthly_consumption, na.rm = T)),
+    by = .(date_month)
+][order(date_month)]
