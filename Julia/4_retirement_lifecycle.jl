@@ -2,104 +2,56 @@ using LinearAlgebra
 using DelimitedFiles
 using CSV
 using DataFrames
-# wow have no idea
-
-# formulate problem
-
-# do we need to use quadrature to take expectations? 
-# No because prob of death is on outside not inside 
-# of the function
-# 
-
-
-# at age 110 the person dies
-# optimal to consume all assets
-
-
+using Plots
 
 # need life probabilities. 
-# could just make them up. 
+# copied for now from lockwood
 
-cum_death_probs = [0
-    0.018740306
-    0.038815572
-    0.060225799
-    0.08304727
-    0.107305414
-    0.13310194
-    0.160538561
-    0.189602563
-    0.220281232
-    0.252561853
-    0.286520711
-    0.322170519
-    0.359320569
-    0.397703868
-    0.437129707
-    0.477483663
-    0.518651308
-    0.560441936
-    0.602563125
-    0.644658886
-    0.68624609
-    0.726765327
-    0.765669896
-    0.802387673
-    0.836397386
-    0.867254049
-    0.894652529
-    0.918376688
-    0.938401098
-    0.954802044
-    0.967795662
-    0.977712513
-    0.985023012
-    0.990223002
-    0.993782897
-    0.996160399
-    0.997698782
-    0.998665039
-    0.999262593
-    0.999605869
-    0.999796577
-    0.999898289
-    0.999949144
-    0.999974572
-    0.999987286]
-using Plots
+
+cum_death_probs = CSV.File("Julia/death_probs.csv") |>
+                  Tables.matrix |>
+                  vec
+
 plot(cum_death_probs)
 pdf_death_probs = [cum_death_probs[i+1] - cum_death_probs[i] for i in 1:45]
 plot(pdf_death_probs)
 
-# why the fuck cant i do even this. 
-# ahh silly we want prob of death given alive. 
-# so need to 
-
-# should have a transition matrix since these probs change with age. 
-# can we just use bayes rule to update though
-# column is age now and 
-
-# need some sensible starting values for assets and 
-# consumption grids. 
-
-
+# Define values
 β = 0.97
-r = 1 / β
+r = 1 / β - 1
 σ = 2.5
 
-grid_points = 1000
-grid_gap = 150
+grid_points = 1000 # 
+grid_gap = 250 # 1000 pound increments
+
+# Pricing of annuity
+# sum of payments divided by prob of death
+# divided by loading factor
+# times interest rate
+# then we calc utility
+
+annuity_payment = 1000
+annuity_cost = sum([cum_death_probs[age] * annuity_payment / ((1 + r)^age) for age in eachindex(cum_death_probs)])
+# think this is correct
+# so this much wealth will buy an annuity for rest of life of 1000 a year.
+# how do we use this with the grid points
+# maybe this is why having a grid for consumption is better
+
 
 # define consumption grid
 asset_grid = [i * grid_gap for i in 1:grid_points]
-starting_assets = 100000
-# we can put some heterogeneity on this later I think
 
-bc(a, a′) = a′ / (1 + r) - a
+# asset accumulation
+# assuming constant nominal annuity
+bc(a, a′, annuity) = a * (1 + r) - a′ + annuity
+# then annuity effects the starting position on the grid. 
 
-# consumption
+
+
+# utility function
 u(c) = (c^(1 - σ) - 1) / (1 - σ)
 
+# Intialise consumption grid
 consumption_matrix = zeros(grid_points, grid_points)
 
 for x in eachindex(asset_grid)
@@ -112,7 +64,10 @@ for x in eachindex(asset_grid)
     end
 end
 
-consumption_matrix
+# Check that low assets this period and high the next implies negative consumption
+# and visa versa
+consumption_matrix[1, 500]
+consumption_matrix[1000, 1]
 
 utility_matrix = zeros(grid_points, grid_points)
 
@@ -120,37 +75,36 @@ for i in eachindex(utility_matrix)
     if consumption_matrix[i] > 0.0001 # negative consumption should have -Inf utility and never be picked. 
         utility_matrix[i] = u(consumption_matrix[i])
     else
-        utility_matrix[i] = -Inf
+        utility_matrix[i] = -Inf # Never pick negative consumption. 
     end
 end
 
 
 
-# set terminal values for optimal consumption, value and next assets. c_opt, temp_V, and net_y
+# set terminal values for optimal consumption, value and next assets.
 terminal_value = [u(final_assets) for final_assets in asset_grid]
-# do we need to know anything else
-# I dont think so?
 
 terminal_age = 110
 start_age = 65
-
-axes(temp_value, 2) |> typeof
 
 temp_value = zeros(grid_points, terminal_age - start_age)
 
 temp_value[:, terminal_age-start_age] = terminal_value
 
+# each colum is an age
+# each row is the optimal policy function -- i.e assets next period. 
+opt_policy_function = zeros(grid_points, terminal_age - start_age)
 
-for col in axes(temp_value, 2)
-    println(temp_value[:, col])
-end
 
 t = 1
 
 for t in 1:(terminal_age-start_age-1)
     # age moves one back
     age = terminal_age - t
-    value_index = terminal_age - start_age - t
+
+    # this is the column in the data frame that refers to that age. 
+    # we work backwards from the terminal age. 
+    value_index = age - start_age
 
     prob_of_death = (cum_death_probs[value_index+1] - cum_death_probs[value_index]) / (1 - cum_death_probs[value_index])
 
@@ -170,39 +124,66 @@ for t in 1:(terminal_age-start_age-1)
     for x in eachindex(asset_grid)
 
         # Then maximise returning Value and the best asset index
-        obj_g = utility_matrix[x, :] + ev_g
+        obj_g = utility_matrix[x, :] + (ev_g * β)
 
         max_and_index = findmax(obj_g)
+        # First element is the max
+        # second element is the index that achieves the max
+        # therefore second element is the policy function.
 
         outputs[x, :] = [x, max_and_index[1], max_and_index[2]]
     end
 
-    outputs
+    # save value for this period. 
+    temp_value[:, value_index] = outputs[:, 2]
 
+    opt_policy_function[:, value_index] = outputs[:, 3]
 
 end
 
-# not dead
-rand(2)
-typeof(findmax(rand(2)))
 
-outputs = zeros(grid_points, 3)
-x = 1
-max_and_index = findmax(rand(2))
+plot(temp_value[:, 5])
+# Looks correct!
 
-outputs[x, :] = [x, max_and_index[1], max_and_index[2]]
+plot(opt_policy_function[:, 90-65])
+
+# Now give starting assets and we can trace asset decumulation
+# whatever y is this period, next period that is x and then we use the function again. 
+
+start_point = 200
+
+asset_path = Vector{Int}(undef, terminal_age - start_age)
+asset_path[1] = start_point
+asset_path[1]
+
+for age in 1:(terminal_age-start_age-1)
+    asset_path[age+1] = opt_policy_function[:, age][asset_path[age]]
+end
 
 
-value_assets = Val(100)
-# Tuple{Float64,Int64}
+consumption_path = zeros(terminal_age - start_age)
+for age in 1:(terminal_age-start_age-1)
+    consumption_path[age] = bc(asset_grid[asset_path[age]], asset_grid[asset_path[age+1]])
+end
 
-append!(value_assets, findmax(rand(2)))
+plot(consumption_path)
+asset_path[15]
 
-typeof(value_assets)
+consumption_matrix[300, 500] # This shouldnt be possible
+utility_matrix[300, 500]
+# consumption floor?
 
-[test1 test2] = [1 2]
+bc(asset_grid[300], asset_grid[501])
 
-Val(100)
+asset_grid[300] * (1 + r)
+
+# I guess it is fuzzy because risk of death is not smooth. 
+# what happens if I set it to always be 3%
+# smoother when always 60% chance of death. 
+# Hitting 0 consumption is really feared. 
+
+# Jobs to do: 
+
 # exp_next_period = function(a, t)
 #     # expectation of next period
 #     # conditional on t and a
