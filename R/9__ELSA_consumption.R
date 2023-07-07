@@ -6,6 +6,8 @@ source("__ELSA_functions.R")
 
 elsa <- fread("../../data/ELSA/elsa_to_use/elsa_ifs_finance.csv")
 
+search_names(elsa, "dea")
+
 # These are social care related expenditures.
 elsa$capam[elsa$capam > 0]
 elsa$cahsc[elsa$cahsc > 0]
