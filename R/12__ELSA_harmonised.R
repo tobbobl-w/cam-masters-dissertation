@@ -47,17 +47,21 @@ harm <- fread(
 
 # make data long.
 # multiple columns at once.
-search_names(harm, "rabyear")
+search_names(harm, "radyear")
 class(harm$r1ptyp1_e)
 table(harm$r1ptyp1_e, useNA = "ifany")
 
 harm[inw1 == 1, .(head(r1iwindm), head(r1iwindy))]
 
 
+harm[, table(radyear)]
+harm[, unique(radyear)]
+harm[, sum(!is.na(radyear))]
+
 
 harm_long <- melt(
     harm,
-    id.vars = c("idauniq", "pn", "ragender", "rabyear"),
+    id.vars = c("idauniq", "pn", "ragender", "rabyear", "radyear"),
     measure = patterns(
         "r\\d{1}retemp", "r\\d{1}ptyp1_e",
         "r\\d{1}ptyp2_e", "r\\d{1}ptyp3_e",
@@ -75,6 +79,8 @@ harm_long <- melt(
         "total_monthly_consumption"
     )
 )
+
+fwrite(harm_long, "../../data/ELSA/elsa_to_use/harmonised_data_long.csv")
 
 harm_long[, unique(variable)] # what is this variable?
 

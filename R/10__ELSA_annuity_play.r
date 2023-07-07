@@ -8,6 +8,7 @@ source("__ELSA_functions.R")
 # Characteristics and financial variables
 elsa <- fread("../../data/ELSA/elsa_to_use/elsa_ifs_finance.csv")
 
+
 # Have a look at attrition in ELSA
 elsa[, .(idauniq, wave)][, .(num_waves = length(unique(wave))), by = .(idauniq)] %>%
     ggplot(aes(x = num_waves)) +

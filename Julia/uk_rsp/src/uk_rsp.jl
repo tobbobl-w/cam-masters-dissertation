@@ -1,13 +1,11 @@
 module uk_rsp
-using Revise
+using Revise, LinearAlgebra, DelimitedFiles
+using CSV, DataFrames, Plots
 
-export add_function
-"""
-add_function(a,b)
+include("death_probs.jl")
+include("lifecycle_solve.jl")
 
-Returns the sum of two numbers, a and b. 
-
-"""
-add_function(a, b) = return a + b
+export LifeCycleSolve, asset_path_function
 
 end # module uk_rsp
+

@@ -77,6 +77,8 @@ bequest_lock(1)
 bequest_lock(10000)
 
 
+
+
 # Just have a utility vector now. 
 # Then a value vector associated with each final value of consumption
 # but this depends on assets

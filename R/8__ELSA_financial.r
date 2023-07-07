@@ -55,6 +55,10 @@ all_ifs <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
     lapply(ReadAndSetWave) %>%
     rbindlist(fill = TRUE, use.names = TRUE)
 
+search_names(all_ifs, "OUTINDW")
+
+
+
 # Add interview date
 all_ifs[, intdate := paste0(intdaty, "-", intdatm)]
 all_ifs[, intdate := lubridate::ym(intdate)]
