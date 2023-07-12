@@ -1,12 +1,23 @@
-
-ReadAndSetWave <- function(filename) {
+ReadAndSetWave <- function(
+    filename,
+    select_cols = "all") {
     # Read a tab file and set a wave number.
 
     # Extract wave number from filename
     WAVE_num <- str_extract(filename, "wave_\\d{1}")
-    data <- fread(filename)
+
+    # get data, if we know the cols we want then we just select those
+
+    if (select_cols[1] == "all") { # bit sloppy
+        data <- fread(filename)
+    } else {
+        data <- fread(filename,
+            select = select_cols
+        )
+    }
     # Set wave in data
     data[, file_wave := WAVE_num]
+
     return(data)
 }
 
@@ -30,4 +41,11 @@ ReadRTF <- function(filename) {
     return(clean)
 }
 
-search_names <- function(data, string) grep(string, names(data), value = T)
+search_names <- function(data, string, ...) {
+    grep(
+        string,
+        names(data),
+        value = TRUE,
+        ...
+    )
+}

@@ -22,6 +22,51 @@ cum_death_probs = CSV.File("Julia/death_probs.csv") |>
                   vec
 # Increase every prob of death by 0.01
 
+# Mortality data from the ONS
+const base_year = 2005
+const base_age = 50
+
+male_data = CSV.File("../data/ONS/male_transition_probs.csv") |>
+            Tables.matrix
+
+female_data = CSV.File("../data/ONS/female_transition_probs.csv") |>
+              Tables.matrix
+# Each column is the individuals age in 2010. 
+# each row is a year after that, transition probs from 
+# age to age + 1
+
+# these people are aged 50 in 2005
+plot([male_data[:, 21] male_data[:, 1]])
+
+# So then if we want to pdf of probs in a given age 
+# ONS life tables
+function death_probabilities(data, year=2012, age=65)
+    # return probs from this age and year onwards
+    col_index = year - (base_year - 1) # selects the correct column
+    start_row_index = age - base_age # first row of interest
+
+    death_probs = data[start_row_index:51, col_index]
+
+    return death_probs
+end
+
+# If I dont update 
+death_probabilities(male_data, 2010, 63)
+death_probabilities(female_data, 2010, 63)
+# these finish at age 100. and start at the age specified
+
+
+# ok so now I can set gender and use realistic lifetables
+# I could have a look at annuitant tables as well and then use a 
+# scaling factor on the implied fair price to calucalte the price
+# that normal people face. 
+
+# can set wealth from elsa data as well 
+
+
+
+
+
 function constrained_add(a, b)
     # This is just so I can play around with subjective 
     # probabilities and get strictly increasing probs. 

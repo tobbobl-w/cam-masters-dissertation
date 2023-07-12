@@ -77,11 +77,12 @@ harm_long <- melt(
         "age_at_interview", "in_wave",
         "date_month", "date_year",
         "total_monthly_consumption"
-    )
+    ),
+    variable.name = "wave"
 )
 
 fwrite(harm_long, "../../data/ELSA/elsa_to_use/harmonised_data_long.csv")
-
+stop()
 harm_long[, unique(variable)] # what is this variable?
 
 harm_long[, .(number_of_waves = sum(in_wave)), by = .(idauniq)][order(number_of_waves)]
