@@ -15,8 +15,6 @@ using Plots
 
 # I can also make my life cycle code faster I think although not sure how
 
-# to
-
 cum_death_probs = CSV.File("Julia/death_probs.csv") |>
                   Tables.matrix |>
                   vec
@@ -135,7 +133,8 @@ end
 # can we just solve with annuitisation 
 # and then compare with starting on the grid higher or lower. 
 
-# Ok so run with annuity incomes of 
+# Ok so run with annuity incomes
+
 
 function LifeCycleSolve(annuity_cost; moneysworth=0.75, bequests=false, death_probs=cum_death_probs, pension=0)
 
@@ -155,7 +154,6 @@ function LifeCycleSolve(annuity_cost; moneysworth=0.75, bequests=false, death_pr
             consumption_matrix[x, y] = bc(assets, next_assets, annual_annuity_payment, pension)
         end
     end
-
 
     # # Check that low assets this period and high the next implies negative consumption
     # # and visa versa

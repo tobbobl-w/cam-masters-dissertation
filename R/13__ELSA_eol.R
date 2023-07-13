@@ -1,7 +1,9 @@
 library(data.table)
 library(dplyr)
 library(stringr)
-
+library(ggplot2)
+library(nls2)
+library(jsonlite)
 source("__ELSA_functions.R")
 
 
@@ -134,7 +136,7 @@ joined_harm <- left_join(
 
 library(tidyr)
 
-joined_harm %>%
+ready_for_nls <- joined_harm %>%
     select(idauniq, exlo80, exlo90, prob110, wave, age = age_at_interview) %>%
     filter(!is.na(exlo80) & !is.na(exlo90) & !is.na(prob110)) %>%
     filter(exlo80 >= 0, exlo80 <= 100) %>%
@@ -157,66 +159,248 @@ joined_harm %>%
     # generate some intial parameter values
     mutate(k = log(log(ex1) / log(ex2)) / (log(t1) - log(t2))) %>%
     mutate(lambda = (1 / t1) * ((-log(ex1))^(1 / k))) %>%
-    mutate(invlambda = lambda^(-1)) %>% 
-    filter(!is.infinite(lambda))
+    mutate(invlambda = lambda^(-1)) %>%
+    filter(!is.infinite(lambda)) %>%
+    filter(ex1 > ex2)
 
-nl ( exlo =  exp(-( {lambda}*t)^{k})) if id==`id', initial(lambda `initlambda' k `initk')    
-nls
 
-# gen     t1 = 75-age if age<66
-# replace t1 = 80-age if age>65
-# gen     t2 = 85-age
-# gen t3 = 110 - age
+hist(ready_for_nls$k)
 
-# gen k = ln(ln(exlo80)/ln(exlo90))/(ln(t1)-ln(t2))
-# gen lambda = (1/t1)*((-ln(exlo80))^(1/k))
-# gen invlambda = 1/lambda
-# *replace invlambda=. if invlambda>5000
-
-# /**********************************************************************************************/
-# /* Now, impose third point and then fit Weibull according to least squares					  */
-# /**********************************************************************************************/
-
-# * We are going to merge in the individual's probability of reaching age 110, according to life tables *
-# * We treat this as a third "answer" that the individual gives. *
+ready_for_nls[, mean(ex1 < ex2)]
 
 
 
+# convert to long, answer level
+long_ready <- ready_for_nls %>%
+    melt(
+        measure.vars = patterns(
+            t = "t",
+            exlo = "ex"
+        ),
+        variable.name = "names"
+    )
+
+
+long_ready[, id_wave := paste0(idauniq, "-", wave)]
+# "100007-3" top id
+
+# ok increasing doesn't make sense # could set to first one if is?
+############## check what odea did to the above
+
+# First step is to generate some realistic starting values
+# which we will then use in NLS
+pars <- expand.grid(
+    k = seq(1, 5, len = 100),
+    lambda = seq(0.1, 50, len = 100)
+)
+
+temp_dt <- long_ready[id_wave == long_ready[, id_wave[1]]]
+
+res_top <- nls2(exlo ~ exp(-(t / lambda)^k),
+    data = temp_dt,
+    start = pars,
+    algorithm = "brute-force"
+)
+
+output_top <- nls(
+    exlo ~ exp(-((t / lambda)^k)),
+    data = temp_dt,
+    start = as.list(coef(res_top))
+)
+
+top_start_values <- as.list(coef(output_top))
+# then set the starting values for the others to this
+
+
+BruteForce <- function(id_wave_to_try,
+                       end_k = 5,
+                       end_lam = 40,
+                       grid_len = 100) {
+    ## make a grid
+    pars <- expand.grid(
+        k = seq(0.1, end_k, len = grid_len),
+        lambda = seq(0.1, end_lam, len = grid_len)
+    )
+
+    # try all points on the grid
+    res <- nls2(exlo ~ exp(-(t / lambda)^k),
+        data = long_ready[id_wave == id_wave_to_try],
+        start = pars,
+        algorithm = "brute-force"
+    )
+    as.list(coef(res))
+}
+
+# set expanding values
+# make grid larger and finer. This will make evaluation of it slower
+# but makes finding a good starting value more likely
+grid_types_to_try <- data.frame(
+    end_k = seq(5, 40, len = 7),
+    end_lam = seq(40, 100, len = 7),
+    grid_len = seq(50, 100, len = 7)
+)
+
+
+if (!dir.exists("../../data/ELSA/subjective_tables/jsons")) {
+    dir.create(
+        "../../data/ELSA/subjective_tables/jsons",
+        recursive = TRUE
+    )
+}
+
+read_json_idwave <- function(id_wave) {
+    read_json(paste0(
+        "../../data/ELSA/subjective_tables/jsons/",
+        id_wave, ".json"
+    ), simplifyVector = T)
+}
+
+check_ids_done <- function() {
+    ids_done_already <- str_extract(
+        dir("../../data/ELSA/subjective_tables/jsons/"),
+        "\\d{6}-\\d{1}"
+    )
+    return(ids_done_already)
+}
+
+
+# This step drastically speeds up evaluation ############
+#######################################
+# My advice is to randomly run 300 or so then read in the values,
+# and then we get a much better set of starting values to try
+# Now that a few have done, we read in all the parameters that were run
+# and then use different pairings of the distribution of lambda and k
+read_json_get_params <- function() {
+    jsons_to_get <- dir("../../data/ELSA/subjective_tables/jsons", full.names = T)
+    # get 20% of the jsons at random
+    params <- lapply(jsons_to_get[runif(length(jsons_to_get)) > 0.8], fromJSON)
+
+    params_dt <- rbindlist(params)
+
+    params_dt %>%
+        ggplot(aes(x = k, y = lambda)) +
+        geom_point()
+
+    # want 5 sets of starting values
+    # use k means clustering to group
+    # then return
+
+    clusters <- kmeans(params_dt, 5, iter.max = 10, nstart = 1)
+
+    return(clusters$centers)
+}
+
+typical_values <- read_json_get_params()
+ids_that_are_done <- check_ids_done()
 
 
 
+run_nls_function <- function(id_wave_to_try,
+                             starting = top_start_values,
+                             typval_df = typical_values) {
+    ##########################################
+    ## first check if we have done that ID already
+    print(id_wave_to_try)
+
+    # Loop with different starting values
+    # try a couple of escalating grids
+    counter <- 1
+
+    while (TRUE) {
+        output <- NULL
+
+        try(output <- nls(exlo ~ exp(-((t / lambda)^k)),
+            data = long_ready[id_wave == id_wave_to_try],
+            start = starting
+        )) # does not stop in the case of error
+
+        if (!is.null(output)) break # if nls works, then quit from the loop
+
+        if (counter <= 5) {
+            # try a different starting value from an id that didnt work
+            starting <- as.list(typval_df[counter, ])
+        } else if (counter > 5) {
+            # Now try the expanding values of the grid
+            grid_deets <- as.list(grid_types_to_try[counter - 5, ])
+
+            # create new grid
+            starting <- BruteForce(
+                id_wave_to_try,
+                end_k = grid_deets$end_k,
+                end_lam = grid_deets$end_lam,
+                grid_len = grid_deets$grid_len
+            )
+        } else if (counter > 12) { # stop if try too many times
+            stop()
+        }
+
+        # iterate counter
+        counter <- counter + 1
+    }
+
+    # save as json so when we run we dont have to do the ones we have already found
+    # when running check if the json exists
+    write_json(
+        as.list(coef(output)),
+        paste0(
+            "../../data/ELSA/subjective_tables/jsons/",
+            id_wave_to_try, ".json"
+        ),
+        simplifyVector = FALSE
+    )
+}
 
 
+ids_to_do <- long_ready[, unique(id_wave)][!long_ready[, unique(id_wave)] %in% ids_that_are_done]
+
+length(ids_to_do)
+outputs <- lapply(
+    ids_to_do,
+    run_nls_function
+)
+# wow this is so much faster
 
 
-# logic for birthday
-# assume interviews are mid month
-# interivew date gives us upper and lower bound on birthday
-# or do we just use birth year and death year
-# probably not gonna gain much
-# have a look at their stata code to see how they update use death rates
-# they reg hazard on a cubic of age
-#
+################
+### Individual testing for ids that still fail
 
-# for now lets set birthday to be mid year,
-# and also death dat
-# now we want to calculate subjective life expectancy again
-# what are the subjective life expec variables
+# read in data
 
 
-# now we use non-linear least squares to set
-# subjective survival curves
-
-# actually we need to scale the ONS life exp
-# how?
-# calculate mortality rates and then compare to ons
-# then scale ons
-
-
-# out of those who respond in a given year how many die
-
-long_harm[in_wave == 1, ]
+dt_with_params <- lapply(
+    long_ready[, unique(id_wave)],
+    read_json_idwave
+) %>%
+    rbindlist()
+dt_with_params$id_wave <- long_ready[, unique(id_wave)]
 
 
-# I think I should just use ONS and only scale if I have tie
-# Before that though I need to have ONS until 110 not just 100
+# Now how do we get lifetables out?
+# I guess just the pdf of these for different ages?
+dt_with_params
+
+params <- dt_with_params[1, ] %>% as.list()
+
+MakeLifeTable <- function(params = params,
+                          years_into_the_future = 60) {
+    sub_life <- sapply(
+        c(1:years_into_the_future),
+        \(t)exp(-(t / params$lambda)^params$k)
+    )
+
+    return(sub_life)
+}
+
+MakeLifeTable(params = params)
+
+sub_life_tab_list <- vector("list", length = length(dt_with_params$id_wave))
+
+for (i in seq_along(dt_with_params$id_wave)) {
+    sub_life_tab_list[[i]] <- MakeLifeTable(as.list(dt_with_params[i, ]))
+}
+
+# probably save this is long form
+# although if working in julia we should use matrices
+# lets save in both long and in matrices
+
+# after this lets move locations....

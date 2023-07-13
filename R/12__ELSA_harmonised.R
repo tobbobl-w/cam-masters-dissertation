@@ -58,6 +58,10 @@ harm[, table(radyear)]
 harm[, unique(radyear)]
 harm[, sum(!is.na(radyear))]
 
+# H1ATOTF net value of non-housing financial wealth
+# H1ATOTH value of primary wealth
+
+
 
 harm_long <- melt(
     harm,
@@ -68,7 +72,8 @@ harm_long <- melt(
         "r\\d{1}retage", "r\\d{1}wretage",
         "r\\d{1}agey", "inw\\d{1}$",
         "r\\d{1}iwindm", "r\\d{1}iwindy",
-        "hh\\d{1}ctot1m"
+        "hh\\d{1}ctot1m", "h\\d{1}atotf",
+        "h\\d{1}atoth", "r\\d{1}ipubpen"
     ),
     value.name = c(
         "retired", "pension_type_job1",
@@ -76,7 +81,9 @@ harm_long <- melt(
         "retired_age", "expected_retired_age",
         "age_at_interview", "in_wave",
         "date_month", "date_year",
-        "total_monthly_consumption"
+        "total_monthly_consumption",
+        "fin_wealth", "house_value",
+        "public_pension"
     ),
     variable.name = "wave"
 )
