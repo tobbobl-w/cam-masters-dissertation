@@ -80,12 +80,60 @@ as how much individuals actually bequest and how rich individuals are when they 
 
 \cite{vidalmelia_lejarragagarcia_munich_2004} have some interesting results. Need to talk about that.
 
+
+\subsection{Data}
+The main data set I use is the English Longitudinal Study of Ageing (ELSA) \cite{main_elsa_citation}. ELSA repeatedly interviews
+individuals over the age of 50 and asks them a range of questions relating to their income and wealth as well as expectations about
+the future. Importantly it also includes detailed information pensions including the type of pension that an individual holds when
+working, thus I am able to distinguish between individuals who have defined benefit and defined contribution pensions. For ease of access
+I use Harmonized ELSA \footnote{"This analysis uses data or information from the Harmonized ELSA dataset and Codebook, Version G.2 as of
+      July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
+      Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
+      please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
+subset of the questions in ELSA I also supplement it with variables taken directly from the data.
+
+I also use ONS life tables data.
+
+I also use annuitant life tables data.
+
+I also use FCA product data.
+
+
+
 \subsection{Methodology}
 
-I first solve a modified retirement lifecycle model. Retirees face
+I first solve a modified retirement lifecycle model. The problem that retirees face is as follows:
+\textbf{This is not correct -- need to include probs}
 \begin{equation*}
       E(U) = \sum_{t = x}^{110 - w}[u(c_{t})]
 \end{equation*}
+subject to their budget constraint
+\begin{equation*}
+      c_{t} =a_{t}(1 +r) + p_{t} + ann_{t} -  a_{t+1}
+\end{equation*}
+where $a_{t}$ are asset holdings in time t, $p_{t}$ is state pension income in time t, and $ann_{t}$ is annuity
+income in time t. I use the standard CRRA utility function.
+\begin{equation*}
+      u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
+\end{equation*} In some specifications retirees can leave bequests, I use the bequest function from
+\cite{lockwood_red_2012}.
+\begin{equation*}
+      u(b_{t}) = (\frac{m}{1 - m})^{\sigma}  \frac{((\frac{m c_{0}}{1 - m}) + b_{t})^(1 - \sigma)}{(1 - \sigma)}
+\end{equation*}
+Where $b_{t}$ is the amount left at death, $m$ is a measure of bequest motive strength and $c_{0}$ is
+a minimum amount of consumption that individuals want. \textbf{Check this}
+
+I solve the retirees problem using backward induction. At age 110 there is certainty of death so any leftover assets
+are carried over into the next period and bequested. This means that the value at the end of the final period is
+either 0 (if we do not allow a bequest motive) or the value of bequests. I then take this value function and solve
+an individuals final period problem, choosing assets next period (i.e. those to bequest) and how much to consume.
+
+Using the optimal policy function in the last period, I calculate the value of the last period, which the utility
+function and the value function evaluated at the maximum. This is then used in the problem the year before that.
+I repeat this process back to the age of retirement to obtain optimal consumption amounts for each year of retirement
+and associated value functions.
+
+To simulate the ELSA data I solve this retirement problems for each new retiree in the data set.
 
 
 \subsection{Rough plan}

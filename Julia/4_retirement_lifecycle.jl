@@ -108,11 +108,14 @@ function utility(c)
     end
 end
 
+utility(6)
 
 # bequest function
 # from lockwood RED 2012
 bequest_lock(b; c0=5000, m=0.96) = (m / (1 - m))^σ * (((m / (1 - m)) * c0) + b)^(1 - σ) / (1 - σ)
 # but won't including bequests make utility lower
+
+bequest_lock(10)
 
 # Pricing of annuity
 # sum of payments divided by prob of death
@@ -135,62 +138,67 @@ end
 
 # Ok so run with annuity incomes
 
-
 function LifeCycleSolve(annuity_cost; moneysworth=0.75, bequests=false, death_probs=cum_death_probs, pension=0)
+    # Function definition with parameters:
+    # - annuity_cost: the cost of the annuity
+    # - moneysworth: a factor used to calculate the annual annuity payment
+    # - bequests: a boolean indicating whether bequests are considered
+    # - death_probs: an array of cumulative death probabilities
+    # - pension: a fixed pension amount
 
-    # Take the annuity cost and get the rough annual payment 
     annual_annuity_payment = annuity_payment_function(annuity_cost, moneysworth=moneysworth)
+    # Calculate the rough annual annuity payment based on the annuity cost and moneysworth factor
 
-    # Intialise consumption grid
+
     consumption_matrix = zeros(grid_points, grid_points)
+    # Initialize a matrix to store consumption values
 
-    # Now for each level of assets return how much consumption individuals get
+
+    # Nested loop to calculate consumption values for each combination of assets
     for x in eachindex(asset_grid)
         assets = asset_grid[x]
         for y in eachindex(asset_grid)
             next_assets = asset_grid[y]
-            # assets this period are 1st dimension
-            # assets next period are 2nd dimension
             consumption_matrix[x, y] = bc(assets, next_assets, annual_annuity_payment, pension)
         end
     end
 
-    # # Check that low assets this period and high the next implies negative consumption
-    # # and visa versa
-    # consumption_matrix[1, 500]
-    # consumption_matrix[1000, 1]
 
     utility_matrix = zeros(grid_points, grid_points)
+    # Initialize a matrix to store utility values
 
+    # Loop to calculate utility values for each consumption value in the consumption matrix
     for i in eachindex(utility_matrix)
         utility_matrix[i] = utility(consumption_matrix[i])
     end
 
+    # If bequests then we get utility at end of life from certain death
+    if bequests == true
+        terminal_value = [bequest_lock(final_assets) for final_assets in asset_grid]
+    else
+        terminal_value = [0 for final_assets in asset_grid]
+    end
 
-    # set terminal values for optimal consumption, value and next assets.
-    terminal_value = [0 for final_assets in asset_grid]
-    # u(final_assets)
+    # Initialize a vector to store the terminal values for optimal consumption
 
     terminal_age = 110
     start_age = 65
-
     temp_value = zeros(grid_points, terminal_age - start_age)
+    # Initialize a matrix to store temporary values
 
     temp_value[:, terminal_age-start_age] = terminal_value
+    # Set the terminal values in the temporary value matrix
 
     # each colum is an age
-    # each row is the optimal policy function -- i.e assets next period. 
+    # each row amount of assets next period. 
     opt_policy_function = zeros(grid_points, terminal_age - start_age)
+    # Initialize a matrix to store the optimal policy function
 
     t = 1
     for t in 1:(terminal_age-start_age-1)
         # age moves one back
         age = terminal_age - t
-
-        # this is the column in the data frame that refers to that age. 
-        # we work backwards from the terminal age. 
         value_index = age - start_age
-
         prob_of_death = (death_probs[value_index+1] - death_probs[value_index]) / (1 - death_probs[value_index])
 
         ev_g = if bequests == true
@@ -231,6 +239,7 @@ function LifeCycleSolve(annuity_cost; moneysworth=0.75, bequests=false, death_pr
     end
 
     non_asset_consumption = pension + annual_annuity_payment
+    # Calculate the non-asset consumption by adding the fixed pension amount and the annual annuity payment
 
     # Lets also return consumption policy function
 

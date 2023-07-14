@@ -20,13 +20,7 @@ Base.print_matrix(stdout, names(elsa_dt))
 # so for each individual get gender and financial wealth 
 # then run for all combos and save as jsons?
 # does dc pension count in that?
-small_elsa = @pipe filter(row -> row[:in_wave] == 1, elsa_dt) |>
-    filter(row -> row[:retired] == 1, _)
- |> 
-select(_, [:ragender, :age_at_interview,
-    :public_pension, :fin_wealth, :retired_age]) 
-    
-elsa_dt.retired
+
 
 # now round financial wealth to nearest 250
 # pension to nearest 100?
@@ -34,3 +28,5 @@ elsa_dt.retired
 
 small_elsa[small_elsa., :public_pension]
 
+
+# best to have elsa data completely ready for life cycle model solving

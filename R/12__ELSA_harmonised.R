@@ -89,7 +89,10 @@ harm_long <- melt(
 )
 
 fwrite(harm_long, "../../data/ELSA/elsa_to_use/harmonised_data_long.csv")
+
 stop()
+
+## below this stop I explore the data
 harm_long[, unique(variable)] # what is this variable?
 
 harm_long[, .(number_of_waves = sum(in_wave)), by = .(idauniq)][order(number_of_waves)]
@@ -389,3 +392,17 @@ table(harm_long[, pension_type_job1], useNA = "ifany")
 harm_long[, .(mean(total_monthly_consumption, na.rm = T), sd(total_monthly_consumption, na.rm = T)),
     by = .(date_month)
 ][order(date_month)]
+
+
+
+## plot state pension
+names(harm_long)
+
+hist(harm_long[, public_pension])
+hist(harm_long[, fin_wealth])
+
+harm_long[, mean(fin_wealth < 0, na.rm = TRUE)]
+
+
+# will I actually be able to solve
+# enough life cycle models
