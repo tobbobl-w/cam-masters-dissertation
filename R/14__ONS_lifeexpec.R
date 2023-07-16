@@ -223,7 +223,7 @@ create_death_prob_matrix <- function(gender = "Males") {
         mutate(deaths = lead(lag(alive) - alive)) %>% # alive yesterday minus alive today, shifted back to today
         mutate(death_rate = deaths / alive) %>%
         ungroup() %>%
-        filter(birth_year >= 1935, birth_year <= 1975) %>%
+        filter(birth_year >= 1920, birth_year <= 1975) %>%
         mutate(year = age + birth_year) %>%
         filter(year >= 2005) %>%
         filter(age >= 50, age <= 110) %>%

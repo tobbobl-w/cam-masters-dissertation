@@ -13,7 +13,7 @@ const r = 1 / β - 1
 const σ = 2.5
 const terminal_age = 110
 
-const asset_grid_points = 100
+const asset_grid_points = 500
 const asset_grid_gap = 1000
 # define asset grid
 const asset_grid = [i * asset_grid_gap for i in 1:asset_grid_points]
@@ -24,6 +24,7 @@ const inc_grid_gap = 500
 const income_grid = [i * inc_grid_gap for i in 1:inc_grid_points]
 
 include("0__functions.jl")
+
 
 consumption_array = ones(Float64, asset_grid_points, asset_grid_points, inc_grid_points)
 # Initialize a matrix to store consumption values
@@ -42,15 +43,6 @@ end
 
 utility_array = ones(Float64, asset_grid_points, asset_grid_points, inc_grid_points)
 # Initialize a matrix to store utility values
-
-# utility function
-function utility(c)
-    if c > 0.0001
-        (c^(1 - σ)) / (1 - σ)
-    else
-        -Inf
-    end
-end
 
 # Loop to calculate utility values for each consumption value in the consumption matrix
 for i in eachindex(utility_array)
@@ -205,9 +197,7 @@ retrieve_policy_function = function (
     return pol_func_readin
 end
 
-
-pol_func = retrieve_policy_function()
-pol_func[income_grid_point, :, :]
+# pol_func[income_grid_point, :, :]
 # now we trace through this
 
 
@@ -242,29 +232,29 @@ function asset_path_function(opt_policy_function, asset_start_point, income_grid
 
 end
 
-for_plots_60 = asset_path_function(
-    retrieve_policy_function(false, "objective", 60, 2010, "male")[50, :, :],
-    70,
-    60)
+# for_plots_60 = asset_path_function(
+#     retrieve_policy_function(false, "objective", 60, 2010, "male")[50, :, :],
+#     70,
+#     60)
 
-for_plots.assets[6]
+# for_plots.assets[6]
 
-for_plots_65 = asset_path_function(
-    retrieve_policy_function(false, "objective", 65, 2015, "male")[50, :, :],
-    55,
-    60)
+# for_plots_65 = asset_path_function(
+#     retrieve_policy_function(false, "objective", 65, 2015, "male")[50, :, :],
+#     55,
+#     60)
 
 
-death_probabilities(gender="male", year=2010, age=60)[6:end]
+# death_probabilities(gender="male", year=2010, age=60)[6:end]
 
-death_probabilities(gender="male", year=2015, age=65)
-## these are different and they should not be. 
-## a 60 year old in 2010 should have the same expected mortality 
-# as one a 65 year old in 2015 
+# death_probabilities(gender="male", year=2015, age=65)
+# ## these are different and they should not be. 
+# ## a 60 year old in 2010 should have the same expected mortality 
+# # as one a 65 year old in 2015 
 
-plot([for_plots_60.assets[6:end] for_plots_65.assets])
+# plot([for_plots_60.assets[6:end] for_plots_65.assets])
 
-plot(for_plots.cons)
+# plot(for_plots.cons)
 
 
 

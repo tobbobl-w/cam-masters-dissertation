@@ -19,9 +19,9 @@
 Standard economic theory suggests that retirement annuities should be highly prized by individuals as a way to
 insure against the risk of late death \cite{yaari_65}. However, in developed countries rates of annuitization are far below the
 levels that theory predicts. In this paper I test two competing hypotheses for the annuity problem: bequests and
-pessimistic life expectancy. In most developed countries, individuals are forced to contribute to either a defined 
-benefit or defined contribution pension. A defined benefit pension accumulates throughout your job tenure as  
- Under the coalition government in the UK the law regarding the use of private defined
+pessimistic life expectancy. In most developed countries, individuals are forced to contribute to either a defined
+benefit or defined contribution pension. A defined benefit pension accumulates throughout your job tenure as
+Under the coalition government in the UK the law regarding the use of private defined
 contribution pensions changed. Individuals were no longer forced to annuitise their pension pots and could access
 them in a variety of ways such as lump sum withdrawals or income drawdown and subsequently the number of annuities
 sold in the UK dropped precipitously.
@@ -112,10 +112,10 @@ I first solve a modified retirement lifecycle model. The problem that retirees f
 \end{equation*}
 subject to their budget constraint
 \begin{equation*}
-      c_{t} =a_{t}(1 +r) + p_{t} + ann_{t} -  a_{t+1}
+      c_{t} =a_{t}(1 +r) -  a_{t+1} + y_{t}
 \end{equation*}
-where $a_{t}$ are asset holdings in time t, $p_{t}$ is state pension income in time t, and $ann_{t}$ is annuity
-income in time t. I use the standard CRRA utility function.
+where $a_{t}$ are asset holdings in time t and $y_{t}$ is income in period 2. Income can come either
+from state pensions, defined benefit pension plans or purchased annuities.
 \begin{equation*}
       u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
 \end{equation*} In some specifications retirees can leave bequests, I use the bequest function from
@@ -136,8 +136,30 @@ function and the value function evaluated at the maximum. This is then used in t
 I repeat this process back to the age of retirement to obtain optimal consumption amounts for each year of retirement
 and associated value functions.
 
-To simulate the ELSA data I solve this retirement problems for each new retiree in the data set.
+To simulate the ELSA data I solve this retirement problems for each new retiree in the data set dependent on their
+objective probability of death each period. I estimate with subjective life expectancies and objective life expectancies,
+I also estimate the model both with and without a bequest motive which was picked to fit the unforced real annuity
+rates seen in the data. I then estimate several empirical models with the simulated data.
 
+\subsection{Empirical models}
+
+In this section I outline the key empirical models I run with both the simulated consumption data from the
+lifecycle models and with the real data from ELSA. I then see which lifecycle model better fits the consumption
+response that happened as a result of the pension reform.
+
+I use a regression discontinuity design where I compare the consumption of recent retirees after the policy reform
+to recent retirees before the policy reform. The individuals who retired in 2014 and later were not forced to
+annuitise their defined contribution pension. The key assumption implicit in regression discontinuities is
+that nothing else changes at the time of the jump apart from the policy of interest. And that the policy occurs
+without individuals predicting it. The policy change was widely seen as a surprise by the media and financial planners,
+some of whom in fact complained that they had not been consulted enough. \textbf{How can I justify no other jumps at the jump}
+
+Retirement year is the running variable and individuals are treated if retirement year is greater than 2013 and less than 2016.
+I consumption of individuals up to 2 years into retirement so that the sample size is larger. So if someone retired in 2014 and
+had consumption data in 2014 and 2016 I include both values. An individual is considered not treated if they retire before 2013 and after 2011.
+
+
+The estimating equation is therefore
 
 \subsection{Rough plan}
 \begin{itemize}

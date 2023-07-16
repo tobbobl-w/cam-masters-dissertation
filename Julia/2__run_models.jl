@@ -3,6 +3,7 @@ include("4__lifecycle_with_income.jl")
 
 # Could run this for each 
 
+
 # annuity_cost;
 # moneysworth=0.95,
 # bequests=false,
@@ -21,17 +22,8 @@ gender_age_year_combos = CSV.File("../data/ELSA/elsa_to_use/gender_pension_age_u
                          Tables.matrix
 # This is the combo of demographic info we need to run it for
 
-# drop those under 60 for now. Need to change annuity function to just be life probs with some loading factor
-sum([row[2] < 60 for row in eachrow(gender_age_year_combos)])
-gender_age_year_combos = gender_age_year_combos[gender_age_year_combos[:, 2].>=60, :]
-
 
 gender_age_year_combos
-
-gender = "male"
-age = 64
-year = 2011
-
 
 # This will take a while I think
 # I wonder how long
@@ -52,11 +44,10 @@ end
 
 
 
+
 # Nice this is working now!!
-# Just need to run for different level of forced annuities
-# different life expectancies 
-# different amount of state pension income
-# different years and genders 
+# different life expectancies & different years and genders (these are kinda the same)
+
 # get a unique df with all the types we will need
 
 # (opt_policy_function_ann, temp_value_ann, ann_consump) = LifeCycleSolve(100000, bequests=false)
