@@ -66,20 +66,32 @@ harm_long[, ever_dc_pen := fifelse(
 by = .(idauniq)
 ]
 
-harm_long[, years_since_retirement := age_at_interview - retired_age]
 
-# table(harm_long$years_since_retirement)
+harm_long[, has_db_pension := case_when(
+    pension_type_job1 == 2 ~ "yes",
+    pension_type_job2 == 2 ~ "yes",
+    pension_type_job3 == 2 ~ "yes",
+    T ~ "no"
+)]
 
-# hist(harm_long[total_monthly_consumption < 0, total_monthly_consumption])
+harm_long[, ever_db_pen := fifelse(
+    any(has_db_pension == "yes"),
+    "yes", "no"
+),
+by = .(idauniq)
+]
+
+
+# Don't use either because it doesnt give us much info.
 
 # ever have a dc pension
 # 1 dc, 2 db, 3 either
 # want to find people who have had dc pension at some point
 
 
-fwrite(harm_long, "../../data/ELSA/elsa_to_use/for_julia.csv")
+harm_long[, years_since_retirement := age_at_interview - retired_age]
 
-stop()
+
 # now also save financial wealth
 # pension wealth
 # state pension
@@ -106,7 +118,6 @@ AddYearsAround <- function(year, add = 2) {
 harm_long$fuzzy_retirement <- lapply(harm_long$retired_age, AddYearsAround, 2)
 
 
-
 harm_long[, ":="(ret_in = mapply("%in%", age_at_interview, fuzzy_retirement),
     ret_equals = retired_age == age_at_interview), by = .(idauniq)]
 
@@ -114,6 +125,22 @@ harm_long[ret_in & ret_equals, .(retired_age, age_at_interview, ret_in)]
 # ok this works
 
 
+data_for_regressions <- harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
+
+data_for_regressions[, id_wave := paste0(idauniq, "-", wave)]
+
+# nice good number of people in both.
+data_for_regressions[, table(ever_db_pen, ever_dc_pen)]
+
+fwrite(
+    data_for_regressions,
+    "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
+)
+
+nrow(data_for_regressions)
+
+
+#### Plot consumption
 consump_time_in <- harm_long[ret_in == TRUE,
     .(mean_consump = mean(total_monthly_consumption, na.rm = T)),
     by = .(date_year)
@@ -134,24 +161,27 @@ ggplot() +
         aes(x = date_year, y = mean_consump, colour = "blue")
     )
 
+
 # control for age at retirement, retirement wealth
 # and age from retirement?
 # lets get retirement wealth now.
 
 
-
+## Event study?
+## No this is a diff in diff basically says that individuals are
+# similar apart from for the reform (after controlling for vars)
 lm(total_monthly_consumption ~ pre_post_ref,
-    data = harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
+    data = data_for_regressions
 )
 
 lm(total_monthly_consumption ~ pre_post_ref + age_at_interview,
-    data = harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
+    data = data_for_regressions
 )
 
 lm(
     total_monthly_consumption ~ pre_post_ref + age_at_interview + fin_wealth +
         ragender + ever_dc_pen + ever_dc_pen * pre_post_ref + years_since_retirement,
-    data = harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
+    data = data_for_regressions
 )
 # ok this is encouraging
 # what actually is the method though?
@@ -164,4 +194,9 @@ lm(
 
 
 # what about couples??
-# lets try and solve subjective co
+# lets try and solve subjective code
+# done this
+
+
+
+# Lets also run a diff in diff where the control group are retirees without a db pension

@@ -17,18 +17,54 @@ pension_grid <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
 #  %>%
 # rbindlist(fill = T, use.names = T)
 
-mapply(search_names, pension_grid, "wpapu")
+mapply(search_names, pension_grid, "wpapu", ignore.case = TRUE)
+
+pension_grid
+
+head(pension_grid[[1]])
+
+pension_grid1 <- pension_grid[[1]]
+
+head(pension_grid1)
 
 # oh maybe this is when the pension mapping grid becomes useful.
 # get pension grid lookups
-grid_lookups <- read_excel("../../data/ELSA/elsa_unziped/UKDA-5050-tab/mrdoc/excel/5050_wave_2_pension_grid_corresponding_variables.xls")
+grid_lookups <- read_excel(
+    "../../data/ELSA/elsa_unziped/UKDA-5050-tab/mrdoc/excel/5050_wave_2_pension_grid_corresponding_variables.xls"
+)
+
 names(grid_lookups)
 head(grid_lookups)
 # lets have a look at the excel files.
 # pension variables seem to be different in each
 
+search_files <- function(string, ...) {
+    dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+        pattern = "wave",
+        full.names = TRUE
+    ) %>%
+        grep(string, ., value = T, ...)
+}
 
+dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+    pattern = "wave",
+    full.names = TRUE
+) %>%
+    grep("pension(_wealth|wealth)", ., value = T)
+# Only up to wave 5
 
+search_files("fin")
+
+grid_5 <- fread("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_5_pension_wealth.tab")
+
+fin_7 <- fread("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_7_financial_derived_variables.tab")
+
+names(grid_5)[names(grid_5) %in% names(fin_7)]
+names(grid_5)
+names(fin_7)
+head(grid_5)
+
+fin_6 <- fread
 
 fread(pension_files[[1]]) %>%
     names() %>%
@@ -62,3 +98,6 @@ head(all_pension)
 
 # Why is this research interesting -- no satisfactory life-cycle model that explains the
 # dec
+
+
+pension_wealth <- fread("../../data/ELSA/UKDA-8502-tab/tab/wave_2_pension_wealth.tab")

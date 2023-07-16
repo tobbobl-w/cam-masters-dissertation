@@ -195,7 +195,7 @@ source("__ELSA_functions.R")
 #### USE LIFE TABLES WITH AGE UNTIL 110 IN
 
 
-create_death_prob_matrix <- function(gender) {
+create_death_prob_matrix <- function(gender = "Males") {
     # Function that creates the transition matrix from ons data.
 
     sheet_to_get <- paste0(gender, " cohort lx")
@@ -222,10 +222,17 @@ create_death_prob_matrix <- function(gender) {
         arrange(age) %>%
         mutate(deaths = lead(lag(alive) - alive)) %>% # alive yesterday minus alive today, shifted back to today
         mutate(death_rate = deaths / alive) %>%
-        filter(birth_year >= 1935, birth_year <= 1955) %>%
+        ungroup() %>%
+        filter(birth_year >= 1935, birth_year <= 1975) %>%
         mutate(year = age + birth_year) %>%
         filter(year >= 2005) %>%
-        filter(age >= 50, age <= 110)
+        filter(age >= 50, age <= 110) %>%
+        arrange(-birth_year)
+
+    ons_surv %>%
+        filter(age == 59 & year == 2016)
+
+    min(ons_surv$birth_year)
 
     ons_surv_matrix <- ons_surv %>%
         tidyr::pivot_wider(
@@ -236,7 +243,7 @@ create_death_prob_matrix <- function(gender) {
 
     fwrite(
         ons_surv_matrix,
-        paste0("../../data/ONS/", gender, "_transition_probs.csv")
+        str_to_lower(paste0("../../data/ONS/", gender, "_transition_probs.csv"))
     )
 }
 
