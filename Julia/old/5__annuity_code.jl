@@ -11,7 +11,7 @@ ann_lf_male_16 = ann_lf_df[(ann_lf_df.gender.=="male").&(ann_lf_df.year.==2016),
 ann_lf_female_16 = ann_lf_df[(ann_lf_df.gender.=="female").&(ann_lf_df.year.==2016), :][!, :prob]
 
 
-function annuity_payment_function(
+function annuity_payment_function_using_annuitant_mortality(
     annuity_cost;
     loading_factor=0.95,
     age=60,
@@ -48,3 +48,18 @@ annuity_payment_function(100000, gender="male", age=61, ann_life_table_year=2016
 
 annuity_payment_function(100000, gender="male", age=65, ann_life_table_year=2016)
 # also annuities increase with age which is good
+
+
+
+function Annuity_GeneralDeathProbs(annuity_cost, loading_factor, death_probs)
+    # annuity_cost - how much to spend on an annuity
+    # loading_factor - discount the annuity
+    # death_probs - vector of death probabilities for each age
+
+    alive_probs = 1 .- death_probs
+
+    cum_alive = cumprod(alive_probs)
+
+    loading_factor * (annuity_cost / (sum([cum_alive[age] * 1 / (((1 + r)^age)) for age in eachindex(cum_alive)])))
+
+end

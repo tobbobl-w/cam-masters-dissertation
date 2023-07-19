@@ -79,54 +79,76 @@ realistic annuitization rates. He solves a simple lifecycle model with bequest m
 in the literature. The bequest motives he picks therefore match other important aspects of the lifecycle model such
 as how much individuals actually bequest and how rich individuals are when they bequest.
 
-\cite{lockwood_aer_2018}
+\cite{lockwood_aer_2018} 
 
 \cite{vidalmelia_lejarragagarcia_munich_2004} have some interesting results. Need to talk about that.
 
+\textit{There are some more papers to include here. Time to go and have dinner. }
 
-\subsection{Data}
+\section{Data}
 The main data set I use is the English Longitudinal Study of Ageing (ELSA) \cite{main_elsa_citation}. ELSA repeatedly interviews
 individuals over the age of 50 and asks them a range of questions relating to their income and wealth as well as expectations about
 the future. Importantly it also includes detailed information pensions including the type of pension that an individual holds when
 working, thus I am able to distinguish between individuals who have defined benefit and defined contribution pensions. For ease of access
 I use Harmonized ELSA \footnote{"This analysis uses data or information from the Harmonized ELSA dataset and Codebook, Version G.2 as of
-      July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
-      Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
-      please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
+  July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
+  Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
+  please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
 subset of the questions in ELSA I also supplement it with variables taken directly from the data.
 
-I also use ONS life tables data.
-
-I also use annuitant life tables data.
-
-I also use FCA product data.
+ELSA also includes questions on expenditures. In particular individuals are asked how much they consume on a range of broad categories. 
 
 
+% Include a summary stats table here of the individuals selected for the regression
 
-\subsection{Methodology}
+I also use life tables from the UK's Office for National Statistics. These give us risk of death for each age group. I adjust them 
+to make death certain at age 110 as is common in the literature. I transform these so that I have risk of death conditional on being
+a given age since this is what is used in the life cycle simulations.  
+%  include a table showing death probs 
 
-I first solve a modified retirement lifecycle model. The problem that retirees face is as follows:
-\textbf{This is not correct -- need to include probs}
+
+
+To illustrate the effect the reform had on sales of annuities in the UK I obtained product data from the Financial Conduct Authority. 
+These track the sale of different financial products overtime including data on annuity sales.
+% Plot showing the drop of in annuity sales 
+
+To calculate subjective life expectancies I follow \cite{odea_sturrock_rest_2023}. Individuals are asked “What are the chances that you will 
+live to be age X or more?” where X changes depending on the age of the interviewee. If individuals were under 65 then X was 75, if individuals
+were 66 and older they were asked the age that was 11 to 15 years older than them and is a multiple of 5. From wave three respondents were 
+also asked “What are the chances that you will live to be age 85 or more?” if they were under 70. As most recent retirees are under 70 we 
+therefore have two data points. I carry out the following procedures: drop any individuals who think it is more likely they reach an older
+age than a younger age since; add, as a third data point their objective chance of reaching 110 according to the ONS life tables; fit these
+three points to a Weibull distribution using non-linear least squares. Then I create subjective survival tables. 
+
+\textbf{I could go into more detail here? Maybe I should. Add equation etc}
+
+
+
+\section{Methodology}
+
+I first solve a modified retirement lifecycle model. The problem that retirees face is as follows. 
+Every period retirees solve:
 \begin{equation*}
-      E(U) = \sum_{t = x}^{110 - w}[u(c_{t})]
+  V_{t}(a_{t}, y) = \underset{a_{t+1}, c_{t}}{\max} \{ u(c_{t}) + p_{t}B(a_{t+1}) + \beta(1-p_{t})V_{t+1}(a_{t+1}, y) \}
 \end{equation*}
 subject to their budget constraint
 \begin{equation*}
-      c_{t} =a_{t}(1 +r) -  a_{t+1} + y_{t}
+  c_{t} =a_{t}(1 +r) -  a_{t+1} + y
 \end{equation*}
-where $a_{t}$ are asset holdings in time t and $y_{t}$ is income in period 2. Income can come either
+where $a_{t}$ are asset holdings in time t, $y$ is constant income for all periods and . Income can come either
 from state pensions, defined benefit pension plans or purchased annuities.
 \begin{equation*}
-      u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
+  u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
 \end{equation*} In some specifications retirees can leave bequests, I use the bequest function from
 \cite{lockwood_red_2012}.
 \begin{equation*}
-      u(b_{t}) = (\frac{m}{1 - m})^{\sigma}  \frac{((\frac{m c_{0}}{1 - m}) + b_{t})^(1 - \sigma)}{(1 - \sigma)}
+  B(a_{t}) = \bigl( \frac{m}{1 - m} \bigr)^{\sigma}  \frac{(\frac{m}{1 - m}c_{0} + a_{t})^{(1 - \sigma)}}{1 - \sigma}
 \end{equation*}
 Where $b_{t}$ is the amount left at death, $m$ is a measure of bequest motive strength and $c_{0}$ is
 a minimum amount of consumption that individuals want. \textbf{Check this}
 
-I solve the retirees problem using backward induction. At age 110 there is certainty of death so any leftover assets
+First, I discretise the state space. I create a grid from 500 to 50,000 incrementing by 500 for income and 1000 to 
+500,000 incrementing by 1000 for financial assets. I solve the retirees problem using backward induction. At age 110 there is certainty of death so any leftover assets
 are carried over into the next period and bequested. This means that the value at the end of the final period is
 either 0 (if we do not allow a bequest motive) or the value of bequests. I then take this value function and solve
 an individuals final period problem, choosing assets next period (i.e. those to bequest) and how much to consume.
@@ -141,7 +163,20 @@ objective probability of death each period. I estimate with subjective life expe
 I also estimate the model both with and without a bequest motive which was picked to fit the unforced real annuity
 rates seen in the data. I then estimate several empirical models with the simulated data.
 
-\subsection{Empirical models}
+In retirees first year of retirement I allow them to choose to annuitise some of their wealth. In practical terms 
+this is moving down the asset grid but up the income grid and seeing if the value of being in that position is better 
+than where the individual is currently. To calculate this trade-off I calculate the annual annuity payment that follows 
+from a given annuity cost. I calculate this using objective life tables from the ONS using the following equation:
+
+\begin{equation*}
+ Ann = \delta * C * \biggl[\sum_{t = Retage}^{110}\frac{1 - p_{t|Retage}}{(1 + r)^{t - Retage}}\biggr]^{-1}
+\end{equation*}
+
+Where $C$ is the one-off payment, $\delta$ is a factor that controls the 'money's worth' of annuity and $p_{t|Retage}$ 
+is the probability of death at age $t$ conditional on being age $Retage$. So individuals can move C on the asset grid 
+for gaining Ann on the income grid for the rest of their lives.
+
+\section{Empirical models}
 
 In this section I outline the key empirical models I run with both the simulated consumption data from the
 lifecycle models and with the real data from ELSA. I then see which lifecycle model better fits the consumption
@@ -157,34 +192,45 @@ some of whom in fact complained that they had not been consulted enough. \textbf
 Retirement year is the running variable and individuals are treated if retirement year is greater than 2013 and less than 2016.
 I consumption of individuals up to 2 years into retirement so that the sample size is larger. So if someone retired in 2014 and
 had consumption data in 2014 and 2016 I include both values. An individual is considered not treated if they retire before 2013 and after 2011.
+One benefit of using ELSA is that it includes data on pension type for individuals who are working. Therefore, I can differentiate 
+between individuals who have a defined contribution pension and those who have a defined benefit contribution. To account for the fact
+that the reform only impacted individuals who had accumulated defined contribution pension pots I interact the treatment dummy with 
+an indicator variable signalling whether the individual had ever held a DC pension pot. 
 
+The estimating equation is therefore 
 
-The estimating equation is therefore
+\begin{equation*}
+  Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
+\end{equation*}
+
+And $X_{it}$ is a set of controls including financial wealth etc
+
+The ta
 
 \subsection{Rough plan}
 \begin{itemize}
-      \item Intro
-            \begin{enumerate}
-                  \item I think Eric French wrote something about population that I could use in then intro to say why it is important.
-                  \item "Latest data from HM Revenue Customs (published in April) showed more than £45bn has been taken from pots since 2015."
-                        https://www.ftadviser.com/pensions/2022/02/08/pension-freedoms-were-they-really-a-good-idea/
+  \item Intro
+        \begin{enumerate}
+          \item I think Eric French wrote something about population that I could use in then intro to say why it is important.
+          \item "Latest data from HM Revenue Customs (published in April) showed more than £45bn has been taken from pots since 2015."
+                https://www.ftadviser.com/pensions/2022/02/08/pension-freedoms-were-they-really-a-good-idea/
 
 
-                  \item Add bit about DC/DB pensions in the intro. Also talk about heterogeneity across countries.
-                        Some countries want to move towards more annuitisation. This annual review is a good source of info
-                        \cite{banks_crawford_ar_2022}
-            \end{enumerate}
-      \item Lit review
-      \item Models
-      \item Empirical
-            \begin{enumerate}
-                  \item Diff in diff
-                  \item RDD
-                  \item Matching?
-                  \item can I use anything I learnt in panel?
-                        In some sense the decision to annuitise is a discrete choice problem so I could use something from there.
-            \end{enumerate}
-      \item Conclusion
+          \item Add bit about DC/DB pensions in the intro. Also talk about heterogeneity across countries.
+                Some countries want to move towards more annuitisation. This annual review is a good source of info
+                \cite{banks_crawford_ar_2022}
+        \end{enumerate}
+  \item Lit review
+  \item Models
+  \item Empirical
+        \begin{enumerate}
+          \item Diff in diff
+          \item RDD
+          \item Matching?
+          \item can I use anything I learnt in panel?
+                In some sense the decision to annuitise is a discrete choice problem so I could use something from there.
+        \end{enumerate}
+  \item Conclusion
 \end{itemize}
 
 

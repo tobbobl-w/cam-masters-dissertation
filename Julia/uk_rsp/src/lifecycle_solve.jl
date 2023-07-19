@@ -171,7 +171,7 @@ end
 
 # This is starting wealth. For annuitisation we want to change this depending 
 # on how large the annuitisation is
-asset_path_function = function (opt_policy_function, start_point)
+AssetPathFunction = function (opt_policy_function, start_point)
 
     # Return asset paths given a set of optimal policy functions
     # and a starting value of wealth

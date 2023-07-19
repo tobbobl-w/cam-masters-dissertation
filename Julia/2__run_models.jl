@@ -1,47 +1,70 @@
-### In this script we use the functions developed in 4
-include("4__lifecycle_with_income.jl")
+### In this script we use the functions developed in 0 and 1
 
-# Could run this for each 
-
-
-# annuity_cost;
-# moneysworth=0.95,
-# bequests=false,
-# pension=0,
-# age,
-# gender,
-# life_prob_types="objective",
-# year)
-
-# mmm in 2012 gender discrimination started in the annuity market in the UK
-# that is kinda fucked becasuse that will change the price of annuities. 
-# Is there something clever I could do to get around this?
-# Only compare 2012 and 2013 retirements ??
-
-gender_age_year_combos = CSV.File("../data/ELSA/elsa_to_use/gender_pension_age_unique.csv") |>
-                         Tables.matrix
-# This is the combo of demographic info we need to run it for
+include("0__functions.jl")
+include("1__lifecycle_with_income_function.jl")
 
 
-gender_age_year_combos
+# # This is the combo of demographic info that I solve the model for 
+# gender_age_year_combos = CSV.File("../data/ELSA/elsa_to_use/gender_age_year_unique.csv") |>
+#                          Tables.matrix
 
-# This will take a while I think
-# I wonder how long
-for row in eachrow(gender_age_year_combos)
-    println(row)
-    retirement_lifecycle_with_income(
+
+# # This will take a while I think
+# # Depends on grid size 
+# for row in eachrow(gender_age_year_combos)
+#     println(row)
+#     RetirementLifecycleWithIncome(
+#         bequests=false,
+#         age=row[2],
+#         gender=row[1],
+#         life_prob_types="objective",
+#         year=row[3]
+#     )
+# end
+
+
+
+# ----------------- SUBJECTIVE --------------------
+
+# First read in the idwaves that we have flagged for running
+col_types = Dict(:id_wave => String, :age => Int128, :year => Int128,
+    :ever_dc_pen => String, :ever_db_pen => String, :public_pension => Float64)
+
+idwave_df = CSV.File("../data/ELSA/elsa_to_use/for_julia.csv", types=col_types) |>
+            DataFrame
+
+
+# Subjective death comes from "0__functions.jl"
+ids_we_have_probs = unique(subjective_death_df[!, :id_wave])
+# So for each one of these we want to run the lifecycle solver if we have a id-wave for them
+
+# these are ids that we will use in the regression
+ids_we_need_lifecycle = idwave_df[:, :id_wave]
+
+# we only want to run ids we care about and that we have subjective life probs for
+ids_to_run = intersect(ids_we_need_lifecycle, ids_we_have_probs)
+
+
+# Now run all 
+for id_wave in ids_to_run
+
+    id_wave_row = idwave_df[idwave_df.id_wave.==id_wave, :]
+    age, gender, year = id_wave_row[!, :age][1], id_wave_row[!, :gender][1], id_wave_row[!, :year][1]
+
+    println(id_wave)
+
+    RetirementLifecycleWithIncome(
         bequests=false,
-        age=row[2],
-        gender=row[1],
-        life_prob_types="objective",
-        year=row[3]
+        age=age,
+        gender=gender,
+        life_prob_types="subjective",
+        year=year,
+        id_wave=id_wave
     )
-
 end
+# this is too long, I think we need fewer grid points in the states
 
-
-
-
+# GetSubjectiveDeathProbs(id_wave_to_get="100021-5")
 
 
 
@@ -49,160 +72,6 @@ end
 # different life expectancies & different years and genders (these are kinda the same)
 
 # get a unique df with all the types we will need
-
-# (opt_policy_function_ann, temp_value_ann, ann_consump) = LifeCycleSolve(100000, bequests=false)
-
-# (opt_policy_function_no_ann, temp_value_no_ann, no_ann_consump) = LifeCycleSolve(0, bequests=false)
-# (opt_policy_function_no_ann_beq, temp_value_no_ann_beq, no_ann_consump_beq) = LifeCycleSolve(0, bequests=true)
-
-
-
-
-# temp_value_ann[200, 1] - temp_value_no_ann[600, 1]
-# # So value with annuity is higher as expected.
-
-# temp_value_ann_beq[200, 1] - temp_value_no_ann_beq[600, 1]
-# # with bequests the individual prefers not to annuitise!!
-
-
-# (asset_path_ann, consumption_path_ann) = asset_path_function(opt_policy_function_ann, 200)
-# (asset_path_ann_beq, consumption_path_ann) = asset_path_function(opt_policy_function_ann, 200)
-
-
-# (asset_path, consumption_path) = asset_path_function(opt_policy_function_no_ann, 600)
-# (asset_path_beq, consumption_path_beq) = asset_path_function(opt_policy_function_no_ann_beq, 600)
-
-
-# consumption_path_ann = consumption_path_ann .+ ann_consump
-# consumption_path = consumption_path .+ no_ann_consump
-
-# plot([consumption_path_ann consumption_path])
-# # also want to return utility
-# plot([asset_path_ann asset_path])
-
-# plot([asset_path asset_path_beq])
-
-# opt_policy_function_no_ann_beq
-
-
-
-# # Do I need to increase the size of the grid?
-
-# ## Chart showing the proportion of annuititised wealth would 
-# ## be nice to have. 
-
-# ## Now we want to compare the bequest function and the predicted life expectancy
-
-# obj_outputs = LifeCycleSolve(0, bequests=false, death_probs=cum_death_probs)
-# sub_outputs = LifeCycleSolve(0, bequests=false, death_probs=sub_death_probs)
-
-# sub_outputs[1]
-# # Not really sure if i believe the end 
-# obj_outputs[3]
-
-# obj_assets_consump = asset_path_function(obj_outputs[1], 600)
-# sub_assets_consump = asset_path_function(sub_outputs[1], 600)
-
-# sub_assets_consump.assets
-
-
-# plot([sub_assets_consump.assets obj_assets_consump.assets])
-
-# sub_assets_consump.assets
-
-# # how is consumption 5000 a year here. 
-# plot([sub_assets_consump.cons obj_assets_consump.cons])
-# # subjective consumption is higher at the start but lower later.
-
-
-
-# # Now compare subjective probs with bequest consumption
-# sub_assets_consump = asset_path_function(sub_outputs[1], 600)
-
-# # with forced 
-# sub_outputs_ann = LifeCycleSolve(100000, bequests=false, death_probs=sub_death_probs)
-# obj_outputs_beq_ann = LifeCycleSolve(100000, bequests=true, death_probs=cum_death_probs)
-
-# # without annuity
-# sub_outputs = LifeCycleSolve(0, bequests=false, death_probs=sub_death_probs)
-# obj_outputs_beq = LifeCycleSolve(0, bequests=true, death_probs=cum_death_probs)
-# obj_outputs_ann = LifeCycleSolve(100000, bequests=false, death_probs=cum_death_probs)
-
-# # now get mean consumption 
-
-# obj_assets_consump_beq_ann = asset_path_function(obj_outputs_beq_ann[1], 200)
-# sub_assets_consump_ann = asset_path_function(sub_outputs_ann[1], 200)
-
-# obj_assets_consump_beq = asset_path_function(obj_outputs_beq[1], 600)
-# sub_assets_consump = asset_path_function(sub_outputs[1], 600)
-
-# # wow bequest function might be too strong?
-# # need to compare to data to find out probably
-
-# plot([obj_assets_consump_beq_ann[1] obj_assets_consump_beq[1] sub_assets_consump_ann[1] sub_assets_consump[1]])
-
-# plot([(obj_assets_consump_beq_ann[2] .+ annuity_payment_function(100000, moneysworth=0.8)) obj_assets_consump_beq[2] (sub_assets_consump_ann[2] .+ annuity_payment_function(100000, moneysworth=0.8)) sub_assets_consump[2]])
-
-
-
-# # was intuition correct?
-# # 1 and 3 are with annuities and have larger consumption?
-# # 2 and 4 are without annuities and have smaller consumption
-# # I thought consumption would rise here?
-
-
-# ## compare values to check if people want the annuity?
-# obj_outputs_beq[2][2000, 1] - obj_outputs_beq_ann[2][300, 1]
-# # People want annuity
-
-
-# function check_annuity_equivalence(wealth)
-#     obj_outputs_beq[2][2000, 1] - obj_outputs_beq_ann[2][wealth, 1]
-# end
-
-# to_plot = [check_annuity_equivalence(i) for i in 1:2000]
-
-# p1 = plot(to_plot)
-# hline!(p1, [0])
-
-# mean(obj_outputs_beq[2] .> obj_outputs_beq_ann[2])
-# # no matter what wealth annuity is still too good value
-
-# ## see if subjective people still purchase annuities
-
-# function check_annuity_equivalence(wealth)
-#     sub_outputs[2][2000, 1] - sub_outputs_ann[2][wealth, 1]
-# end
-
-# to_plot = [check_annuity_equivalence(i) for i in 1:2000]
-
-# p1 = plot(to_plot)
-# hline!(p1, [0])
-# # bigger gap than for bequest types
-# # Means individual would pay more for the annuity
-
-
-# function check_annuity_equivalence(wealth)
-#     obj_outputs[2][2000, 1] - obj_outputs_ann[2][wealth, 1]
-# end
-
-# to_plot = [check_annuity_equivalence(i) for i in 1:2000]
-
-# p1 = plot(to_plot)
-# hline!(p1, [0])
-# # looks so similar to subjective annuity
-
-# # still seem too attractive. 
-# # need value to be lower
-
-# # can up the bequest motive or make the subjective expectancy data worse
-
-# ### is there point playing around more
-
-
-
-
-
 
 
 # ################################# TO DO #################################

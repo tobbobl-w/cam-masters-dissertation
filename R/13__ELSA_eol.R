@@ -452,5 +452,5 @@ sub_life_dt[, expected_age := age + years_into_future]
 # ok great we now have subjective done
 fwrite(
     sub_life_dt,
-    "../../data/ELSA/subjective_tables/objective_survival_probs.csv"
+    "../../data/ELSA/subjective_tables/subjective_survival_probs.csv"
 )

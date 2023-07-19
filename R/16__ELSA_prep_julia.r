@@ -10,29 +10,16 @@ library(patchwork)
 
 source("__ELSA_functions.R")
 
-# this is the distance that we use on the asset grid in Julia
-grid_distance <- 250
-
-
 reg_data <- fread(
     "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
 )
 
-## now for julia we need to round financial assets
-# what to do with negative assets
-# reg_data$fin_wealth %>% hist()
-
-
-reg_data[, round_fin_wealth :=
-    round(fin_wealth / grid_distance, 0) * grid_distance] # round to nearest grid point
-
-# do we need some other things?
-# I am not sure...
 dt_for_julia <- reg_data[, .(id_wave,
     gender = ragender, age = age_at_interview,
-    round_fin_wealth, public_pension,
+    public_pension,
     ever_dc_pen, ever_db_pen,
-    year = date_year
+    year = date_year, 
+    fin_wealth
 )]
 
 dt_for_julia[, gender := fcase(
@@ -40,20 +27,17 @@ dt_for_julia[, gender := fcase(
     gender == 2, "female"
 )]
 
-dt_for_julia[, public_pension := round(public_pension / 100, 0) * 100] # round pension to the nearest 100
-
-summary(dt_for_julia$round_fin_wealth)
 
 # , ever_dc_pen, ever_db_pen
-gender_age_year_unique <- dt_for_julia[!is.na(public_pension), .(gender, age, year)] %>%
+gender_age_year_unique <- dt_for_julia[, .(gender, age, year)] %>%
     unique()
 
 # check no NAs in any columns
-stopifnot(!any(sapply(gender_pension_age_unique, \(x) any(is.na(x)))))
+stopifnot(!any(sapply(gender_age_year_unique, \(x) any(is.na(x)))))
 
 fwrite(
     gender_age_year_unique,
-    "../../data/ELSA/elsa_to_use/gender_pension_age_unique.csv"
+    "../../data/ELSA/elsa_to_use/gender_age_year_unique.csv"
 )
 # We want to run the life cycle model for each of these gender-pension-age pairs.
 
@@ -64,20 +48,6 @@ fwrite(
     "../../data/ELSA/elsa_to_use/for_julia.csv"
 )
 
-
-dir("../../data/ELSA/lifecycle_outputs/", full.names = T) %>%
-    length()
-# its not actually that slow!
-
-time_made <- dir("../../data/ELSA/lifecycle_outputs/", full.names = T) %>%
-    lapply(file.info) %>%
-    sapply(\(x) x$ctime) %>%
-    sort()
-
-# takes about a second
-summary(time_made - lag(time_made), na.rm = T)
-# could I speed up with parrellisation
-# run for a few different levels of annuitization
 
 
 # So what do we want to do next.
@@ -90,9 +60,77 @@ summary(time_made - lag(time_made), na.rm = T)
 #  dont think it would be too much slower but it could take a while to get right
 
 
-## Ok now lets read in and see the rate of annuitisation we would expect
-dir("../../data/ELSA/lifecycle_outputs/", full.names = T)
+# ------------ prep subjective life expectancies -----------
 
-library(jsonlite)
+subjective_life_probs <- fread(
+    "../../data/ELSA/subjective_tables/subjective_survival_probs.csv"
+)
 
-read_json("../../data/ELSA/lifecycle_outputs/84_beqfalse_male_objective_2016")
+life_probs_we_need <- subjective_life_probs[id_wave %in% dt_for_julia$id_wave]
+
+## Small comparison between subjective and objective for one person
+sub_for_plot <- life_probs_we_need[dt_for_julia[, .(id_wave, year, age, gender)], on = c("id_wave", "age")] %>%
+    filter(id_wave == "100005-5") %>% # male born who is 64 in 2011
+    mutate(type = "subjective") %>%
+    mutate(age = expected_age - 1) %>%
+    select(age, cum_alive = prob, type)
+
+# compare to objective for a male aged 64 in 2011 (this is characteristics of )
+birth_year <- 2011 - 64
+
+obj_dat <- fread("../../data/ONS/males_transition_probs.csv")
+
+obj_for_plot <- obj_dat %>%
+    select(age, death_prob = `1947`) %>%
+    filter(age >= 64) %>%
+    mutate(alive_prob = 1 - death_prob) %>%
+    mutate(cum_alive = cumprod(alive_prob)) %>%
+    mutate(type = "objective") %>%
+    select(age, cum_alive, type)
+
+all_for_plot <- rbind(sub_for_plot, obj_for_plot)
+
+# ggplot(all_for_plot, aes(x = age, y = cum_alive, group = type)) +
+#     geom_point()
+
+## cool this looks about right
+# lets save objective data as year by year death probs as well
+# functions are designed to take death prob
+
+
+# --------- transform subjective probs ---------
+# reverse the cumprod operation by flipping
+# want to have year by year death rate
+life_probs_to_save <- subjective_life_probs %>%
+    mutate(start_age = age) %>%
+    mutate(age = expected_age - 1) %>%
+    rename(cum_alive_prob = prob) %>%
+    mutate(cum_death_prob = 1 - cum_alive_prob) %>%
+    select(id_wave, start_age, age, cum_alive_prob, cum_death_prob) %>%
+    group_by(id_wave) %>%
+    mutate(year_death_prob = (lag(cum_alive_prob) - cum_alive_prob) / lag(cum_alive_prob)) %>% # i.e. prob you die in a year conditional on being born that year
+    mutate(year_death_prob = ifelse(is.na(year_death_prob), cum_death_prob, year_death_prob)) %>%
+    mutate(year_alive_prob = 1 - year_death_prob) %>%
+    group_by(id_wave) %>%
+    mutate(cum_alive_prob_2 = cumprod(year_alive_prob)) #
+
+# Check that retransforming the new death probs creates the same
+# alive probs
+life_probs_to_save %>%
+    summarise(
+        diff = mean(cum_alive_prob_2 - cum_alive_prob),
+        equal = all.equal(cum_alive_prob_2, cum_alive_prob)
+    ) %>%
+    summarise(mean(diff), mean(equal)) # nice all equal
+# ok these look like rounding errors
+#
+
+sub_death_probs <- life_probs_to_save %>%
+    select(id_wave, age, death_prob = year_death_prob)
+
+
+fwrite(
+    sub_death_probs,
+    "../../data/ELSA/subjective_tables/subjective_death_probs_for_julia.csv"
+)
+# fread("../../data/ELSA/subjective_tables/subjective_death_probs_for_julia.csv") %>% head()

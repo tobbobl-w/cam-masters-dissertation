@@ -5,7 +5,7 @@ using CSV, DataFrames, Plots
 include("death_probs.jl")
 include("lifecycle_solve.jl")
 
-export LifeCycleSolve, asset_path_function
+export LifeCycleSolve, AssetPathFunction
 
 end # module uk_rsp
 

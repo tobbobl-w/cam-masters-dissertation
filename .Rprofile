@@ -11,3 +11,7 @@ r <- getOption("repos") # hard code the UK repo for CRAN
 r["CRAN"] <- "https://www.stats.bris.ac.uk/R/"
 options(repos = r)
 rm(r)
+
+options(languageserver.formatting_style = function(options) {
+    styler::tidyverse_style(scope = "indention", indent_by = options$tabSize)
+})

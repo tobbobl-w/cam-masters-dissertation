@@ -14,9 +14,9 @@ const terminal_age = 110
 const asset_grid = [i * grid_gap for i in 1:grid_points]
 
 
-death_probabilities(gender="male", year=2010, age=63)
-death_probabilities(gender="female", year=2010, age=63)
-death_probabilities(gender="female", year=2015, age=63)
+GetObjectiveDeathProbs(gender="male", year=2010, age=63)
+GetObjectiveDeathProbs(gender="female", year=2010, age=63)
+GetObjectiveDeathProbs(gender="female", year=2015, age=63)
 
 
 
@@ -57,7 +57,7 @@ function LifeCycleSolve(
 
     # set death probabilities.
     if life_prob_types == "objective"
-        death_probs = death_probabilities(gender=gender, age=55, year=year)
+        death_probs = GetObjectiveDeathProbs(gender=gender, age=55, year=year)
     elseif life_prob_types == "subjective"
         death_probs = "" # come and define later
     end
@@ -195,7 +195,7 @@ end
 
 # This is starting wealth. For annuitisation we want to change this depending 
 # on how large the annuitisation is
-function asset_path_function(opt_policy_function, start_point)
+function AssetPathFunction(opt_policy_function, start_point)
 
     # Return asset paths given a set of optimal policy functions
     # and a starting value of wealth

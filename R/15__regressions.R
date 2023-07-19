@@ -137,6 +137,8 @@ fwrite(
     "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
 )
 
+data_for_regressions[, unique(rabyear)] %>% sort()
+
 nrow(data_for_regressions)
 
 
