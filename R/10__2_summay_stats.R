@@ -7,6 +7,7 @@ library(stringr)
 rm(list = ls())
 source("__ELSA_functions.R")
 
+
 # Covariate Balance
 # need to add home ownership
 # could have a look at the retirement paper that we did in s130
@@ -24,41 +25,15 @@ data_for_regressions <- fread("../../data/ELSA/elsa_to_use/elsa_reg_data.csv") %
     mutate(
         fin_wealth = fin_wealth / 1000,
         house_value = house_value / 1000,
-        dc_pot = dc_pot / 1000
+        dc_pot = dc_pot / 1000,
+        public_pension = public_pension / 1000
     )
-data_for_regressions$year_of %>% table()
 
+search_names(data_for_regressions, "pen")
 search_names(data_for_regressions, "year")
 
-# List of names for the summary table
-clean_names <- list(
-    "Gender" = "ragender",
-    "RetirementYear" = "retirement_year",
-    "InterviewYear" = "int_year",
-    "YearsSinceRetirement" = "years_since_retirement",
-    "RetiredAge" = "retired_age",
-    "ExpectedRetiredAge" = "first_exp_ret_age",
-    "DifferenceAge" = "exp_real_ret_age",
-    "FinancialWealth (thousands)" = "fin_wealth",
-    "DCPension" = "ever_dc_pen_bin",
-    "DCValue (thousands)" = "dc_pot",
-    "DBPension" = "ever_db_pen_bin",
-    "OwnsHouse" = "owns_house",
-    "HouseValue (thousands)" = "house_value",
-    "ObjectiveLifeExp" = "obj_life_exps",
-    "SubjectiveLifeExp" = "sub_life_exps",
-    "TotalConsump" = "total_monthly_consumption",
-    "FoodConsumpInHouse" = "monthly_food_in",
-    "FoodConsumpOutHouse" = "monthly_food_out",
-    "ClothingConsump" = "monthly_clothing",
-    "LeisureConsump" = "monthly_leisure",
-    "UtilityConsump" = "monthly_utility"
-)
 
 
-ReturnCleanName <- function(short_name) {
-    names(clean_names)[clean_names == short_name]
-}
 
 summary_cols <- unname(unlist(clean_names))
 consumption_cols <- summary_cols[grepl("monthly", summary_cols)]

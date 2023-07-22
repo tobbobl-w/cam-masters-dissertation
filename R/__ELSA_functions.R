@@ -49,3 +49,45 @@ search_names <- function(data, string, ...) {
         ...
     )
 }
+
+
+# List of names for the summary table
+clean_names <- list(
+    "Gender" = "ragender",
+    "RetirementYear" = "retirement_year",
+    "InterviewYear" = "int_year",
+    "YearsSinceRetirement" = "years_since_retirement",
+    "RetiredAge" = "retired_age",
+    "AgeAtInterview" = "age_at_interview",
+    "ExpectedRetiredAge" = "first_exp_ret_age",
+    "DifferenceAge" = "exp_real_ret_age",
+    "FinancialWealth (thousands)" = "fin_wealth",
+    "DCPension" = "ever_dc_pen_bin",
+    "DCValue (thousands)" = "dc_pot",
+    "DBPension" = "ever_db_pen_bin",
+    "StatePension" = "public_pension",
+    "OwnsHouse" = "owns_house",
+    "HouseValue (thousands)" = "house_value",
+    "ObjectiveLifeExp" = "obj_life_exps",
+    "SubjectiveLifeExp" = "sub_life_exps",
+    "TotalConsump" = "total_monthly_consumption",
+    "FoodConsump" = "monthly_food_total",
+    "FoodConsumpIn" = "monthly_food_in",
+    "FoodConsumpOut" = "monthly_food_out",
+    "ClothingConsump" = "monthly_clothing",
+    "LeisureConsump" = "monthly_leisure",
+    "UtilityConsump" = "monthly_utility"
+)
+
+ReturnCleanName <- function(short_name) {
+    names(clean_names)[clean_names == short_name]
+}
+
+
+VariableOrder <- function(name_vector) {
+    # takes a vector of names
+    # returns in the order specified in clean names
+    stopifnot(all(name_vector %in% unlist(clean_names)))
+
+    name_vector[order(match(name_vector, unlist(clean_names)))]
+}
