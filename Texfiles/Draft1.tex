@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage[authoryear]{natbib}
 \usepackage{enumerate}
+\usepackage{booktabs}
 \setlength{\parindent}{0pt}
 \usepackage[parfill]{parskip}
 \date{Lent 2023}
@@ -18,22 +19,28 @@
 
 Standard economic theory suggests that retirement annuities should be highly prized by individuals as a way to
 insure against the risk of late death \cite{yaari_65}. However, in developed countries rates of annuitization are far below the
-levels that theory predicts. In this paper I test two competing hypotheses for the annuity problem: bequests and
-pessimistic life expectancy. In most developed countries, individuals are forced to contribute to either a defined
-benefit or defined contribution pension. A defined benefit pension accumulates throughout your job tenure as
+levels that theory predicts.
 Under the coalition government in the UK the law regarding the use of private defined
 contribution pensions changed. Individuals were no longer forced to annuitise their pension pots and could access
-them in a variety of ways such as lump sum withdrawals or income drawdown and subsequently the number of annuities
+them in a variety of ways such as a lump sum withdrawal on retirement or income drawdown and subsequently the number of annuities
 sold in the UK dropped precipitously.
 
+I first use the policy reform as a discontintuity to measure the impact of forced annutisation on the consumption
+of individuals in the first few years of retirement. Given that the reform was implemented suddenly and without
+advanced notice before the Spring 2014 budget I claim that individuals with a retirement year in 2015, 2016 or 2017
+are otherwise similar to those with a retirement year in 2011, 2012 and 2013 but the do not need to annuitise their
+defined contribution pension pots.
 
-Depending on the reason for the lack of annuitization in the UK, the consumption response of retirees to the pension
+
+In this paper I test two competing hypotheses for the annuity problem: bequests and
+pessimistic life expectancy. Depending on the reason for the lack of annuitization in the UK, the consumption response of retirees to the pension
 reform will differ. If individuals do not annuitise because of pessimistic life expectancy I will show that their
 consumption should increase. If, on the other hand, individuals do not annuitise because of a bequest motive, consumption
 should not change much as a result of the reform. I will solve lifecycle models for both of these cases and simulate
 consumption decisions with, and without, forced annuitization. I will then use a variety of empirical models to measure
 the consumption change in early retirement that resulted from the policy reform. The size and magnitude of this change
 will be indicative of the mechanism causing the annuitization problem.
+
 
 The importance of retirement policy to individuals in the UK is growing. The number of individuals of
 pensionable age is expected to grow from 11.9 million in 2020 to 15.2 million in
@@ -44,16 +51,7 @@ becoming increasingly common and are predicted to grow as current cohorts age \c
 Therefore, policies regarding how private pensions can be accessed will have a larger impact on overall welfare for
 retirees.
 
-The so called "pensions freedom act" received Royal Asset in December 2014 marked the end of a series
-of pension reforms carried out by the coalition government between 2010 and 2015. The reform was announced
-in the Spring budget and made it possible to withdraw money from a private pension pot subject to the
-marginal rate of income tax that an individual faced. In the June 2010 budget the government made a first
-reform to the annuitization rules, creating an minimum income requirement above which individuals would not need to
-annuitise more \cite{finance_act_hmt_2011}. However, this was set at £20,000 and therefore few individuals
-were eligible. The minimum income requirement was scrapped in the 2014 bill finally eliminating the
-compulsory annuities market. The impact of the reforms on annuity demand has been documented by \cite{cannon_et_al_nier_2016}.
-Using data from the Association of British Insurers they show that annuity demand dropped by 75\% from
-its maximum.
+
 
 \subsection{Literature review}
 My paper draws on three main strands of literature. The annuity problem, the retirement saving
@@ -79,13 +77,16 @@ realistic annuitization rates. He solves a simple lifecycle model with bequest m
 in the literature. The bequest motives he picks therefore match other important aspects of the lifecycle model such
 as how much individuals actually bequest and how rich individuals are when they bequest.
 
-\cite{lockwood_aer_2018} 
+\cite{lockwood_aer_2018}
 
 \cite{vidalmelia_lejarragagarcia_munich_2004} have some interesting results. Need to talk about that.
 
 \textit{There are some more papers to include here. Time to go and have dinner. }
 
-\section{Data}
+\section{Data and Policy reform}
+
+\subsection{Data}
+
 The main data set I use is the English Longitudinal Study of Ageing (ELSA) \cite{main_elsa_citation}. ELSA repeatedly interviews
 individuals over the age of 50 and asks them a range of questions relating to their income and wealth as well as expectations about
 the future. Importantly it also includes detailed information pensions including the type of pension that an individual holds when
@@ -96,44 +97,118 @@ I use Harmonized ELSA \footnote{"This analysis uses data or information from the
   please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
 subset of the questions in ELSA I also supplement it with variables taken directly from the data.
 
-ELSA also includes questions on expenditures. In particular individuals are asked how much they consume on a range of broad categories. 
+ELSA also includes questions on expenditures. In particular individuals are asked how much they consume on a range of broad categories.
 
 
 % Include a summary stats table here of the individuals selected for the regression
 
-I also use life tables from the UK's Office for National Statistics. These give us risk of death for each age group. I adjust them 
+
+
+I also use life tables from the UK's Office for National Statistics. These give us risk of death for each age group. I adjust them
 to make death certain at age 110 as is common in the literature. I transform these so that I have risk of death conditional on being
-a given age since this is what is used in the life cycle simulations.  
+a given age since this is what is used in the life cycle simulations.
 %  include a table showing death probs 
 
 
 
-To illustrate the effect the reform had on sales of annuities in the UK I obtained product data from the Financial Conduct Authority. 
+To illustrate the effect the reform had on sales of annuities in the UK I obtained product data from the Financial Conduct Authority.
 These track the sale of different financial products overtime including data on annuity sales.
+
+
 % Plot showing the drop of in annuity sales 
 
-To calculate subjective life expectancies I follow \cite{odea_sturrock_rest_2023}. Individuals are asked “What are the chances that you will 
+To calculate subjective life expectancies I follow \cite{odea_sturrock_rest_2023}. Individuals are asked “What are the chances that you will
 live to be age X or more?” where X changes depending on the age of the interviewee. If individuals were under 65 then X was 75, if individuals
-were 66 and older they were asked the age that was 11 to 15 years older than them and is a multiple of 5. From wave three respondents were 
-also asked “What are the chances that you will live to be age 85 or more?” if they were under 70. As most recent retirees are under 70 we 
+were 66 and older they were asked the age that was 11 to 15 years older than them and is a multiple of 5. From wave three respondents were
+also asked “What are the chances that you will live to be age 85 or more?” if they were under 70. As most recent retirees are under 70 we
 therefore have two data points. I carry out the following procedures: drop any individuals who think it is more likely they reach an older
 age than a younger age since; add, as a third data point their objective chance of reaching 110 according to the ONS life tables; fit these
-three points to a Weibull distribution using non-linear least squares. Then I create subjective survival tables. 
+three points to a Weibull distribution using non-linear least squares. Then I create subjective survival tables.
 
 \textbf{I could go into more detail here? Maybe I should. Add equation etc}
 
+\input{tables/r_summary_stats.tex}
+
+\subsection{Policy reform}
+
+\textbf{Add some other background to pensions in the UK. What does the Blundell etc have
+  to say}
+
+Successive governments in the UK have attempted to reform both the public and private pension system. Prior
+to 1987 participation in private schemes was limited to employees of firms that had offered one, and there
+were few alternatives to the public state pension or a define benefit scheme that a public sector employee
+would offer. \textbf{Were there pension reforms in 1990s and 00s}
+
+Announced in the Spring budge of 2014, the so called "pensions freedom act" received Royal Asset in December 2014 marked the end of a series
+of pension reforms carried out by the coalition government between 2010 and 2015. The reform was announced
+in the Spring budget and made it possible to withdraw money from a private pension pot subject to the
+marginal rate of income tax that an individual faced. In the June 2010 budget the government made a first
+reform to the annuitization rules, creating an minimum income requirement above which individuals would not need to
+annuitise more \cite{finance_act_hmt_2011}. However, this was set at £20,000 and therefore few individuals
+were eligible. The minimum income requirement was scrapped in the 2014 bill finally eliminating the
+compulsory annuities market. The impact of the reforms on annuity demand has been documented by \cite{cannon_et_al_nier_2016}.
+Using data from the Association of British Insurers they show that annuity demand dropped by 75\% from
+its maximum.
+
+After the announcement in spring 2014 sales of annuities dropped massively and income drawdown products increased.
+However, pension pots could also be taken out in one go and this became a much more common option for many people.
+
+Figure \ref{fig:annovertime} shows purchases of annuities overtime and demonstrates the sharp decrease
+in purchases that happened from 2014 to 2015. Likewise there was an increase in the number of pensions that were
+being accessed using an income drawdown product, but these do not fully account for the drop in annuitisation. So,
+either they are withdrawn at once or they are left alone.
+
+Figure \ref{fig:ann2122} shows the current distribution of how pension pots are first accessed at retirement.
+In 2021, 196,736 pots were fully withdrawn at retirement, accounting for over 50\% of pots, prior to the policy
+reform this was not the case and most defined contribution pensions were accessed through annuities.
 
 
-\section{Methodology}
+\begin{figure}[h]
+  \caption{Pension pots accessed}
+  \centering
+  \includegraphics[width=0.7\columnwidth]{figures/annuity_overtime.pdf}
+  \label{fig:annovertime}
+\end{figure}
 
-I first solve a modified retirement lifecycle model. The problem that retirees face is as follows. 
+\begin{figure}[h]
+  \caption{How pension pots are accessed}
+  \centering
+  \includegraphics[width=0.7\columnwidth]{figures/annuity_pot_sizes.pdf}
+  \label{fig:ann2122}
+\end{figure}
+
+
+\subsection{Covariate Balance}
+
+I regress demographic and financial characteristics of individuals on year of birth and the treatment dummy.
+We can then see if the treatment groups differ on key characteristics such as financial wealth or retirement age.
+For a regression discontinuity to be valid we need the treatment and control groups to be similar along
+all other characteristics apart from the treatment variable.
+
+In particular I run:
+\begin{equation*}
+  Y_{i} = \alpha + \beta Post_{i} + \gamma YOB + \kappa (Post_{i} \times YOB_{i}) + \epsilon_{i}
+\end{equation*}
+
+\input{tables/cov_balance.tex}
+Table \ref{tab:cov_balance} shows these results. We can see ...
+
+
+Another threat to validity is manipulation of the running variable. This is probably quite a threat in our case
+as individuals could delay retirement and/or the purchase of an annuity.
+
+
+\section{Methodology and Econometric Strategy}
+
+I first solve a modified retirement lifecycle model. The problem that retirees face is as follows.
 Every period retirees solve:
 \begin{equation*}
   V_{t}(a_{t}, y) = \underset{a_{t+1}, c_{t}}{\max} \{ u(c_{t}) + p_{t}B(a_{t+1}) + \beta(1-p_{t})V_{t+1}(a_{t+1}, y) \}
 \end{equation*}
 subject to their budget constraint
 \begin{equation*}
-  c_{t} =a_{t}(1 +r) -  a_{t+1} + y
+  c_{t} =a_{
+  t}(1 +r) -  a_{t+1} + y
 \end{equation*}
 where $a_{t}$ are asset holdings in time t, $y$ is constant income for all periods and . Income can come either
 from state pensions, defined benefit pension plans or purchased annuities.
@@ -147,7 +222,7 @@ from state pensions, defined benefit pension plans or purchased annuities.
 Where $b_{t}$ is the amount left at death, $m$ is a measure of bequest motive strength and $c_{0}$ is
 a minimum amount of consumption that individuals want. \textbf{Check this}
 
-First, I discretise the state space. I create a grid from 500 to 50,000 incrementing by 500 for income and 1000 to 
+First, I discretise the state space. I create a grid from 500 to 50,000 incrementing by 500 for income and 1000 to
 500,000 incrementing by 1000 for financial assets. I solve the retirees problem using backward induction. At age 110 there is certainty of death so any leftover assets
 are carried over into the next period and bequested. This means that the value at the end of the final period is
 either 0 (if we do not allow a bequest motive) or the value of bequests. I then take this value function and solve
@@ -163,17 +238,17 @@ objective probability of death each period. I estimate with subjective life expe
 I also estimate the model both with and without a bequest motive which was picked to fit the unforced real annuity
 rates seen in the data. I then estimate several empirical models with the simulated data.
 
-In retirees first year of retirement I allow them to choose to annuitise some of their wealth. In practical terms 
-this is moving down the asset grid but up the income grid and seeing if the value of being in that position is better 
-than where the individual is currently. To calculate this trade-off I calculate the annual annuity payment that follows 
+In retirees first year of retirement I allow them to choose to annuitise some of their wealth. In practical terms
+this is moving down the asset grid but up the income grid and seeing if the value of being in that position is better
+than where the individual is currently. To calculate this trade-off I calculate the annual annuity payment that follows
 from a given annuity cost. I calculate this using objective life tables from the ONS using the following equation:
 
 \begin{equation*}
- Ann = \delta * C * \biggl[\sum_{t = Retage}^{110}\frac{1 - p_{t|Retage}}{(1 + r)^{t - Retage}}\biggr]^{-1}
+  Ann = \delta * C * \biggl[\sum_{t = Retage}^{110}\frac{1 - p_{t|Retage}}{(1 + r)^{t - Retage}}\biggr]^{-1}
 \end{equation*}
 
-Where $C$ is the one-off payment, $\delta$ is a factor that controls the 'money's worth' of annuity and $p_{t|Retage}$ 
-is the probability of death at age $t$ conditional on being age $Retage$. So individuals can move C on the asset grid 
+Where $C$ is the one-off payment, $\delta$ is a factor that controls the 'money's worth' of annuity and $p_{t|Retage}$
+is the probability of death at age $t$ conditional on being age $Retage$. So individuals can move C on the asset grid
 for gaining Ann on the income grid for the rest of their lives.
 
 \section{Empirical models}
@@ -192,12 +267,12 @@ some of whom in fact complained that they had not been consulted enough. \textbf
 Retirement year is the running variable and individuals are treated if retirement year is greater than 2013 and less than 2016.
 I consumption of individuals up to 2 years into retirement so that the sample size is larger. So if someone retired in 2014 and
 had consumption data in 2014 and 2016 I include both values. An individual is considered not treated if they retire before 2013 and after 2011.
-One benefit of using ELSA is that it includes data on pension type for individuals who are working. Therefore, I can differentiate 
+One benefit of using ELSA is that it includes data on pension type for individuals who are working. Therefore, I can differentiate
 between individuals who have a defined contribution pension and those who have a defined benefit contribution. To account for the fact
-that the reform only impacted individuals who had accumulated defined contribution pension pots I interact the treatment dummy with 
-an indicator variable signalling whether the individual had ever held a DC pension pot. 
+that the reform only impacted individuals who had accumulated defined contribution pension pots I interact the treatment dummy with
+an indicator variable signalling whether the individual had ever held a DC pension pot.
 
-The estimating equation is therefore 
+The estimating equation is therefore
 
 \begin{equation*}
   Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
@@ -205,7 +280,11 @@ The estimating equation is therefore
 
 And $X_{it}$ is a set of controls including financial wealth etc
 
-The ta
+I also run the regression with a variety of consumption variables.
+
+I also simulate the expected change in consumption given forced annuitisation and no annuitisation.
+The benefit of simulating an individuals decision is that we can directly compare what they would have
+consumed with what they actually consumed.
 
 \subsection{Rough plan}
 \begin{itemize}

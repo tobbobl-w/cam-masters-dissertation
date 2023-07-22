@@ -14,13 +14,23 @@ reg_data <- fread(
     "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
 )
 
+
 dt_for_julia <- reg_data[, .(id_wave,
     gender = ragender, age = age_at_interview,
     public_pension,
     ever_dc_pen, ever_db_pen,
     year = date_year, 
-    fin_wealth
+    fin_wealth, 
+    dc_pot
 )]
+
+dt_for_julia[, sum(dc_pot > fin_wealth, na.rm = T)]
+
+dt_for_julia[dc_pot > fin_wealth]
+dt_for_julia[fin_wealth > dc_pot ]
+
+
+nrow(dt_for_julia)
 
 dt_for_julia[, gender := fcase(
     gender == 1, "male",
@@ -47,6 +57,9 @@ fwrite(
     dt_for_julia,
     "../../data/ELSA/elsa_to_use/for_julia.csv"
 )
+
+# we also want to add any other source of income
+# higher the income the less likely annuitisation
 
 
 

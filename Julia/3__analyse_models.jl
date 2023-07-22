@@ -93,12 +93,6 @@ RetrieveValueFunction(false, "objective", 60, 2011, "male")[40, 200, 1] # withou
 idwave_df = idwave_df[Bool.(.!ismissing.(idwave_df.fin_wealth)) .& Bool.(.!ismissing.(idwave_df.public_pension)), :]
 
 
-
-# Find point on grid.  
-idwave_df.wealth_grid_point = FindClosestGridPoint.(idwave_df.fin_wealth, 1000)
-idwave_df.pension_grid_point = FindClosestGridPoint.(idwave_df.public_pension, 500)
-
-
 # so we want gender age year and grid points
 # take these and predict how many people annuitise for different levels of loading factor
 

@@ -88,6 +88,8 @@ harm_long <- melt(
     variable.name = "wave"
 )
 
+harm_long[, int_month_date := lubridate::dmy(paste0("01-", date_month, "-", date_year))]
+
 fwrite(harm_long, "../../data/ELSA/elsa_to_use/harmonised_data_long.csv")
 
 stop()

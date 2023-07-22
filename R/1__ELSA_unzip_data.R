@@ -1,16 +1,6 @@
 # This script will unzip the elsa zip file
+# All the other scripts should work after it.
 
-library(data.table)
-library(dplyr)
-library(stringr)
-
-install.packages("stringr")
-
-
-
-# I don't think there is consumption data but there is income data
-# there must be consumption data
-# And there is pension data and hopefully annuity data as well
 if (!dir.exists("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/")) {
     readLines("Do you want to unzip the ELSA files")
     unzip(

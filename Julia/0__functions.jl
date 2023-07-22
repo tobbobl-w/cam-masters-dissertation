@@ -178,7 +178,7 @@ function AssetPathFunction(opt_policy_function, asset_start_point, income_grid_p
 
     # set intial assets
     asset_path[1] = asset_start_point
-    
+
     # Get optimal asset paths from optimal policy matrix
     for age in 1:(number_years)
         asset_path[age+1] = opt_policy_function[:, age][asset_path[age]]
@@ -291,11 +291,11 @@ function FindClosestGridPoint(x, grid_gap, num_grid_point)
     # Assume for now that no one actually is at 0
     if grid_point > 0
         return grid_point
-        
+
         # Also stop individuals considering points outside of the grid
     elseif grid_point > num_grid_point
         num_grid_point
-    else 
+    else
         return 1
     end
 end
