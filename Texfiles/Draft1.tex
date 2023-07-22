@@ -5,6 +5,14 @@
 \usepackage[authoryear]{natbib}
 \usepackage{enumerate}
 \usepackage{booktabs}
+\usepackage{siunitx}
+\newcolumntype{d}{S[
+      input-open-uncertainty=,
+      input-close-uncertainty=,
+      parse-numbers = false,
+      table-align-text-pre=false,
+      table-align-text-post=false
+    ]}
 \usepackage{pdflscape}
 \setlength{\parindent}{0pt}
 \usepackage[parfill]{parskip}
@@ -97,9 +105,9 @@ up until wave 5 at which point I use a real return of 3\% to predict forward the
 ELSA also includes a measure of all non-housing financial wealth which I use in some specifications because of these issues with
 pension wealth. Because of slight differences between years in some of the ELSA questions I use 'Harmonized ELSA'
 \footnote{"This analysis uses data or information from the Harmonized ELSA dataset and Codebook, Version G.2 as of
-  July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
-  Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
-  please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
+    July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
+    Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
+    please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
 subset of the questions in ELSA I also supplement it with variables taken directly from the data such as questions that deal
 with life expectancy.
 
@@ -161,10 +169,10 @@ either they are withdrawn at once or they are left alone.
 
 
 \begin{figure}[h]
-  \caption{Pension pots accessed}
-  \centering
-  \includegraphics[width=0.7\columnwidth]{figures/annuity_overtime.pdf}
-  \label{fig:annovertime}
+    \caption{Pension pots accessed}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{figures/annuity_overtime.pdf}
+    \label{fig:annovertime}
 \end{figure}
 
 
@@ -175,10 +183,10 @@ reform this was not the case and most defined contribution pensions were accesse
 
 
 \begin{figure}[h]
-  \caption{How pension pots are accessed}
-  \centering
-  \includegraphics[width=0.7\columnwidth]{figures/annuity_pot_sizes.pdf}
-  \label{fig:ann2122}
+    \caption{How pension pots are accessed}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{figures/annuity_pot_sizes.pdf}
+    \label{fig:ann2122}
 \end{figure}
 
 Also of specific interest to the annuity market was the European Union's
@@ -221,7 +229,7 @@ them to live. \textbf{Maybe add in prob of survival to age 85 or 90 or something
 
 Unfortunately, some consumption data is missing for some individuals. The food categories have the least missing data
 and the leisure consumption category has the most missing data. \textbf{Check why total consumption adds up to so much
-  more than all the categories added together? Do they include rent and housing in consumption?}
+    more than all the categories added together? Do they include rent and housing in consumption?}
 
 
 Overall, the groups do appear to be slightly different with the treatment group being richer and slightly more likely
@@ -234,7 +242,7 @@ have not on-mass decided to delay retirement and avoid annuitisation.
 
 \begin{landscape}
 
-  \input{tables/r_summary_stats.tex}
+    \input{tables/r_summary_stats.tex}
 
 \end{landscape}
 
@@ -246,7 +254,7 @@ all other characteristics apart from the treatment variable.
 
 In particular I run:
 \begin{equation*}
-  Y_{i} = \alpha + \beta Post_{i} + \gamma YOB_{i} + \kappa (Post_{i} \times YOB_{i}) + \epsilon_{i}
+    Y_{i} = \alpha + \beta Post_{i} + \gamma YOB_{i} + \kappa (Post_{i} \times YOB_{i}) + \epsilon_{i}
 \end{equation*}
 
 
@@ -279,7 +287,6 @@ and sudden decline in annuity purchases. Moreover, anecdotal evidence from media
 announcement were all surprised by the policy changes, with some financial planners even complaining that they had not been
 briefed.
 
-
 Retirement year is the running variable and individuals are treated if retirement year is greater than 2014 and less than
 or equal to 2017. I use consumption data of individuals up to 2 years into retirement so that the sample size is larger.
 So if someone retired in 2015 and had consumption data in 2015 and 2017 I include both values. An individual is considered
@@ -291,35 +298,70 @@ Because of the differences in financial characteristics between the groups I add
 and whether an individual owns their own home. I also run regression discontintuity with s
 
 \begin{equation*}
-  Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
+    Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
 \end{equation*}
 
 And $X_{it}$ is a set of controls.
 
 
 
+\begin{landscape}
+    \input{tables/elsa_results_only_dc.tex}
+\end{landscape}
 
 
-\section{Methodology and Econometric Strategy}
+Table \ref{tab:DcOnlyRes} shows the results of this specification on the various consumption indicators.
+Column one has total monthly consumption as variable on the left hand side of the regression equation.
+We can see that being in the treatment group is associated with £83 more a week in spending
+overall across all categories of expenditure. This is not statistically significant using
+robust standard errors (find a reference for the SE that I use). Being older at the time of interview
+is also associated with lower consumption whilst those who retired later have lower consumption
+because years since the start of retirement is associated with higher total consumption.
 
-I first solve a modified retirement lifecycle model. The problem that retirees face is as follows.
+Columns 2 through 4 use food consumption as the outcome variable. Interestingly food consumption
+in the house does not increase as a result of the policy reform but food out side the house does
+increase. If individuals see their pension pot, that they previously could not access, as a
+shock to their wealth, like winning the lottery, then we would the consumption basket to
+include more goods that are perceived as luxuries. Likewise, consumption on clothing, shown in
+column 4 increases as a result of the policy change.
+
+I now run another specification which seeks to control for some of the cohort effect that
+could be driving these results instead. As the financial characteristics in \ref{tab:sum_stats}
+show, the treatment group has higher levels of wealth than the untreated group. To test
+for cohort effects I add individuals who have a defined benefit pension pot into the model
+and interact the policy change with a dummy for having a defined contribution pension pot.
+This makes the coefficient of interest the interacted term, which shows us the difference
+in the change in consumption between the DB and DC group. Since rules for defined benefit
+pensions did not change under the pensions freedom act, this group can be seen as a natural counterfactual
+group to judge the consumption of the defined contribution group against.
+
+
+
+
+
+\section{Life cycle theory}
+
+In the second part of the paper I first solve a modified retirement lifecycle model and then use data from the solved lifecycle
+model
+lifecycle consumption
+. The problem that retirees face is as follows.
 Every period retirees solve:
 \begin{equation*}
-  V_{t}(a_{t}, y) = \underset{a_{t+1}, c_{t}}{\max} \{ u(c_{t}) + p_{t}B(a_{t+1}) + \beta(1-p_{t})V_{t+1}(a_{t+1}, y) \}
+    V_{t}(a_{t}, y) = \underset{a_{t+1}, c_{t}}{\max} \{ u(c_{t}) + p_{t}B(a_{t+1}) + \beta(1-p_{t})V_{t+1}(a_{t+1}, y) \}
 \end{equation*}
 subject to their budget constraint
 \begin{equation*}
-  c_{t} =a_{
-  t}(1 +r) -  a_{t+1} + y
+    c_{t} =a_{
+    t}(1 +r) -  a_{t+1} + y
 \end{equation*}
 where $a_{t}$ are asset holdings in time t, $y$ is constant income for all periods and . Income can come either
 from state pensions, defined benefit pension plans or purchased annuities.
 \begin{equation*}
-  u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
+    u(c_{t}) = \frac{c_{t}^{1 - \sigma}}{1 - \sigma}
 \end{equation*} In some specifications retirees can leave bequests, I use the bequest function from
 \cite{lockwood_red_2012}.
 \begin{equation*}
-  B(a_{t}) = \bigl( \frac{m}{1 - m} \bigr)^{\sigma}  \frac{(\frac{m}{1 - m}c_{0} + a_{t})^{(1 - \sigma)}}{1 - \sigma}
+    B(a_{t}) = \bigl( \frac{m}{1 - m} \bigr)^{\sigma}  \frac{(\frac{m}{1 - m}c_{0} + a_{t})^{(1 - \sigma)}}{1 - \sigma}
 \end{equation*}
 Where $b_{t}$ is the amount left at death, $m$ is a measure of bequest motive strength and $c_{0}$ is
 a minimum amount of consumption that individuals want. \textbf{Check this}
@@ -346,7 +388,7 @@ than where the individual is currently. To calculate this trade-off I calculate 
 from a given annuity cost. I calculate this using objective life tables from the ONS using the following equation:
 
 \begin{equation*}
-  Ann = \delta * C * \biggl[\sum_{t = Retage}^{110}\frac{1 - p_{t|Retage}}{(1 + r)^{t - Retage}}\biggr]^{-1}
+    Ann = \delta * C * \biggl[\sum_{t = Retage}^{110}\frac{1 - p_{t|Retage}}{(1 + r)^{t - Retage}}\biggr]^{-1}
 \end{equation*}
 
 Where $C$ is the one-off payment, $\delta$ is a factor that controls the 'money's worth' of annuity and $p_{t|Retage}$
@@ -361,29 +403,29 @@ consumed with what they actually consumed.
 
 \subsection{Rough plan}
 \begin{itemize}
-  \item Intro
-        \begin{enumerate}
-          \item I think Eric French wrote something about population that I could use in then intro to say why it is important.
-          \item "Latest data from HM Revenue Customs (published in April) showed more than £45bn has been taken from pots since 2015."
-                https://www.ftadviser.com/pensions/2022/02/08/pension-freedoms-were-they-really-a-good-idea/
+    \item Intro
+          \begin{enumerate}
+              \item I think Eric French wrote something about population that I could use in then intro to say why it is important.
+              \item "Latest data from HM Revenue Customs (published in April) showed more than £45bn has been taken from pots since 2015."
+                    https://www.ftadviser.com/pensions/2022/02/08/pension-freedoms-were-they-really-a-good-idea/
 
 
-          \item Add bit about DC/DB pensions in the intro. Also talk about heterogeneity across countries.
-                Some countries want to move towards more annuitisation. This annual review is a good source of info
-                \cite{banks_crawford_ar_2022}
-          \item https://www.moneysavingexpert.com/savings/pension-freedom/
-        \end{enumerate}
-  \item Lit review
-  \item Models
-  \item Empirical
-        \begin{enumerate}
-          \item Diff in diff
-          \item RDD
-          \item Matching?
-          \item can I use anything I learnt in panel?
-                In some sense the decision to annuitise is a discrete choice problem so I could use something from there.
-        \end{enumerate}
-  \item Conclusion
+              \item Add bit about DC/DB pensions in the intro. Also talk about heterogeneity across countries.
+                    Some countries want to move towards more annuitisation. This annual review is a good source of info
+                    \cite{banks_crawford_ar_2022}
+              \item https://www.moneysavingexpert.com/savings/pension-freedom/
+          \end{enumerate}
+    \item Lit review
+    \item Models
+    \item Empirical
+          \begin{enumerate}
+              \item Diff in diff
+              \item RDD
+              \item Matching?
+              \item can I use anything I learnt in panel?
+                    In some sense the decision to annuitise is a discrete choice problem so I could use something from there.
+          \end{enumerate}
+    \item Conclusion
 \end{itemize}
 
 
