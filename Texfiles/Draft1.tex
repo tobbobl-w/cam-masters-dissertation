@@ -5,6 +5,7 @@
 \usepackage[authoryear]{natbib}
 \usepackage{enumerate}
 \usepackage{booktabs}
+\usepackage{pdflscape}
 \setlength{\parindent}{0pt}
 \usepackage[parfill]{parskip}
 \date{Lent 2023}
@@ -89,26 +90,26 @@ as how much individuals actually bequest and how rich individuals are when they 
 
 The main data set I use is the English Longitudinal Study of Ageing (ELSA) \cite{main_elsa_citation}. ELSA repeatedly interviews
 individuals over the age of 50 and asks them a range of questions relating to their income and wealth as well as expectations about
-the future. Importantly it also includes detailed information pensions including the type of pension that an individual holds when
-working, thus I am able to distinguish between individuals who have defined benefit and defined contribution pensions. For ease of access
-I use Harmonized ELSA \footnote{"This analysis uses data or information from the Harmonized ELSA dataset and Codebook, Version G.2 as of
+the future. One benefit of using ELSA is that it includes data on pension type for individuals who are working. Therefore,
+I can differentiate between individuals who have a defined contribution pension and those who have a defined benefit contribution.
+Importantly it also includes information on pension size that the Institute for Fiscal Studies calculated, this is only available
+up until wave 5 at which point I use a real return of 3\% to predict forward the pension wealth variable until retirement.
+ELSA also includes a measure of all non-housing financial wealth which I use in some specifications because of these issues with
+pension wealth. Because of slight differences between years in some of the ELSA questions I use 'Harmonized ELSA'
+\footnote{"This analysis uses data or information from the Harmonized ELSA dataset and Codebook, Version G.2 as of
   July 2021 developed by the Gateway to Global Aging Data. The development of the Harmonized ELSA was funded by the National
   Institute on Aging (R01 AG030153, RC2 AG036619, R03 AG043052). For more information,
   please refer to https://g2aging.org/.”} which ensures that variables are comparable across waves. Since this only includes a
-subset of the questions in ELSA I also supplement it with variables taken directly from the data.
+subset of the questions in ELSA I also supplement it with variables taken directly from the data such as questions that deal
+with life expectancy.
 
-ELSA also includes questions on expenditures. In particular individuals are asked how much they consume on a range of broad categories.
-
-
-% Include a summary stats table here of the individuals selected for the regression
-
-
+ELSA also includes questions on expenditures. In particular individuals are asked how much they consume on a range of broad
+categories including in-house food consumption, out-of-house food consumption, leisure consumption, clothes consumption and
+consumption on utility bills and rent. I use also use two questions on life expectancy that I discuss in more detail below.
 
 I also use life tables from the UK's Office for National Statistics. These give us risk of death for each age group. I adjust them
 to make death certain at age 110 as is common in the literature. I transform these so that I have risk of death conditional on being
 a given age since this is what is used in the life cycle simulations.
-%  include a table showing death probs 
-
 
 
 To illustrate the effect the reform had on sales of annuities in the UK I obtained product data from the Financial Conduct Authority.
@@ -127,17 +128,16 @@ three points to a Weibull distribution using non-linear least squares. Then I cr
 
 \textbf{I could go into more detail here? Maybe I should. Add equation etc}
 
-\input{tables/r_summary_stats.tex}
 
 \subsection{Policy reform}
 
-\textbf{Add some other background to pensions in the UK. What does the Blundell etc have
-  to say}
-
 Successive governments in the UK have attempted to reform both the public and private pension system. Prior
 to 1987 participation in private schemes was limited to employees of firms that had offered one, and there
-were few alternatives to the public state pension or a define benefit scheme that a public sector employee
-would offer. \textbf{Were there pension reforms in 1990s and 00s}
+were few alternatives to the public state pension or defined benefit scheme that a public sector employee
+would offer. From 1989, individuals in the UK were allowed to open tax advantaged self-invested personal pensions
+alongside any pension their employer offered. The largest reform prior to 2014 came in the 2004 Finance Act which
+rationalised taxation rates on different types of pensions. However, defined contribution pension pots could still
+only be used to buy an annuity after taking out a maximum of 25\% as a tax free lump sum withdrawal.
 
 Announced in the Spring budge of 2014, the so called "pensions freedom act" received Royal Asset in December 2014 marked the end of a series
 of pension reforms carried out by the coalition government between 2010 and 2015. The reform was announced
@@ -158,9 +158,6 @@ in purchases that happened from 2014 to 2015. Likewise there was an increase in 
 being accessed using an income drawdown product, but these do not fully account for the drop in annuitisation. So,
 either they are withdrawn at once or they are left alone.
 
-Figure \ref{fig:ann2122} shows the current distribution of how pension pots are first accessed at retirement.
-In 2021, 196,736 pots were fully withdrawn at retirement, accounting for over 50\% of pots, prior to the policy
-reform this was not the case and most defined contribution pensions were accessed through annuities.
 
 
 \begin{figure}[h]
@@ -170,6 +167,13 @@ reform this was not the case and most defined contribution pensions were accesse
   \label{fig:annovertime}
 \end{figure}
 
+
+Figure \ref{fig:ann2122} shows the current distribution of how pension pots are first accessed at retirement.
+In 2021, 196,736 pots were fully withdrawn at retirement, accounting for over 50\% of pots, prior to the policy
+reform this was not the case and most defined contribution pensions were accessed through annuities.
+
+
+
 \begin{figure}[h]
   \caption{How pension pots are accessed}
   \centering
@@ -177,25 +181,123 @@ reform this was not the case and most defined contribution pensions were accesse
   \label{fig:ann2122}
 \end{figure}
 
+Also of specific interest to the annuity market was the European Union's
+'Equal Treatment in Goods and Services Directive' of 2004. This prohibited discrimination
+in the provision and cost of good and services based on sex. Up until 2011 there was a clause that
+stated insurers were allowed to charge different premiums if it was based on evidence that sex is
+correlated with different amounts of risk. However, in March 2011 the European Court of Justice
+ruled that insurers were not allowed to charge different amounts and gave them until December 2012
+to implement the ruling. This change meant that annuity products could no longer be priced differently
+for men and women in the UK. However, given this change was implemented two years before the pension
+freedoms act, I can still identify the impact of the pensions freedom act on early retirement consumption.
 
 \subsection{Covariate Balance}
 
-I regress demographic and financial characteristics of individuals on year of birth and the treatment dummy.
+Table \ref{tab:sum_stats} shows various summary statistics for each variable of interest from ELSA and the ONS.
+First note that the second retirement group is small with just 728 non missing observations for gender as opposed
+to 941 individuals in the control group. The control group are less female, retired at a slightly younger age and expected to
+retire slightly earlier. This could be because this period was affected by the increase in the state pension age for
+women from age 60 in 2010 to age 65 in 2018. Since this change happened gradually and occured over the whole period
+I do not expect it to influence the results. The DifferenceAge row tracks the difference between expected and actual
+pension age.
+
+As required, retirement year is between 2011 and 2013 for the treatment group and 2015 and 2017 for the control group.
+However, as discussed above their interview date is after or the same as the retirement year because we are tracking
+consumption in retirement.
+
+The treatment group has higher financial wealth with a median of £65,000 at time of interview as opposed to £55,000
+in the control group. Likewise, the second group are more likely to have held at defined contribution pension at some point
+and have much more money in them. Both groups are equally likely to have a defined benefit pension with roughly 44\% of
+individuals across both samples having a defined benefit pension. Individuals are much more likely to have a DB pension
+than a DC pension which reflects the fact that retirees now are still more likely to have a DB pension although the number
+with DC pensions are growing. Home ownership is roughly equal across groups although the second group have slightly more
+housing wealth.
+
+Both groups are objectively similarly long-lived according when using ONS life tables to calculate life expectancy
+based on gender, age and the year the interview was carried out in. Subjective life expectancies are also similar
+across groups, with individuals expecting to live another 21 years as opposed to the 24 that the ONS would expect
+them to live. \textbf{Maybe add in prob of survival to age 85 or 90 or something}
+\textbf{Also add in an indicator for living alone or living with someone else}
+
+Unfortunately, some consumption data is missing for some individuals. The food categories have the least missing data
+and the leisure consumption category has the most missing data. \textbf{Check why total consumption adds up to so much
+  more than all the categories added together? Do they include rent and housing in consumption?}
+
+
+Overall, the groups do appear to be slightly different with the treatment group being richer and slightly more likely
+to have DC pension wealth. On key demographic characteristics though the groups are similar, the difference in retirement
+age between the two groups can be mostly explained by the difference in expected retirement age meaning that individuals
+have not on-mass decided to delay retirement and avoid annuitisation.
+
+
+
+
+\begin{landscape}
+
+  \input{tables/r_summary_stats.tex}
+
+\end{landscape}
+
+
+As a further test for balance I regress demographic and financial characteristics of individuals on year of birth and the treatment dummy.
 We can then see if the treatment groups differ on key characteristics such as financial wealth or retirement age.
 For a regression discontinuity to be valid we need the treatment and control groups to be similar along
 all other characteristics apart from the treatment variable.
 
 In particular I run:
 \begin{equation*}
-  Y_{i} = \alpha + \beta Post_{i} + \gamma YOB + \kappa (Post_{i} \times YOB_{i}) + \epsilon_{i}
+  Y_{i} = \alpha + \beta Post_{i} + \gamma YOB_{i} + \kappa (Post_{i} \times YOB_{i}) + \epsilon_{i}
 \end{equation*}
 
+
 \input{tables/cov_balance.tex}
-Table \ref{tab:cov_balance} shows these results. We can see ...
+Table \ref{tab:cov_balance} shows these results. We can see that being in the treatment group, con
 
 
-Another threat to validity is manipulation of the running variable. This is probably quite a threat in our case
-as individuals could delay retirement and/or the purchase of an annuity.
+A key threat to validity is manipulation of the running variable. This is probably quite a threat in our case
+as individuals could delay retirement and/or the purchase of an annuity until after the reform. To check whether
+this is occuring we see whether the difference between real retirement age and the first expected retirement age
+recorded in the data are different for those retiring before 2014 compared to those retiring after 2014. As shown
+above in Table \ref{tab:sum_stats} this not the case. However, since we do not have data on the exact purchase
+date of the annuity we cannot track whether annuity purchases were delayed because of this. However, we do still
+relatively stable annuity demand before the policy reform. If individuals delayed annuity purchases in expectation
+of the reform we would see steady declines in purchases before the reform was announced.
+
+
+\section{Empirical models}
+
+In this section I outline the key empirical models I run with both the simulated consumption data from the
+lifecycle models and with the real data from ELSA. I then see which lifecycle model better fits the consumption
+response that happened as a result of the pension reform.
+
+I use a regression discontinuity design where I compare the consumption of recent retirees after the policy reform
+to recent retirees before the policy reform. The key assumption implicit in regression discontinuities is
+that nothing else changes at the time of the jump apart from the policy of interest. And that the policy occurs
+without individuals predicting it and changing their behaviour. As I have argued above the demographic information in the
+data suggest that individuals did not delay retirement and that there was no delay in annuitisation as shown by the quick
+and sudden decline in annuity purchases. Moreover, anecdotal evidence from media and business sources at the time of the
+announcement were all surprised by the policy changes, with some financial planners even complaining that they had not been
+briefed.
+
+
+Retirement year is the running variable and individuals are treated if retirement year is greater than 2014 and less than
+or equal to 2017. I use consumption data of individuals up to 2 years into retirement so that the sample size is larger.
+So if someone retired in 2015 and had consumption data in 2015 and 2017 I include both values. An individual is considered
+not treated if they retire before 2013 and after 2011.  To account for the fact
+that the reform only impacted individuals who had accumulated defined contribution pension pots I interact the treatment dummy with
+an indicator variable signalling whether the individual had ever held a DC pension pot.
+
+Because of the differences in financial characteristics between the groups I add controls for financial wealth, housing wealth
+and whether an individual owns their own home. I also run regression discontintuity with s
+
+\begin{equation*}
+  Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
+\end{equation*}
+
+And $X_{it}$ is a set of controls.
+
+
+
 
 
 \section{Methodology and Econometric Strategy}
@@ -251,36 +353,7 @@ Where $C$ is the one-off payment, $\delta$ is a factor that controls the 'money'
 is the probability of death at age $t$ conditional on being age $Retage$. So individuals can move C on the asset grid
 for gaining Ann on the income grid for the rest of their lives.
 
-\section{Empirical models}
 
-In this section I outline the key empirical models I run with both the simulated consumption data from the
-lifecycle models and with the real data from ELSA. I then see which lifecycle model better fits the consumption
-response that happened as a result of the pension reform.
-
-I use a regression discontinuity design where I compare the consumption of recent retirees after the policy reform
-to recent retirees before the policy reform. The individuals who retired in 2014 and later were not forced to
-annuitise their defined contribution pension. The key assumption implicit in regression discontinuities is
-that nothing else changes at the time of the jump apart from the policy of interest. And that the policy occurs
-without individuals predicting it. The policy change was widely seen as a surprise by the media and financial planners,
-some of whom in fact complained that they had not been consulted enough. \textbf{How can I justify no other jumps at the jump}
-
-Retirement year is the running variable and individuals are treated if retirement year is greater than 2013 and less than 2016.
-I consumption of individuals up to 2 years into retirement so that the sample size is larger. So if someone retired in 2014 and
-had consumption data in 2014 and 2016 I include both values. An individual is considered not treated if they retire before 2013 and after 2011.
-One benefit of using ELSA is that it includes data on pension type for individuals who are working. Therefore, I can differentiate
-between individuals who have a defined contribution pension and those who have a defined benefit contribution. To account for the fact
-that the reform only impacted individuals who had accumulated defined contribution pension pots I interact the treatment dummy with
-an indicator variable signalling whether the individual had ever held a DC pension pot.
-
-The estimating equation is therefore
-
-\begin{equation*}
-  Cons_{it} =  \gamma X_{it} + \beta PostReformDC_{it} + \epsilon
-\end{equation*}
-
-And $X_{it}$ is a set of controls including financial wealth etc
-
-I also run the regression with a variety of consumption variables.
 
 I also simulate the expected change in consumption given forced annuitisation and no annuitisation.
 The benefit of simulating an individuals decision is that we can directly compare what they would have
@@ -298,6 +371,7 @@ consumed with what they actually consumed.
           \item Add bit about DC/DB pensions in the intro. Also talk about heterogeneity across countries.
                 Some countries want to move towards more annuitisation. This annual review is a good source of info
                 \cite{banks_crawford_ar_2022}
+          \item https://www.moneysavingexpert.com/savings/pension-freedom/
         \end{enumerate}
   \item Lit review
   \item Models

@@ -6,7 +6,7 @@ data_for_regressions <- fread(
     "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
 )
 
-# #
+
 # #### Plot consumption
 # consump_time_in <- harm_long[ret_in == TRUE,
 #     .(mean_consump = mean(total_monthly_consumption, na.rm = T)),

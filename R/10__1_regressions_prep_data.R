@@ -10,33 +10,54 @@ library(ggplot2)
 
 
 # small things
-# 1. consumption data
-# 2. interview age
-# 3. interview year
-# 3. expected retirement age
-# 4. couple or single
+# 1. couple or single
+
+Policy_year <- 2014
 
 
-pension_wealth <- fread(
+# ------- Pension wealth data --------------
+pension_wealth_dt <- fread(
     "../../data/ELSA/elsa_to_use/elsa_dc_pen_wealth_predictions.csv"
 )
-setnames(pension_wealth, "year", "int_year")
 
-class(pension_wealth$dc_pot)
+# ------- Life expectancy data -----------
+obj_life_exps_dt <- fread("../../data/ONS/objective_life_expectancies.csv")[, gender := fcase(
+    gender == "Males", "male",
+    gender == "Females", "female"
+)]
 
+sub_life_exps_dt <- fread("../../data/ELSA/subjective_tables/subjective_life_expectancies.csv")
+
+
+# ---------- ELSA data -----------
 harm_long <- fread(
     "../../data/ELSA/elsa_to_use/harmonised_data_long.csv"
 )[in_wave == 1]
 
 harm_long[, int_year := year(int_month_date)]
+harm_long[, birth_year := int_year - age_at_interview]
+harm_long[, id_wave := paste0(idauniq, "-", wave)]
+harm_long[, gender := fcase(
+    ragender == 1, "male",
+    ragender == 2, "female"
+)]
 
-harm_long <- merge.data.table(
-    harm_long,
-    pension_wealth,
-    by = c("idauniq", "int_year"),
-    all.x = TRUE,
-    all.y = FALSE
-)
+harm_long[pension_wealth_dt, dc_pot := dc_pot, on = c("idauniq", "int_year" = "year")]
+
+harm_long[obj_life_exps_dt, obj_life_exps := life_exp,
+    on = c("age_at_interview" = "age", "gender", "birth_year")
+]
+
+harm_long[sub_life_exps_dt, sub_life_exps := subjective_life_exp,
+    on = c("id_wave")
+]
+
+summary(harm_long$sub_life_exps, na.rm = T)
+mean(is.na(harm_long$sub_life_exps))
+
+harm_long %>%
+    filter(is.na(obj_life_exps)) %>%
+    select(age_at_interview, gender, birth_year)
 
 harm_long[, dc_pot := as.numeric(dc_pot)]
 
@@ -47,13 +68,15 @@ harm_long[, ":="(
 by = .(idauniq)
 ]
 
-
 harm_long[, retirement_year := rabyear + retired_age]
 
 # Set to treatment or control. I.e. in years prior to reform or years before
+years_after <- seq.int(Policy_year + 1, Policy_year + 3)
+years_before <- seq.int(Policy_year - 1, Policy_year - 3)
+
 harm_long[, pre_post_ref := case_when(
-    retirement_year %in% c(2013, 2012, 2011) ~ "control",
-    retirement_year %in% c(2015, 2016, 2017) ~ "treat"
+    retirement_year %in% years_before ~ "control",
+    retirement_year %in% years_after ~ "treat"
 )]
 table(harm_long$pre_post_ref)
 
@@ -132,6 +155,17 @@ stopifnot(all(data_for_regressions$ragender %in% c(0, 1)))
 data_for_regressions[, ever_dc_pen_bin := ever_dc_pen == "yes"]
 data_for_regressions[, ever_db_pen_bin := ever_db_pen == "yes"]
 data_for_regressions[, exp_real_ret_age := first_exp_ret_age - retired_age]
+
+
+hist(data_for_regressions$monthly_leisure)
+
+
+# Filtering data
+data_for_regressions <- data_for_regressions[monthly_leisure < 1000 | is.na(monthly_leisure)] # 3 rows
+data_for_regressions <- data_for_regressions[monthly_food_in < 500 | is.na(monthly_food_in)] # 4 rows
+data_for_regressions <- data_for_regressions[monthly_utility < 800 | is.na(monthly_utility)] # 1 row
+
+table(data_for_regressions$pre_post_ref)
 
 
 

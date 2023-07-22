@@ -47,14 +47,6 @@ check_files_for_variable_name("eida")
 check_files_for_variable_name("exlo")
 # life expec
 
-search_names(
-    fread(
-        "../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_6_elsa_data_v2.tab",
-        nrows = 1
-    ),
-    "exlo",
-    ignore.case = TRUE
-)
 
 # These are file names
 expectation_cols <- c(
@@ -74,7 +66,7 @@ data_with_exp <- lapply(files_with_exp, ReadAndSetWave) %>%
 
 
 # ok this is the data.
-# need to do some cleaning on it
+
 # get rid of negative values and set values of 0 and 1
 # to be just above and below respectively
 
@@ -84,8 +76,8 @@ data_with_exp <- lapply(files_with_exp, ReadAndSetWave) %>%
 # can get ons life exp from the table I made earlier
 # These are the parameters that I used to select the life probs
 
-start_year <- 2005
 
+# Get objective life probs
 life_exp_list <- list(
     female = fread("../../data/ONS/Females_transition_probs.csv"),
     male = fread("../../data/ONS/Males_transition_probs.csv")
@@ -110,13 +102,19 @@ ons_life_exp <- mapply(
     rbindlist()
 ## Calculate real prob of being alive at 110 using ONS lifetables
 
+ons_life_exp %>%
+    filter(birth_year == 1975) %>%
+    filter(gender == "male") %>%
+    arrange(-age) %>%
+    mutate(prob_110 = cumprod(1 - death_rate))
+
+
 ons_p110 <- ons_life_exp %>%
     mutate(surv_prob = 1 - death_rate) %>%
     filter(!is.na(surv_prob)) %>%
     group_by(gender, birth_year) %>%
     arrange(-age) %>%
     mutate(prob110 = lag(cumprod(surv_prob))) %>% # cumulative prov of being alive
-    mutate(prob110 = fifelse(age == 110, 1, prob110)) %>%
     select(age, gender, birth_year, prob110)
 
 
@@ -147,7 +145,9 @@ joined_harm <- left_join(
 # age in question depended on the age of the individual.
 # are expectations of death in here as well?
 
+
 ready_for_nls <- joined_harm %>%
+    ungroup() %>%
     select(idauniq, exlo80, exlo90, prob110, wave, age = age_at_interview) %>%
     filter(!is.na(exlo80) & !is.na(exlo90) & !is.na(prob110)) %>%
     filter(exlo80 >= 0, exlo80 <= 100) %>% # do not allow expectations out of the unit interval
@@ -158,7 +158,6 @@ ready_for_nls <- joined_harm %>%
             .x == 0 ~ 1,
             .default = .x
         ) / 100)) %>%
-    filter(wave <= 7) %>%
     rename(ex1 = exlo80, ex2 = exlo90, ex3 = prob110) %>%
     mutate(t1 = case_when( ## rules for the age that the probability is for
         age <= 65 ~ 75 - age,
@@ -166,7 +165,7 @@ ready_for_nls <- joined_harm %>%
     )) %>%
     mutate(t2 = 85 - age) %>%
     mutate(t3 = 110 - age) %>%
-    filter(!is.na(t1) & !is.na(t2) & !is.na(t3)) %>%
+    filter(!is.na(t1) & !is.na(t2) & !is.na(t3) & t1 > 0 & t2 > 0 & t3 > 0) %>%
     filter(ex1 > ex2) # make the expectation
 
 # convert to long, answer level data. I.e. one expectation per row
@@ -216,6 +215,8 @@ top_start_values <- as.list(coef(output_rand))
 # then set the starting values for the others to this
 
 
+# Find the solution using the brute force algo from nsl2
+# This just makes a grid and checks all the results.
 BruteForce <- function(id_wave_to_try,
                        end_k = 5,
                        end_lam = 40,
@@ -235,6 +236,8 @@ BruteForce <- function(id_wave_to_try,
     as.list(coef(res))
 }
 
+
+# When our guesses don't work we try ever expanding sizes of grid
 # set expanding values
 # make grid larger and finer. This will make evaluation of it slower
 # but makes finding a good starting value more likely
@@ -323,14 +326,28 @@ run_nls_function <- function(id_wave_to_try,
     # try a couple of escalating grids
     counter <- 1
 
-    while (TRUE) {
-        output <- NULL
+    id_data <- long_ready[id_wave == id_wave_to_try]
 
+    while (counter <= 12) {
+        output <- NULL
+        counter <- counter + 1
         # first try initial random guess
-        try(output <- nls(exlo ~ exp(-((t / lambda)^k)),
-            data = long_ready[id_wave == id_wave_to_try],
-            start = starting
-        )) # does not stop in the case of error
+        # tryCatch(output <- nls(exlo ~ exp(-((t / lambda)^k)),
+        #     data = id_data,
+        #     start = starting
+        # )) # does not stop in the case of error
+
+        tryCatch(
+            {
+                output <- nls(exlo ~ exp(-((t / lambda)^k)),
+                    data = id_data,
+                    start = starting
+                )
+            },
+            error = function(e) {
+                print(counter)
+            }
+        )
 
         if (!is.null(output)) break # if nls works, then quit from the loop
 
@@ -353,7 +370,6 @@ run_nls_function <- function(id_wave_to_try,
         }
 
         # iterate counter
-        counter <- counter + 1
     }
 
     # save as json so when we run we dont have to do the ones we have already found
@@ -369,16 +385,15 @@ run_nls_function <- function(id_wave_to_try,
 }
 
 # Only run for ids that we havent done before
-ids_to_do <- long_ready[, unique(id_wave)][!long_ready[, unique(id_wave)] %in% ids_that_are_done]
+all_ids <- unique(long_ready$id_wave)
 
-length(ids_to_do)
+ids_to_do <- all_ids[!all_ids %in% ids_that_are_done]
 
 outputs <- lapply(
     ids_to_do,
     run_nls_function
 )
 # wow this is so much faster once we have done a couple of hundred
-
 
 
 
@@ -391,13 +406,14 @@ dt_with_params <- lapply(
 
 dt_with_params$id_wave <- long_ready[, unique(id_wave)]
 
+years_into_future_to_predict <- 60
 
 # Now how do we get lifetables out?
 # I guess just the pdf of these for different ages?
 
 # take the pdf and find the probs that it implies for different age groups
 MakeLifeTable <- function(params = params,
-                          years_into_the_future = 60) {
+                          years_into_the_future) {
     sub_life <- sapply(
         c(1:years_into_the_future),
         \(t)exp(-(t / params$lambda)^params$k)
@@ -411,7 +427,10 @@ sub_life_tab_list <- vector("list", length = length(dt_with_params$id_wave))
 
 # populate list
 for (i in seq_along(dt_with_params$id_wave)) {
-    sub_life_tab_list[[i]] <- MakeLifeTable(as.list(dt_with_params[i, ]))
+    sub_life_tab_list[[i]] <- MakeLifeTable(
+        as.list(dt_with_params[i, ]),
+        years_into_future_to_predict
+    )
 }
 
 # probably save this is long form
@@ -433,7 +452,10 @@ sub_life_dt <- mapply(
 ) %>%
     rbindlist()
 
-sub_life_dt[, years_into_future := rep(c(1:60), length(dt_with_params$id_wave))]
+sub_life_dt[, years_into_future := rep(
+    c(1:years_into_future_to_predict),
+    length(dt_with_params$id_wave)
+)]
 
 # give age back to id-waves
 sub_life_dt <- merge.data.table(
@@ -454,3 +476,7 @@ fwrite(
     sub_life_dt,
     "../../data/ELSA/subjective_tables/subjective_survival_probs.csv"
 )
+names(sub_life_dt)
+# "id_wave" "prob" "years_into_future"
+# "age" "expected_age"
+# prob is probability of being alive

@@ -58,33 +58,39 @@ harm[, table(radyear)]
 harm[, unique(radyear)]
 harm[, sum(!is.na(radyear))]
 
-# H1ATOTF net value of non-housing financial wealth
-# H1ATOTH value of primary wealth
 
+# Get names of variables that we want to transition from wide to long
+names_patterns_list <- list(
+    "retired" = "r\\d{1}retemp",
+    "pension_type_job1" = "r\\d{1}ptyp1_e",
+    "pension_type_job2" = "r\\d{1}ptyp2_e",
+    "pension_type_job3" = "r\\d{1}ptyp3_e",
+    "retired_age" = "r\\d{1}retage",
+    "expected_retired_age" = "r\\d{1}wretage",
+    "age_at_interview" = "r\\d{1}agey",
+    "in_wave" = "inw\\d{1}$",
+    "date_month" = "r\\d{1}iwindm",
+    "date_year" = "r\\d{1}iwindy",
+    "total_monthly_consumption" = "hh\\d{1}ctot1m",
+    "monthly_food_in" = "hh\\d{1}cfoodi",
+    "monthly_food_out" = "hh\\d{1}cfoodo1m",
+    "monthly_food_total" = "hh\\d{1}cfood1m",
+    "monthly_clothing" = "hh\\d{1}cclo1m",
+    "monthly_leisure" = "hh\\d{1}clei1m",
+    "monthly_rent" = "hh\\d{1}crent",
+    "monthly_utility" = "hh\\d{1}cutil",
+    "fin_wealth" = "h\\d{1}atotf",
+    "house_value" = "h\\d{1}atoth",
+    "owns_house" = "h\\d{1}ahown",
+    "public_pension" = "r\\d{1}ipubpen"
+)
 
 
 harm_long <- melt(
     harm,
     id.vars = c("idauniq", "pn", "ragender", "rabyear", "radyear"),
-    measure = patterns(
-        "r\\d{1}retemp", "r\\d{1}ptyp1_e",
-        "r\\d{1}ptyp2_e", "r\\d{1}ptyp3_e",
-        "r\\d{1}retage", "r\\d{1}wretage",
-        "r\\d{1}agey", "inw\\d{1}$",
-        "r\\d{1}iwindm", "r\\d{1}iwindy",
-        "hh\\d{1}ctot1m", "h\\d{1}atotf",
-        "h\\d{1}atoth", "r\\d{1}ipubpen"
-    ),
-    value.name = c(
-        "retired", "pension_type_job1",
-        "pension_type_job2", "pension_type_job3",
-        "retired_age", "expected_retired_age",
-        "age_at_interview", "in_wave",
-        "date_month", "date_year",
-        "total_monthly_consumption",
-        "fin_wealth", "house_value",
-        "public_pension"
-    ),
+    measure = patterns(unlist(names_patterns_list)),
+    value.name = names(names_patterns_list),
     variable.name = "wave"
 )
 
