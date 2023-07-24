@@ -1,0 +1,40 @@
+\begin{table}
+
+\caption{DC Pension Size interaction \label{tab:DcOnlyInteract}}
+\centering
+\begin{tabular}[t]{lccccc}
+\toprule
+  & TotalConsump & FoodConsump & FoodConsumpIn & FoodConsumpOut & ClothingConsump\\
+\midrule
+(Intercept) & \num{1347.198} & \num{571.090} & \num{77.009} & \num{220.315} & \num{40.944}\\
+ & (\num{745.238}) & (\num{346.747}) & (\num{68.914}) & (\num{122.712}) & (\num{217.875})\\
+PostReform & \num{74.604} & \num{9.797} & \num{0.123} & \num{11.064} & \num{27.427}\\
+ & (\num{69.978}) & (\num{27.205}) & (\num{5.366}) & (\num{9.226}) & (\num{24.871})\\
+RetiredAge & \num{-4.652} & \num{-3.172} & \num{-0.073} & \num{-2.585} & \num{-0.295}\\
+ & (\num{10.447}) & (\num{5.435}) & (\num{1.089}) & (\num{1.893}) & (\num{3.609})\\
+FinancialWealth (thousands) & \num{0.229} & \num{0.172} & \num{0.013} & \num{0.111} & \num{-0.012}\\
+ & (\num{0.114}) & (\num{0.050}) & (\num{0.010}) & (\num{0.025}) & (\num{0.053})\\
+Gender & \num{-19.457} & \num{-35.355} & \num{-6.937} & \num{-6.007} & \num{13.359}\\
+ & (\num{63.228}) & (\num{28.103}) & (\num{5.502}) & (\num{10.149}) & (\num{24.880})\\
+DCValue (thousands) & \num{-0.009} & \num{0.022} & \num{0.006} & \num{-0.004} & \num{-0.002}\\
+ & (\num{0.027}) & (\num{0.035}) & (\num{0.008}) & (\num{0.004}) & (\num{0.009})\\
+YearsSinceRetirement & \num{-1.902} & \num{-7.906} & \num{-0.268} & \num{-7.741} & \num{6.092}\\
+ & (\num{44.666}) & (\num{16.767}) & (\num{3.225}) & (\num{6.186}) & (\num{14.714})\\
+OwnsHouse & \num{-261.541} & \num{101.085} & \num{20.990} & \num{10.656} & \num{73.604}\\
+ & (\num{196.144}) & (\num{37.911}) & (\num{7.293}) & (\num{14.787}) & (\num{16.328})\\
+StatePension & \num{-14.040} & \num{-4.125} & \num{-1.256} & \num{1.258} & \num{-3.040}\\
+ & (\num{9.566}) & (\num{4.105}) & (\num{0.841}) & (\num{1.265}) & (\num{4.052})\\
+PostReform:DCValue (thousands) & \num{-0.003} & \num{-0.022} & \num{-0.005} & \num{0.000} & \num{-0.002}\\
+ & (\num{0.045}) & (\num{0.035}) & (\num{0.008}) & (\num{0.004}) & (\num{0.017})\\
+\midrule
+Num.Obs. & \num{209} & \num{326} & \num{326} & \num{330} & \num{221}\\
+R2 & \num{0.068} & \num{0.066} & \num{0.051} & \num{0.102} & \num{0.035}\\
+R2 Adj. & \num{0.026} & \num{0.039} & \num{0.024} & \num{0.076} & \num{-0.006}\\
+AIC & \num{3156.1} & \num{4500.7} & \num{3452.4} & \num{3836.7} & \num{2897.0}\\
+BIC & \num{3192.9} & \num{4542.4} & \num{3494.1} & \num{3878.5} & \num{2934.4}\\
+Log.Lik. & \num{-1567.065} & \num{-2239.361} & \num{-1715.225} & \num{-1907.357} & \num{-1437.504}\\
+RMSE & \num{436.58} & \num{232.82} & \num{46.64} & \num{78.33} & \num{161.68}\\
+Std.Errors & HC3 & HC3 & HC3 & HC3 & HC3\\
+\bottomrule
+\end{tabular}
+\end{table}

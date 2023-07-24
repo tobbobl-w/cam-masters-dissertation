@@ -32,6 +32,7 @@ data_for_regressions <- fread("../../data/ELSA/elsa_to_use/elsa_reg_data.csv") %
 search_names(data_for_regressions, "pen")
 search_names(data_for_regressions, "year")
 
+data_for_regressions$ragender %>% table()
 
 
 
@@ -50,8 +51,9 @@ ss_stat_out <- data_for_regressions %>%
             sd = \(x) sd(x, na.rm = T),
             min = \(x) min(x, na.rm = T),
             max = \(x) max(x, na.rm = T),
-            median = \(x) median(x, na.rm = T),
-            non_missing = \(x) sum(!is.na(x))
+            median = \(x) median(x, na.rm = T)
+            # ,
+            # non_missing = \(x) sum(!is.na(x))
         ),
         .names = "{.col}__{.fn}"
     )) %>%

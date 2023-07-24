@@ -21,7 +21,7 @@ pension_wealth_dt <- fread(
 )
 
 # ------- Life expectancy data -----------
-obj_life_exps_dt <- fread("../../data/ONS/objective_life_expectancies.csv")[, gender := fcase(
+obj_life_exps_dt <- fread("../../data/ONS/objective_life_expectancies.csv")[, gender_string := fcase(
     gender == "Males", "male",
     gender == "Females", "female"
 )]
@@ -37,27 +37,26 @@ harm_long <- fread(
 harm_long[, int_year := year(int_month_date)]
 harm_long[, birth_year := int_year - age_at_interview]
 harm_long[, id_wave := paste0(idauniq, "-", wave)]
-harm_long[, gender := fcase(
-    ragender == 1, "male",
-    ragender == 2, "female"
+harm_long[, ragender := fcase(
+    ragender == 1, 0,
+    ragender == 2, 1
+)]
+
+
+harm_long[, gender_string := fcase(
+    ragender == 0, "male",
+    ragender == 1, "female"
 )]
 
 harm_long[pension_wealth_dt, dc_pot := dc_pot, on = c("idauniq", "int_year" = "year")]
 
 harm_long[obj_life_exps_dt, obj_life_exps := life_exp,
-    on = c("age_at_interview" = "age", "gender", "birth_year")
+    on = c("age_at_interview" = "age", "gender_string", "birth_year")
 ]
 
 harm_long[sub_life_exps_dt, sub_life_exps := subjective_life_exp,
     on = c("id_wave")
 ]
-
-summary(harm_long$sub_life_exps, na.rm = T)
-mean(is.na(harm_long$sub_life_exps))
-
-harm_long %>%
-    filter(is.na(obj_life_exps)) %>%
-    select(age_at_interview, gender, birth_year)
 
 harm_long[, dc_pot := as.numeric(dc_pot)]
 
@@ -145,15 +144,8 @@ data_for_regressions <- harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
 
 data_for_regressions[, id_wave := paste0(idauniq, "-", wave)]
 
-
-data_for_regressions[, ragender := ragender - 1] # make it binary rather than 1,2
-# Check that this is the case
-stopifnot(all(data_for_regressions$ragender %in% c(0, 1)))
-
-
-
-data_for_regressions[, ever_dc_pen_bin := ever_dc_pen == "yes"]
-data_for_regressions[, ever_db_pen_bin := ever_db_pen == "yes"]
+data_for_regressions[, ever_dc_pen_bin := as.integer(ever_dc_pen == "yes")]
+data_for_regressions[, ever_db_pen_bin := as.integer(ever_db_pen == "yes")]
 data_for_regressions[, exp_real_ret_age := first_exp_ret_age - retired_age]
 
 

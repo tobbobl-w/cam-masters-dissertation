@@ -34,14 +34,7 @@ RetirementLifecycleWithIncome = function (;
     # either with objective probs given by age, gender and year
     # or subjective probs given by id_wave
 
-    if life_prob_types == "objective"
-        # set file name to save json to. 
-        json_filename = string(age, "_beq", bequests, "_", gender, "_", life_prob_types, "_", year, ".json")
-        filename_with_dir = "../data/ELSA/lifecycle_outputs/" * json_filename
-
-        death_probs = GetObjectiveDeathProbs(gender=gender, age=age, year=year)
-
-    elseif life_prob_types == "subjective"
+    if life_prob_types == "subjective"
         dir_name = "../data/ELSA/lifecycle_outputs/id_wave/"
         if !isdir(dir_name)
             mkdir(dir_name)
@@ -67,35 +60,32 @@ RetirementLifecycleWithIncome = function (;
     # Dimensions are the state variables
     # Income, current assets and age
     value_array = ones(Float64, inc_grid_points, asset_grid_points, terminal_age - start_age)
-    policy_array = ones(Float64, inc_grid_points, asset_grid_points, terminal_age - start_age)
+    policy_array = ones(Int, inc_grid_points, asset_grid_points, terminal_age - start_age)
 
     # for each income level find the optimal asset policy function
     for inc in eachindex(income_grid)
 
         utility_matrix = utility_array[:, :, inc]
 
-        # If bequests then we get utility at end of life from certain death
-        if bequests == true
-            terminal_value = [bequest_lock(final_assets) for final_assets in asset_grid]
-        else
-            terminal_value = [0 for final_assets in asset_grid]
-        end
+        terminal_value = [0 for final_assets in asset_grid]
+
 
         # Initialize a vector to store the terminal values for optimal consumption
-        temp_value = zeros(asset_grid_points, terminal_age - start_age)
+        temp_value = zeros(Float64, asset_grid_points, terminal_age - start_age)
         # Initialize a matrix to store temporary values
 
         temp_value[:, terminal_age-start_age] = terminal_value
         # Set the terminal values in the temporary value matrix
 
-        # each colum is an age
+        # each column is an age
         # each row amount of assets next period. 
-        opt_policy_function = zeros(asset_grid_points, terminal_age - start_age)
+        opt_policy_function = zeros(Int, asset_grid_points, terminal_age - start_age)
         # Initialize a matrix to store the optimal policy function
 
         # solve model backwards
         t = 1
         for t in 1:(terminal_age-start_age-1)
+
             # age moves one back
             cur_age = terminal_age - t
             value_index = cur_age - start_age
@@ -103,12 +93,7 @@ RetirementLifecycleWithIncome = function (;
             # prob of death is year by year
             prob_of_death = death_probs[value_index]
 
-            ev_g = if bequests == true
-                temp_value[:, value_index+1] * (1 - prob_of_death) +
-                prob_of_death * broadcast(bequest_lock, opt_policy_function[:, value_index+1])
-            else
-                temp_value[:, value_index+1] * (1 - prob_of_death)
-            end
+            ev_g = temp_value[:, value_index+1] * (1 - prob_of_death)
             # Optimal assets are a function of age and cur assets
             # we are in age already so just need to return 
 
@@ -173,5 +158,6 @@ end
 
 # I should do a run with a finer grid and see how much longer it takes
 # I think I should only need to run for one set of year-age combos.
-# surely 
+
+
 

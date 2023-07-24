@@ -14,27 +14,32 @@ reg_data <- fread(
     "../../data/ELSA/elsa_to_use/elsa_reg_data.csv"
 )
 
+# reg_data$retirement_year
+# reg_data$retired_age
 
 dt_for_julia <- reg_data[, .(id_wave,
     gender = ragender, age = age_at_interview,
+    retired_age,
+    retirement_year,
     public_pension,
-    ever_dc_pen, ever_db_pen,
-    year = date_year, 
-    fin_wealth, 
+    ever_dc_pen,
+    ever_db_pen,
+    year = date_year,
+    fin_wealth,
     dc_pot
 )]
 
 dt_for_julia[, sum(dc_pot > fin_wealth, na.rm = T)]
 
 dt_for_julia[dc_pot > fin_wealth]
-dt_for_julia[fin_wealth > dc_pot ]
+dt_for_julia[fin_wealth > dc_pot]
 
 
 nrow(dt_for_julia)
 
 dt_for_julia[, gender := fcase(
     gender == 1, "male",
-    gender == 2, "female"
+    gender == 0, "female"
 )]
 
 
@@ -52,11 +57,17 @@ fwrite(
 # We want to run the life cycle model for each of these gender-pension-age pairs.
 
 
-
 fwrite(
     dt_for_julia,
     "../../data/ELSA/elsa_to_use/for_julia.csv"
 )
+
+fwrite(
+    select(dt_for_julia, id_wave, age, gender, year),
+    "../../data/ELSA/elsa_to_use/for_julia_if_age_gender_year.csv"
+)
+#
+
 
 # we also want to add any other source of income
 # higher the income the less likely annuitisation
@@ -89,7 +100,6 @@ sub_for_plot <- life_probs_we_need[dt_for_julia[, .(id_wave, year, age, gender)]
     select(age, cum_alive = prob, type)
 
 # compare to objective for a male aged 64 in 2011 (this is characteristics of )
-birth_year <- 2011 - 64
 
 obj_dat <- fread("../../data/ONS/males_transition_probs.csv")
 

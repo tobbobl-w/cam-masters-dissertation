@@ -145,49 +145,119 @@ end
 
 # ----------------- Post model run functions -----------------
 
+GetJson = function (
+    bequests=false,
+    life_prob_types="objective",
+    birth_year=1950,
+    gender="male",
+    id_wave="")
+
+    if life_prob_types == "objective"
+
+        folder_name = "../Data/ELSA/lifecycle_outputs/beq_testing/"
+
+        json_string = string("birth_year_", birth_year, "_", bequests, "_", gender, "_objective_20000.json")
+        full_file_name = folder_name * json_string
+
+    elseif life_prob_types == "subjective"
+
+        folder_name = "../Data/ELSA/lifecycle_outputs/id_wave/"
+        regex_search = Regex(id_wave)
+
+        files_in_folder = readdir(folder_name)
+        vector_of_matches = .!(isnothing.(match.(regex_search, files_in_folder)))
+
+        # there should be a unique match
+        if sum(vector_of_matches) != 1
+            error("Not a match for this json string")
+        end
+
+        json_string = files_in_folder[vector_of_matches][1]
+        full_file_name = folder_name * json_string
+    end
+
+    if isfile(full_file_name)
+        json_in = JSON3.read(full_file_name)
+        return json_in
+    else
+        error_message = string(
+            "cant find file: ", full_file_name
+        )
+        error(error_message)
+    end
+end
+
 RetrievePolicyFunction = function (
     bequests=false,
     life_prob_types="objective",
-    age=65,
-    year=2014,
-    gender="male")
+    birth_year=1950,
+    gender="male",
+    id_wave="")
 
-    json_filename = string("../data/ELSA/lifecycle_outputs/", age, "_beq", bequests, "_", gender, "_", life_prob_types, "_", year, ".json")
-
-    # check file exists
-    isfile(json_filename)
     # Read in json
-    json_in = JSON3.read(json_filename)
+    json_in = GetJson(
+        bequests,
+        life_prob_types,
+        birth_year,
+        gender,
+        id_wave
+    )
 
-    # Multi dimensional arrays were saved as long vectors so we reshape them  
-    pol_func_readin = reshape(json_in["pol_func"], inc_grid_points, asset_grid_points, terminal_age - age)
+    # asset and income dimensions always the same. 
+    year_dimension = Int(length(json_in["pol_func"]) / (inc_grid_points * asset_grid_points))
+
+    # Multi dimensional arrays were saved as long vectors so we reshape them
+    # this is an array of dimension income states, asset states and age states
+    pol_func_readin = reshape(
+        json_in["pol_func"],
+        inc_grid_points,
+        asset_grid_points,
+        year_dimension)
 
     return pol_func_readin
 end
 
 
-function AssetPathFunction(opt_policy_function, asset_start_point, income_grid_point)
+function AssetPathFunction(
+    opt_policy_function,
+    asset_start_point,
+    income_grid_point)
 
     # Return asset paths given a set of optimal policy functions
+    # Asset path tracks the  
     # and a starting value of wealth
 
-    number_years = size(opt_policy_function)[2]
-    println(number_years)
+    opt_policy_function_assets = opt_policy_function[income_grid_point, :, :]
+
+    number_years = size(opt_policy_function)[3]
+
     # Intialise
     asset_path = Vector{Int}(undef, number_years + 1)
-
     # set intial assets
     asset_path[1] = asset_start_point
 
     # Get optimal asset paths from optimal policy matrix
     for age in 1:(number_years)
-        asset_path[age+1] = opt_policy_function[:, age][asset_path[age]]
+        asset_path[age+1] = opt_policy_function_assets[:, age][asset_path[age]]
     end
+
 
     # Create consumption path
     consumption_path = zeros(number_years)
     for age in eachindex(consumption_path)
-        consumption_path[age] = bc_inc(asset_grid[asset_path[age]], asset_grid[asset_path[age+1]], income_grid[income_grid_point])
+        # If asset grid is 0 then set assets next period to 0
+        # I did not allow individuals to have 0 assets on the grid.  
+        if asset_path[age+1] == 0
+            consumption_path[age] = bc_inc(
+                asset_grid[asset_path[age]],
+                0,
+                income_grid[income_grid_point])
+        else
+            consumption_path[age] = bc_inc(
+                asset_grid[asset_path[age]],
+                asset_grid[asset_path[age+1]],
+                income_grid[income_grid_point])
+        end
     end
 
     return (assets=asset_path, cons=consumption_path)
@@ -259,14 +329,6 @@ function annuity_payment_function_using_annuitant_mortality(
 
     loading_factor * (annuity_cost / (sum([cum_alive[age] * 1 / (((1 + r)^age)) for age in eachindex(cum_alive)])))
 end
-# cool now we can use this function.. 
-
-# annuity_payment_function(100000, gender="male", age=61, ann_life_table_year=2016)
-## males get more which is right # is this roughly inline for a nominal non esclating pension
-
-# annuity_payment_function(100000, gender="male", age=65, ann_life_table_year=2016)
-# also annuities increase with age which is good
-
 
 function Annuity_GeneralDeathProbs(annuity_cost, loading_factor, death_probs)
     # annuity_cost - how much to spend on an annuity
@@ -286,8 +348,6 @@ function FindClosestGridPoint(x, grid_gap, num_grid_point)
     # we want to return the index of the grid that someone is at
     grid_point = round(Int, x / grid_gap)
 
-
-
     # Assume for now that no one actually is at 0
     if grid_point > 0
         return grid_point
@@ -299,4 +359,282 @@ function FindClosestGridPoint(x, grid_gap, num_grid_point)
         return 1
     end
 end
+
+function GetELSAData()
+    # first get data
+    col_types = Dict(:id_wave => String, :age => Int128, :year => Int128,
+        :ever_dc_pen => String, :ever_db_pen => String, :public_pension => Float64,
+        :fin_wealth => Float64)
+
+    idwave_df = CSV.File("../data/ELSA/elsa_to_use/for_julia.csv", types=col_types) |>
+                DataFrame
+
+    idwave_df = idwave_df[Bool.(.!ismissing.(idwave_df.fin_wealth)).&Bool.(.!ismissing.(idwave_df.public_pension)), :]
+
+    idwave_df.pen_grid = FindClosestGridPoint.(
+        idwave_df.public_pension, inc_grid_gap, inc_grid_points)
+
+    idwave_df.ass_grid = FindClosestGridPoint.(
+        idwave_df.fin_wealth, asset_grid_gap, asset_grid_points)
+
+    return idwave_df
+end
+
+
+
+
+
+OptimalAnnuityAmount_beq = function (
+    income_start_point, asset_start_point, loading_factor=0.85;
+    value_func, gender="male", age=65, year=2015)
+
+    # comparing different starting values on the income-asset array
+    # and the loading factor gives the cost of the tradeoff. I.e. how far we move on each one
+    # value func should just be a matrix 
+    value_of_start = value_func[income_start_point, asset_start_point]
+
+    death_probs = GetObjectiveDeathProbs(age=age, year=year, gender=gender)
+
+    # make a rough matrix of grid points to move on assets vs income
+    annuity_income_vec = [Annuity_GeneralDeathProbs(assets, loading_factor, death_probs) for assets in asset_grid]
+
+    # I am not going to allow very small annuity purchaes since basically no one does this anyway
+    # get rid of assets below 10000
+    # This is how many grid points of income each annuity is associated with
+    annuity_income_grid_points = FindClosestGridPoint.(annuity_income_vec, inc_grid_gap, inc_grid_points)
+
+    # number_asset_grid_points by 2 matrix. 1st row is asset point
+    assets_annuity_movement_mat = [Int.(asset_grid / asset_grid_gap) annuity_income_grid_points]
+
+    how_close_can_annuity_amount_be = 70
+    # only allowed to pick a point that is within x of a grid point otherwise can get better than actruarily fair
+    select_vec = abs.(FindClosestGridPoint.(annuity_income_vec, inc_grid_gap, inc_grid_points) * inc_grid_gap - annuity_income_vec) .< how_close_can_annuity_amount_be
+
+    # we want to evalute the value of these points and pick the max
+    # the first column is starting point on the asset grid
+    # second column is starting point on the income grid
+    assets_annuity_movement_mat = assets_annuity_movement_mat[select_vec, :]
+
+    value_of_points = []
+
+    for row_index in 1:sum(select_vec)
+
+        # Move up the income grid
+        income_point = income_start_point + assets_annuity_movement_mat[row_index, 2]
+
+        # Move down the asset grid
+        asset_point = asset_start_point - assets_annuity_movement_mat[row_index, 1]
+
+        # cannot have negative assets
+        if asset_point < 1
+            continue
+        end
+
+        if income_point > inc_grid_points
+            # stop individuals going outside of the grid
+            income_point = inc_grid_points
+        end
+        if asset_point < 0
+            # do not allow negative asset holdings. 
+            append!(value_of_points, -Inf)
+        else
+            append!(value_of_points, value_func[income_point, asset_point])
+        end
+    end
+
+    if value_of_points == []
+        return "too poor to annuitise"
+    end
+
+    max_value_and_index = findmax(value_of_points)
+
+    if max_value_and_index[1] > value_of_start
+        # return the optimal amount to spend on annuities and the
+        to_return = (
+            value=max_value_and_index[1],
+            move_down_assets=assets_annuity_movement_mat[max_value_and_index[2], 1],
+            move_up_income=assets_annuity_movement_mat[max_value_and_index[2], 2])
+
+        return to_return
+    elseif max_value_and_index[1] < value_of_start
+        return ("do not annuitise", value_of_start)
+    end
+
+end
+
+
+
+
+# Ok now we want to check optimal annuity rates in our real life data. 
+# Need a function that takes year, age, wealth and income 
+# and calculates optimal annuity amount, and consumption 
+ToAnnuitiseOrNot = function (year, age, gender, state_pension, wealth,
+    loading_factor, id_wave="none")
+
+    if id_wave == "none"
+        birth_year = year - age
+        json_in = GetJson(birth_year, gender)
+        to_add = 1
+    elseif id_wave != "none"
+        json_in = GetJSON_IDWave(id_wave)
+        to_add = 0
+    end
+
+    value_func = json_in["value_func"]
+
+    years_of_life_left = Int(length(value_func) / (inc_grid_points * asset_grid_points))
+
+    value_func = reshape(value_func, inc_grid_points, asset_grid_points, years_of_life_left)
+
+    # need the to add because in the early subjective models I just had 
+    # (terminal_age - years_of_life) dimensions, rather than (1 + terminal_age - years_of_life)  
+    first_age = to_add + terminal_age - years_of_life_left
+
+    # Now we select the year of the value function where they have to make an annuitisation decision
+    decision_year_index = 1 + age - first_age
+    println(decision_year_index)
+
+    # This is the value matrix in the year we care about
+    # Now we see if moving along the income dimension makes up for going down the asset dimension
+    value_func_at_year = value_func[:, :, decision_year_index]
+
+    if size(value_func_at_year) != (inc_grid_points, asset_grid_points)
+        println("Wrong dimensions: stopping")
+        return "Wrong dimensions: stopping"
+    end
+
+
+    opt_annuity = OptimalAnnuityAmount_beq(
+        state_pension, wealth, loading_factor, value_func=value_func_at_year,
+        gender=gender, age=age, year=year)
+
+    return opt_annuity
+end
+
+
+
+
+ReturnConsumptionWithAnnuity = function (
+    bequests=true,
+    life_prob_types="objective",
+    gender="male",
+    id_wave="",
+    ret_age=62,
+    ret_year=2012,
+    int_year=2013,
+    asset_start_point=250,
+    income_start_point=50;
+    prop_of_wealth=0.5)
+
+    # id_wave is identification
+    # gender is gender
+    # ret_age and ret_year are retirement age and retirement year respectively
+    # int_year is interview year
+    # asset_start_point and income_start_point are assets and income start points in the grid respectively
+
+    # prop_of_wealth controls the proportion of financial wealth that 
+    #       individuals are foced to annutise
+
+    birth_year = ret_year - ret_age
+
+    pol_func = RetrievePolicyFunction(
+        bequests, # bequests
+        life_prob_types, # life exp type
+        birth_year,
+        gender,
+        id_wave)
+
+
+    # for subjective models because there are no bequests the policy function 
+    # only has years_of_retirement - 1 since we do not need to know decision in last period
+
+    years_solved_for = size(pol_func)[3]
+    years_of_retirment_for_individual = terminal_age - ret_age
+
+    if life_prob_types == "subjective"
+        years_of_retirment_for_individual = years_of_retirment_for_individual - 1
+    end
+
+    start_index = 1 + years_solved_for - years_of_retirment_for_individual
+
+    pol_func_at_start_of_retirement = pol_func[:, :, start_index:end]
+
+
+    con_path = AssetPathFunction(
+        pol_func_at_start_of_retirement,
+        asset_start_point,
+        income_start_point)
+
+    # For obejective: we want consumption from interview year rather than retirement year
+    # For subjective: want consumption at time the death probs were elicited. 
+
+    if life_prob_types == "subjective"
+        year_of_int_index = 1 + int_year - ret_year
+    elseif life_prob_types == "objective"
+        year_of_int_index = 1
+    end
+
+    consumption_no_ann = con_path.cons[year_of_int_index]
+
+    # now annuitise part of wealth 
+    # half and a quarter
+    # then cal the increase in come, round down 
+
+    death_probs = GetObjectiveDeathProbs(
+        gender=gender,
+        year=ret_year,
+        age=ret_age
+    )
+
+
+    annuity_cost_grid = floor(Int, asset_start_point * prop_of_wealth)
+
+    annuity_payment = Annuity_GeneralDeathProbs(
+        annuity_cost_grid * asset_grid_gap,
+        0.9,
+        death_probs
+    )
+
+    # income grid points to move up
+    # if 0 then we assume the individual is not wealthy enough to  
+    #  purchase an annuity and we just return normal consumption
+    annuity_payment_grid = floor(Int, annuity_payment / inc_grid_gap)
+
+    if annuity_payment_grid == 0
+        with_annuity_cons = consumption_no_ann
+    else
+        # asset path with annuity 
+        with_annuity = AssetPathFunction(
+            pol_func,
+            asset_start_point - annuity_cost_grid,
+            income_start_point + annuity_payment_grid)
+
+        with_annuity_cons = with_annuity.cons[year_of_int_index]
+    end
+
+    # return id-wave, consumption with annuity, consumption without annuity, annuity cost, annuity_payment
+    data_to_return = (
+        id_wave=id_wave,
+        annuity_consump=with_annuity_cons,
+        no_annuity_consump=consumption_no_ann,
+        annuity_cost=annuity_cost_grid * asset_grid_gap,
+        annuity_payment=annuity_payment_grid * inc_grid_gap)
+
+    return data_to_return
+end
+
+
+
+
+# ---------- testing --------------
+
+# RetrievePolicyFunction(
+#     true, # bequests
+#     "objective", # life exp type
+#     1942,
+#     "female")
+#     years_solved_for = 47
+#     years_of_retirement = 
+
+
 

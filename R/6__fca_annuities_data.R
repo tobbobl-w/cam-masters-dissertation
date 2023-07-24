@@ -66,8 +66,7 @@ pen_freedoms_force <- dmy("1 April 2015")
 label_df <- data.frame(
     date = c(pen_freedons_announce - 50, pen_freedoms_force + 50),
     y = c(100000, 80000),
-    labels = c("Announcement", "Fully implemented"),
-    nudge_x = c(-1, 1)
+    labels = c("Announcement", "Fully implemented")
 )
 
 annuity_plot <- ggplot(joined_data) +

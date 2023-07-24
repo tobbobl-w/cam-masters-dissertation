@@ -4,6 +4,10 @@
 # cb 17.1 (1000)
 # m 0.96
 
+
+# This is an old testing file.
+# I have copied functions I want into another file. Move this to old 
+
 include("0__functions.jl")
 
 ## Set grid points
@@ -27,7 +31,7 @@ utility_array = CreateUtilityArray()
 bequest_lock(b; c0, m=0.9) = (m / (1 - m))^σ * (((m / (1 - m)) * c0) + b)^(1 - σ) / (1 - σ)
 # but won't including bequests make utility lower
 
-bequest_lock.([1000, 5000, 50000], c0 = 5000, m = 0.9)
+bequest_lock.([1000, 5000, 50000], c0=5000, m=0.9)
 
 # lets try running bequest function for different values of c0 and m 
 
@@ -39,8 +43,8 @@ RetirementLifecycleWithIncome_beq_edit = function (;
     gender="male",
     life_prob_types="objective",
     year=2015,
-    id_wave="", 
-    c0 = 20000)
+    id_wave="",
+    c0=20000)
 
     # two ways to run this function
     # either with objective probs given by age, gender and year
@@ -48,7 +52,7 @@ RetirementLifecycleWithIncome_beq_edit = function (;
 
     if life_prob_types == "objective"
         # set file name to save json to. 
-        json_filename = string(age, "_beq", bequests, "_", gender, "_", life_prob_types, "_", year, "_", c0,".json")
+        json_filename = string(age, "_beq", bequests, "_", gender, "_", life_prob_types, "_", year, "_", c0, ".json")
 
         dir_name = "../data/ELSA/lifecycle_outputs/beq_testing/"
         if !isdir(dir_name)
@@ -84,10 +88,10 @@ RetirementLifecycleWithIncome_beq_edit = function (;
 
     # Dimensions are the state variables
     # Income, current assets and age
-    value_array = ones(Float64, inc_grid_points, asset_grid_points, 1+ terminal_age - start_age)
+    value_array = ones(Float64, inc_grid_points, asset_grid_points, 1 + terminal_age - start_age)
     policy_array = ones(Float64, inc_grid_points, asset_grid_points, terminal_age - start_age)
 
-    bequest_value = [bequest_lock(assets, c0 = c0, m = 0.94) for assets in asset_grid]
+    bequest_value = [bequest_lock(assets, c0=c0, m=0.94) for assets in asset_grid]
 
     # for each income level find the optimal asset policy function
     for inc in eachindex(income_grid)
@@ -96,8 +100,8 @@ RetirementLifecycleWithIncome_beq_edit = function (;
 
         # Initialize a vector to store value functions in
         # it is age + 1 columns long becuase the terminal value is stored in age at 111
-        temp_value = zeros(asset_grid_points, 1+ terminal_age - start_age)
-        
+        temp_value = zeros(asset_grid_points, 1 + terminal_age - start_age)
+
         # Initialize a matrix to policy functions
         # each colum is an age
         # each row amount of assets next period. 
@@ -107,22 +111,22 @@ RetirementLifecycleWithIncome_beq_edit = function (;
         # solve model backwards
         t = 1
         for t in 1:(terminal_age-start_age)
-            
+
             # age moves one back
-            cur_age = 1+terminal_age - t
+            cur_age = 1 + terminal_age - t
             value_index = cur_age - start_age
 
             # prob of death is year by year
             prob_of_death = death_probs[value_index]
             death_probs[end] = 1
-            
-            ev_g =  temp_value[:, value_index+1] * (1 - prob_of_death)
- 
+
+            ev_g = temp_value[:, value_index+1] * (1 - prob_of_death)
+
             # Optimal assets are a function of age and cur assets
             # we are in age already so just need to return 
             # a vector as long as assets, then optimal assets next period (i.e. policy func), 
             # and max value as well. 
-            
+
 
             outputs = zeros(asset_grid_points, 3)
             # col 1 is current asset index
@@ -134,9 +138,9 @@ RetirementLifecycleWithIncome_beq_edit = function (;
                 # Create objective function
                 # utility from consumption, discounted value next period, expected value from bequest
                 # Note in the last period (i.e. when t = 1 and cur_age == terminal_age) prob of death = 1 and ev_g is 0
-                obj_g = utility_matrix[x, :] + (ev_g * β) + (prob_of_death .* bequest_value) * β 
+                obj_g = utility_matrix[x, :] + (ev_g * β) + (prob_of_death .* bequest_value) * β
 
-                max_and_index = findmax(obj_g) 
+                max_and_index = findmax(obj_g)
                 # First element is the max
                 # second element is the index that achieves the max
                 # therefore second element is the policy function.
@@ -173,18 +177,18 @@ RetirementLifecycleWithIncome_beq_edit = function (;
     open(filename_with_dir, "w") do io
         JSON3.pretty(io, outputs_to_save)
     end
-    
+
 end
 
-c0_vec = [i*1000 for i in 1:20]
+c0_vec = [i * 1000 for i in 1:20]
 
 # RetirementLifecycleWithIncome_beq_edit(c0 = 5000)
 # RetirementLifecycleWithIncome_beq_edit(c0 = 10000)
 
-for c0_value in c0_vec
-    println(c0_value) 
-    RetirementLifecycleWithIncome_beq_edit(c0 = c0_value)
-end 
+# for c0_value in c0_vec
+#     println(c0_value) 
+#     RetirementLifecycleWithIncome_beq_edit(c0 = c0_value)
+# end 
 # oh this might actually take awhile
 # less than a minute now. 
 
@@ -196,23 +200,23 @@ end
 # hopefully this run will inform a bequest motive
 
 call_values = (
-bequests=true,
-age=65,
-gender="male",
-life_prob_types="objective",
-year=2015)
+    bequests=true,
+    age=65,
+    gender="male",
+    life_prob_types="objective",
+    year=2015)
 
 call_values.bequests
 
 
 RetrievePolicyFunction_beq_edit = function (
-    json_filename, 
+    json_filename,
     age)
 
     # check file exists
     if isfile(json_filename) == false
         return "file does not exist"
-    end 
+    end
 
     # Read in json
     json_in = JSON3.read(json_filename)
@@ -225,7 +229,7 @@ end
 
 
 RetrieveValueFunction_beq_edit = function (
-    json_filename, 
+    json_filename,
     age)
 
     # Read in json
@@ -237,12 +241,12 @@ RetrieveValueFunction_beq_edit = function (
     return pol_func_readin
 end
 
-ReturnDiffBeqMotiveAssets = function(beq_grid = 1, income_grid_point = 50, asset_grid_point_start = 100)
+ReturnDiffBeqMotiveAssets = function (beq_grid=1, income_grid_point=50, asset_grid_point_start=100)
 
-    json_filename = string( "../data/ELSA/lifecycle_outputs/beq_testing/", 
-                call_values.age, "_beq", call_values.bequests,
-                "_", call_values.gender, "_", call_values.life_prob_types,
-                "_", call_values.year, "_", c0_vec[beq_grid ],".json")
+    json_filename = string("../data/ELSA/lifecycle_outputs/beq_testing/",
+        call_values.age, "_beq", call_values.bequests,
+        "_", call_values.gender, "_", call_values.life_prob_types,
+        "_", call_values.year, "_", c0_vec[beq_grid], ".json")
 
 
     # function AssetPathFunction(opt_policy_function, asset_start_point, income_grid_point)
@@ -252,15 +256,15 @@ ReturnDiffBeqMotiveAssets = function(beq_grid = 1, income_grid_point = 50, asset
     # can afford to not run down assets
 
     a_path = AssetPathFunction(
-    RetrievePolicyFunction_beq_edit(json_filename, 65)[income_grid_point, :, :], 
-    asset_grid_point_start, 
-    income_grid_point)
+        RetrievePolicyFunction_beq_edit(json_filename, 65)[income_grid_point, :, :],
+        asset_grid_point_start,
+        income_grid_point)
 
     return a_path
-end 
+end
 
 ReturnDiffBeqMotiveAssets(1)
-     
+
 plot([ReturnDiffBeqMotiveAssets(5, 50, 10).assets ReturnDiffBeqMotiveAssets(10, 50, 10).assets ReturnDiffBeqMotiveAssets(15, 50, 10).assets ReturnDiffBeqMotiveAssets(20, 50, 10).assets])
 
 plot([ReturnDiffBeqMotiveAssets(20, 50, 40).assets ReturnDiffBeqMotiveAssets(20, 50, 80).assets])
@@ -312,10 +316,10 @@ OptimalAnnuityAmount_beq = function (
     # second column is starting point on the income grid
     points_to_evaluate = ann_asset_grid_mat[select_vec, :]
 
-    
+
     value_of_points = []
 
-    
+
     for row_index in 1:sum(select_vec)
 
         # Move up the income grid
@@ -332,12 +336,12 @@ OptimalAnnuityAmount_beq = function (
         if income_point > inc_grid_points
             # stop individuals going outside of the grid
             income_point = inc_grid_points
-        end     
+        end
         if asset_point < 0
             # do not allow negative asset holdings. 
-            append!(value_of_points, -Inf)    
+            append!(value_of_points, -Inf)
         else
-        append!(value_of_points, value_func[income_point, asset_point])
+            append!(value_of_points, value_func[income_point, asset_point])
         end
     end
 
@@ -347,39 +351,39 @@ OptimalAnnuityAmount_beq = function (
         # return the optimal amount to spend on annuities and the
         return max_value_and_index
     elseif max_value_and_index[1] < value_of_start
-        return ("do not annuitise" ,value_of_start)
+        return ("do not annuitise", value_of_start)
     end
 
 end
 
 
-json_filename = string( "../data/ELSA/lifecycle_outputs/beq_testing/", 
-        call_values.age, "_beq", call_values.bequests,
-        "_", call_values.gender, "_", call_values.life_prob_types,
-        "_", call_values.year, "_", c0_vec[20 ],".json")
+json_filename = string("../data/ELSA/lifecycle_outputs/beq_testing/",
+    call_values.age, "_beq", call_values.bequests,
+    "_", call_values.gender, "_", call_values.life_prob_types,
+    "_", call_values.year, "_", c0_vec[20], ".json")
 
 
 val_func_test = RetrieveValueFunction_beq_edit(json_filename, 65)
 
 
 OptimalAnnuityAmount_beq(
-    50,200, gender = "male", age = 65, 
-    year = 2015, value_func = val_func_test )
+    50, 200, gender="male", age=65,
+    year=2015, value_func=val_func_test)
 # even if high wealth and low income then do not annuitise much
 json_filename
 
 
 income_grid
-    income_start_point = 50
+income_start_point = 50
 asset_start_point = 50
 loading_factor = 0.85
-value_fun   
+value_fun
 
 
-json_filename = string( "../data/ELSA/lifecycle_outputs/beq_testing/", 
-            call_values.age, "_beq", call_values.bequests,
-            "_", call_values.gender, "_", call_values.life_prob_types,
-            "_", call_values.year, "_", c0_vec[1],".json")
+json_filename = string("../data/ELSA/lifecycle_outputs/beq_testing/",
+    call_values.age, "_beq", call_values.bequests,
+    "_", call_values.gender, "_", call_values.life_prob_types,
+    "_", call_values.year, "_", c0_vec[1], ".json")
 
 
 
@@ -392,7 +396,7 @@ test = [Int]
 
 maxes = [findmax(col) for col in eachcol(test_val)]
 
-mat = [maxe[k] for  maxe in maxes, k in 1:2]
+mat = [maxe[k] for maxe in maxes, k in 1:2]
 
 plot(mat[:, 1])
 
@@ -415,8 +419,8 @@ RetirementLifecycleWithIncome_beq_edit(
     gender="male",
     life_prob_types="objective",
     year=2013,
-    id_wave="", 
-    c0 = 20000)
+    id_wave="",
+    c0=20000)
 
 RetirementLifecycleWithIncome_beq_edit(
     bequests=true,
@@ -424,59 +428,59 @@ RetirementLifecycleWithIncome_beq_edit(
     gender="male",
     life_prob_types="objective",
     year=2014,
-    id_wave="", 
-    c0 = 20000)
+    id_wave="",
+    c0=20000)
 
-    RetirementLifecycleWithIncome_beq_edit(
+RetirementLifecycleWithIncome_beq_edit(
     bequests=true,
     age=70,
     gender="male",
     life_prob_types="objective",
     year=2018,
-    id_wave="", 
-    c0 = 20000)
+    id_wave="",
+    c0=20000)
 
 
 
-    isfile.( json_filenames)
-    dir_name = "../data/ELSA/lifecycle_outputs/beq_testing/"
- json_filenames = 
- [string(65, "_beq", bequests, "_", gender, "_", life_prob_types, "_", 2013, "_", c0,".json"), 
- string(66, "_beq", bequests, "_", gender, "_", life_prob_types, "_", 2014, "_", c0,".json"), 
- string(70, "_beq", bequests, "_", gender, "_", life_prob_types, "_",2018, "_", c0,".json")]
-json_filenames = dir_name .*json_filenames
+isfile.(json_filenames)
+dir_name = "../data/ELSA/lifecycle_outputs/beq_testing/"
+json_filenames =
+    [string(65, "_beq", bequests, "_", gender, "_", life_prob_types, "_", 2013, "_", c0, ".json"),
+        string(66, "_beq", bequests, "_", gender, "_", life_prob_types, "_", 2014, "_", c0, ".json"),
+        string(70, "_beq", bequests, "_", gender, "_", life_prob_types, "_", 2018, "_", c0, ".json")]
+json_filenames = dir_name .* json_filenames
 
 
 path_65 = AssetPathFunction(
-    RetrievePolicyFunction_beq_edit(json_filenames[1], 65)[1, :, :], 
-    100, 
+    RetrievePolicyFunction_beq_edit(json_filenames[1], 65)[1, :, :],
+    100,
     1)
-    path_65.assets[5]
+path_65.assets[5]
 
 path_66 = AssetPathFunction(
-    RetrievePolicyFunction_beq_edit(json_filenames[2], 66)[1, :, :], 
-    98, 
+    RetrievePolicyFunction_beq_edit(json_filenames[2], 66)[1, :, :],
+    98,
     1)
 
-    path_70 = AssetPathFunction(
-    RetrievePolicyFunction_beq_edit(json_filenames[3], 70)[1, :, :], 
-    90, 
+path_70 = AssetPathFunction(
+    RetrievePolicyFunction_beq_edit(json_filenames[3], 70)[1, :, :],
+    90,
     1)
 
-    
-    # I think these are identical
-    # so we only need to run for age 60 all in one year () 
-    plot([path_65.assets cat(missing, path_66.assets, dims =1) cat(repeat([missing], 5),  path_70.assets, dims =1 )])
 
-    
-sum(ismissing.(GetObjectiveDeathProbs(gender = "male", year = 2005, age = 50)))
+# I think these are identical
+# so we only need to run for age 60 all in one year () 
+plot([path_65.assets cat(missing, path_66.assets, dims=1) cat(repeat([missing], 5), path_70.assets, dims=1)])
+
+
+sum(ismissing.(GetObjectiveDeathProbs(gender="male", year=2005, age=50)))
 
 # want to run this model from birth year 1930 through to 1965
 # that is age 75 through 50 in 2005, 
 # and then 50 in 2006-2015
 
-years = cat(repeat([2005], 26) , [i for i in 2006:2015], dims =1 )
-ages = cat([i for i in 50:75], repeat([50], 10), dims =1 )
+years = cat(repeat([2005], 26), [i for i in 2006:2015], dims=1)
+ages = cat([i for i in 50:75], repeat([50], 10), dims=1)
 
-year_ages_to_run_bequest_model = [years ages] 
+year_ages_to_run_bequest_model = [years ages]
 

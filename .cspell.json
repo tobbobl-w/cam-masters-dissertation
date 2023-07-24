@@ -1,0 +1,27 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [
+        "en-GB"
+    ],
+    "words": [
+        "crtl",
+        "discretise",
+        "dplyr",
+        "fread",
+        "iappei",
+        "iappmo",
+        "idauniq",
+        "indobyr",
+        "ppen",
+        "rbindlist",
+        "rstudioapi",
+        "stringr",
+        "UKDA",
+        "unziped",
+        "maximise"
+    ],
+    "ignoreWords": [],
+    "import": []
+}

@@ -90,7 +90,7 @@ RetrieveValueFunction(false, "objective", 60, 2011, "male")[40, 200, 1] # withou
 
 
 # should get measure of wealth aswell
-idwave_df = idwave_df[Bool.(.!ismissing.(idwave_df.fin_wealth)) .& Bool.(.!ismissing.(idwave_df.public_pension)), :]
+idwave_df = idwave_df[Bool.(.!ismissing.(idwave_df.fin_wealth)).&Bool.(.!ismissing.(idwave_df.public_pension)), :]
 
 
 # so we want gender age year and grid points
@@ -102,7 +102,7 @@ OptimalAnnuityAmount = function (loading_factor=0.85; gender="male", age=65, yea
 
     # comparing different starting values on the income-asset array
     # and the loading factor gives the cost of the tradeoff. I.e. how far we move on each one
-    
+
     value_func = RetrieveValueFunction(false, "objective", age, year, gender)[:, :, 1]
     value_of_start = value_func[income_start_point, asset_start_point]
 
@@ -147,7 +147,7 @@ OptimalAnnuityAmount = function (loading_factor=0.85; gender="male", age=65, yea
         # return the optimal amount to spend on annuities and the
         return max_value_and_index
     elseif max_value_and_index[1] < value_of_start
-        return ("do not annuitise" ,value_of_start)
+        return ("do not annuitise", value_of_start)
     end
 
 end
@@ -171,18 +171,18 @@ end
 
 
 
-out = OptimalAnnuityAmount(0.85,  gender="male", age=65, year=2015, asset_start_point=200, income_start_point=50)
+out = OptimalAnnuityAmount(0.85, gender="male", age=65, year=2015, asset_start_point=200, income_start_point=50)
 typeof(out)
 
-df = DataFrame(A = Float64[], B = Int64[])
+df = DataFrame(A=Float64[], B=Int64[])
 
 
-potential_loading_factors = [i/100 for i in 50:100]
+potential_loading_factors = [i / 100 for i in 50:100]
 
 
-append!(df, out )
+append!(df, out)
 # now see what factor people stop demanding annuities at 
-for fac in potential_loading_factors 
+for fac in potential_loading_factors
     OptimalAnnuityAmount(fac; gender="male", age=65, year=2015, asset_start_point=200, income_start_point=50)
-end 
+end
 # why is this so slow
