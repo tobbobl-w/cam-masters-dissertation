@@ -234,7 +234,23 @@ mean(joint_dt$id_wave %in% ids_done)
 
 ids_not_done <- joint_dt$id_wave[!joint_dt$id_wave %in% ids_done]
 
-# ok these are not done
+ids_that_we_can_do <- dir("../../data/ELSA/subjective_tables/jsons/") %>%
+    str_extract("\\d{6}-\\d{1}")
 
 
-"107746-8"
+length(intersect(ids_not_done, ids_that_we_can_do))
+
+
+all_sub_jsons <- dir("../../data/ELSA/subjective_tables/jsons/")
+
+files_to_copy <- paste0(
+    "../../data/ELSA/subjective_tables/jsons/",
+    ids_not_done,
+    ".json"
+)
+
+new_names <- paste0("../../../../temp_data_dir/", ids_not_done, ".json")
+
+file.copy(files_to_copy, new_names, overwrite = TRUE)
+
+length(files_to_copy) == length(new_names)

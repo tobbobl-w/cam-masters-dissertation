@@ -26,7 +26,6 @@ ids_to_run = intersect(
     ids_we_need_lifecycle,
     ids_we_have_probs)
 
-length(ids_to_run)
 
 # Now run all 
 RunIdsFunction = function (group_of_ids)
@@ -49,59 +48,7 @@ RunIdsFunction = function (group_of_ids)
     end
 end
 
-# mmm it uses loads of ram 
 
-groups_to_split = round.(Int, rand(length(ids_to_run)) * num_groups)
+rev_ids_to_run = reverse(ids_to_run)
 
-
-
-
-v = [i for i in 1:10]
-splits = 3
-
-
-
-V = [Vector{eltype(v)}(undef, 1) for _ in 1:splits]
-
-V[1] = [1, 2, 3]
-V
-
-
-
-# SplitVector = function (v, splits)
-
-# check if not perfect length 
-
-if !isinteger(length(v) / (splits))
-    len_out = floor(Int, length(v) / (splits - 1))
-    remainder = length(v) - len_out * (splits - 1)
-end
-
-
-groups = round.(Int, rand(1000) * 6)
-
-
-# just want to split a vector into 6 parts
-
-# GetSubjectiveDeathProbs(id_wave_to_get="100021-5")
-
-
-
-# Nice this is working now!!
-# different life expectancies & different years and genders (these are kinda the same)
-
-# get a unique df with all the types we will need
-
-
-# ################################# TO DO #################################
-# # 
-
-# # then take individuals from elsa and estimate what consumption should be
-# # under the different model types i.e. conditional on assets, age, object live probs and 
-# # then both bequests and subjective life probs
-
-# # then we can run regressions on the impact of forced annuitisation
-
-# # there is annuity price data vs income drawdown on fca website which is cool 
-
-
+RunIdsFunction(rev_ids_to_run)
