@@ -30,6 +30,119 @@ names_vec = vec(["id_wave",
 "annuity_payment"])
 
 
+
+# ------------------ Life cycle plots ------------------
+# ret_year = 2012
+# int_year = 2014
+# fin_wealth = 120,000 (mean) => 120 grid 
+# pension = 6,000 => 12
+# id_wave 107132-7
+# gender = "female"
+# ret_age = 65
+# birth_year = 1947
+
+# No bequests, objective life probs
+stan_pol_func = RetrievePolicyFunction(
+    false, "objective", 1947, "female",  "107132-7"
+)
+
+beq_pol_func = RetrievePolicyFunction(
+    true, "objective", 1947, "female",  "107132-7"
+)
+
+sub_pol_func = RetrievePolicyFunction(
+    false, "subjective", 1947, "female",  "107132-7"
+)
+
+# the other policy functions are too long so we trim them down so that it starts at 
+# retirement
+
+# maybe also trim them a few years
+beq_pol_func = beq_pol_func[:, :, 10:end]
+stan_pol_func = stan_pol_func[:, :, 10:end]
+
+# identical in every other respect
+using Plots
+
+plot([AssetPathFunction(stan_pol_func, 120, 12).cons AssetPathFunction(beq_pol_func, 120, 12).cons AssetPathFunction(sub_pol_func, 120, 12).cons]) 
+
+
+Annuity_GeneralDeathProbs(
+    60000,
+    0.90, 
+    GetObjectiveDeathProbs(gender = "female", year = 2012, age = 65)    
+)
+# So move down 60 asset grids
+# and move up 7 income grids
+
+# ---- Consumption Plot ----------
+consump_paths = hcat(
+    AssetPathFunction(stan_pol_func, 120, 12).cons, 
+    AssetPathFunction(stan_pol_func, 60, 19).cons,
+    AssetPathFunction(beq_pol_func, 120, 12).cons,
+    AssetPathFunction(beq_pol_func, 60, 19).cons, 
+    AssetPathFunction(sub_pol_func, 120, 12).cons, 
+    AssetPathFunction(sub_pol_func, 60, 19).cons
+)
+lables = ["Standard" "Standard with annuity" "Bequest" "Bequest with annuity" "Subjective" "Subjective with annuity"]
+
+all_ages = [64 + i for i in 1:size(sub_pol_func, 3)]
+
+pre100_consump_paths = consump_paths[all_ages .<= 100, :]
+pre100_ages = all_ages[all_ages .<= 100] 
+
+cons_plot = plot(pre100_ages, 
+pre100_consump_paths[:, [1,3, 5]], 
+label = lables[:, [1,3, 5]], 
+ls = :solid, title = "Consumption Path of Median Retiree")
+
+xlabel!("Age")
+ylabel!("Consumption")
+
+plot!(pre100_ages, pre100_consump_paths[:, [2,4, 6]], 
+label = lables[:, [2,4,6]], 
+ls = :dash)
+
+savefig(cons_plot, 
+"Texfiles/figures/consumption_plot_median_retiree.pdf")
+
+# asset path of median retiree
+# ----------- Asset plot -----------
+
+asset_paths = hcat(
+    AssetPathFunction(stan_pol_func, 120, 12).assets, 
+    AssetPathFunction(stan_pol_func, 60, 19).assets,
+    AssetPathFunction(beq_pol_func, 120, 12).assets,
+    AssetPathFunction(beq_pol_func, 60, 19).assets, 
+    AssetPathFunction(sub_pol_func, 120, 12).assets, 
+    AssetPathFunction(sub_pol_func, 60, 19).assets
+)
+lables = ["Standard" "Standard with annuity" "Bequest" "Bequest with annuity" "Subjective" "Subjective with annuity"]
+
+all_ages = [64 + i for i in 1:(size(sub_pol_func, 3) + 1)]
+
+pre100_asset_paths = asset_paths[all_ages .<= 100, :]
+pre100_ages = all_ages[all_ages .<= 100] 
+
+asset_plot = plot(pre100_ages, 
+pre100_asset_paths[:, [1,3, 5]], 
+label = lables[:, [1,3, 5]], 
+ls = :solid, title = "Asset Path of Median Retiree")
+
+xlabel!("Age")
+ylabel!("Assets (1000s)")
+
+plot!(pre100_ages, pre100_asset_paths[:, [2,4, 6]], 
+label = lables[:, [2,4,6]], 
+ls = :dash)
+
+savefig(asset_plot, 
+"Texfiles/figures/asset_plot_median_retiree.pdf")
+
+
+
+
+
 # ---------- First no bequests, objective life expectancy -------------
 # --------- Bequest models ---------------
 
@@ -115,7 +228,7 @@ standard_theory_data)
 
 
 
-#  ---------------subjetive life expectancies ---------------
+#  --------------- subjetive life expectancies ---------------
 
 
 # check which ids we have run and only ask to get those

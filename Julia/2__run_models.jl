@@ -21,10 +21,26 @@ ids_we_have_probs = unique(subjective_death_df[!, :id_wave])
 # these are ids that we will use in the regression
 ids_we_need_lifecycle = idwave_df[:, :id_wave]
 
+
+folder_matches = match.(
+    r"(?<=_)(\d{6}-\d{1})",
+    readdir("../Data/ELSA/lifecycle_outputs/id_wave/"))
+
+ids_we_have_done = [""]
+for i in 1:length(folder_matches)
+    append!(ids_we_have_done, [folder_matches[i].match])
+end
+ids_we_have_done
+
+
 # we only want to run ids we care about and that we have subjective life probs for
-ids_to_run = intersect(
+ids_we_can_and_we_want = intersect(
     ids_we_need_lifecycle,
     ids_we_have_probs)
+
+# we only want to run ids we havent run before 
+ids_to_run = ids_we_can_and_we_want[ids_we_can_and_we_want.∉Ref(ids_we_have_done)]
+
 
 
 # Now run all 
@@ -48,6 +64,7 @@ RunIdsFunction = function (group_of_ids)
     end
 end
 
+# RunIdsFunction(ids_to_run)
 
 rev_ids_to_run = reverse(ids_to_run)
 

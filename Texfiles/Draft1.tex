@@ -516,6 +516,7 @@ objective probability of death each period. I estimate with subjective life expe
 I also estimate the model both with and without a bequest motive which was picked to roughly fit the real annuity
 rates seen in the data.
 
+\textbf{I don't actually know why I do this}
 In retiree's first year of retirement I allow them to choose to annuitise some of their wealth. In practical terms
 this is moving down the asset grid but up the income grid and seeing if the value of being in that position is better
 than where the individual is currently. To assess this trade-off I calculate the annual annuity payment that follows
@@ -529,10 +530,66 @@ Where $C$ is the one-off payment, $\delta$ is a factor that controls the `money'
 is the probability of death at age $t$ conditional on being age $Retage$. So individuals can move C on the asset grid
 for gaining Ann on the income grid for the rest of their lives.
 
-I also simulate the expected change in consumption given different rates of annuitisation versus no annuitisation.
-The benefit of simulating an individual's decision is that we can directly compare what they would have
-consumed with what they actually consumed, and we can replicate the empirical analysis using the
-solution to the lifecycle model.
+
+\section{Lifecycle Results}
+
+Having found optimal policy functions and value functions I can now simulate the change in consumption given
+different rates of annuitisation versus no annuitisation.
+There are multiple benefits to building a model of individuals decisions. Firstly, we can directly compare
+what a given individual would have consumed with what they actually consumed, conditional on our model being
+correct. In other words we have the counterfactual world in which individuals were not forced to annuitise.
+Secondly, we can simulate the impact of different policy changes on the consumption, savings and bequest behaviour.
+For example, I can change the proportion of wealth that will be annuitised and see the corresponding changes in
+consumption indicators for all individuals.
+
+I start this section by plotting the retirement path of consumption for a median individual in
+the ELSA data set. I plot consumption with different proportions of starting wealth annuitised
+and the different lifecycle model types.
+
+\begin{figure}[h]
+    \caption{Consumption in retirement}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{figures/consumption_plot_median_retiree.pdf}
+    \label{fig:ConsumpPlot}
+\end{figure}
+
+
+\begin{figure}[h]
+    \caption{Assets in retirement}
+    \centering
+    \includegraphics[width=0.7\columnwidth]{figures/asset_plot_median_retiree.pdf}
+    \label{fig:AssetPlot}
+\end{figure}
+
+Figures \ref{fig:ConsumpPlot} and \ref{fig:AssetPlot} show the retirement
+path of consumption and assets for a median retiree. This hypothetical women has
+120,000 of assets at age 65 when they retired in 2012 with a state pension income of 6000.
+The dashed lines show consumption and assets with an annuity that costs half of their wealth.
+This buys them 3500 of annuity income, which, given their objective life expectancies is a money's
+worth of about 90\%.
+
+We can see that the asset path with the bequest motive keeps more for longer but still decreases
+and by their late 90s they have completely run down their wealth. Interestingly the asset path
+with the quickest run down is the standard lifecycle model using objective life expectancies,
+which points towards this individual being infact optimistic about their life chances.
+Also rather surprisingly the asset paths of all three types are similar without annuities.
+The paths only diverge after age 75 at which point the bequest path stays high and the
+other paths start to decrease faster. This is contrary to the path with annuities where
+the standard path diverges from the bequest and subjective paths immediately.
+
+The consumption paths all start at around 1400. The three models without an annuity start at
+exactly the same amount and stay that way until the individual reaches her mid seventies -- showing
+that even quite different lifecycle models can generate similar paths. As expected, the consumption
+path with the bequest motive with an annuity is lower at the start of retirement than the bequest path 
+without an annuity as individuals seek to build their savings back up.
+But it is also lower for the subjective life expectancy case,
+again pointing toward this individual being optimistic. However, the subjective consumption
+line rises at a younger age than the line with bequests, showing that the models align 
+with the prediction that subjective lifecycle agents consume more in early retirement.
+
+The period of interest in this study is the first three years of retirement. For this period 
+we do see substantially differences in consumption for the diffe
+
 
 I first round an individuals financial wealth to the nearest point on the discrete asset grid, and
 do likewise for an individuals state pension income. I then take the treatment group and evaluate
@@ -550,11 +607,11 @@ this is lower.
 
 
 \begin{landscape}
-
     \input{tables/standard_life_cycle.tex}
 \end{landscape}
 
-Table \ref{tab:StandardLifeCycle} shows the results from the bequest models.
+Table \ref{tab:StandardLifeCycle} shows the results from the standard model lifecycle when individuals use ONS
+for risk of death and have no bequest function. In this case .
 
 
 

@@ -79,6 +79,17 @@ joint_dt <- reg_dt %>%
         "no", "yes"
     ))
 
+
+joint_dt %>%
+    filter(retirement_year == 2012) %>%
+    filter(int_year == 2014) %>%
+    filter(fin_wealth > 100) %>%
+    filter(fin_wealth < 150) %>%
+    filter(public_pension > 5) %>%
+    select(id_wave)
+
+
+
 models <- list(
     dc_only = list(
         filter_expression = expression(ever_dc_pen == "yes"),

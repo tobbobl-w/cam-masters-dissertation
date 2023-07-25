@@ -168,7 +168,8 @@ GetJson = function (
         vector_of_matches = .!(isnothing.(match.(regex_search, files_in_folder)))
 
         # there should be a unique match
-        if sum(vector_of_matches) != 1
+        if sum(vector_of_matches) == 0
+
             error("Not a match for this json string")
         end
 
@@ -218,7 +219,7 @@ RetrievePolicyFunction = function (
 end
 
 
-function AssetPathFunction(
+AssetPathFunction = function (
     opt_policy_function,
     asset_start_point,
     income_grid_point)
