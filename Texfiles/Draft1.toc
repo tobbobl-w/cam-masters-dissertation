@@ -1,13 +1,12 @@
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Literature review}{5}{subsection.1.1}%
-\contentsline {section}{\numberline {2}Data and Policy reform}{6}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Data}{6}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Policy reform}{8}{subsection.2.2}%
+\contentsline {section}{\numberline {2}Data and Policy reform}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Data}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Policy reform}{9}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Covariate Balance}{11}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Empirical models}{16}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Robustness Checks}{24}{subsection.3.1}%
-\contentsline {section}{\numberline {4}Life cycle theory}{27}{section.4}%
-\contentsline {section}{\numberline {5}Lifecycle Results}{30}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{39}{section.6}%
+\contentsline {section}{\numberline {3}Empirical models}{17}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Robustness Checks}{25}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Life cycle theory}{28}{section.4}%
+\contentsline {section}{\numberline {5}Lifecycle Results}{31}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{40}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Rough plan}{40}{subsection.6.1}%
-\contentsline {section}{\numberline {7}Appendix}{40}{section.7}%

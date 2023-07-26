@@ -8,6 +8,8 @@ library(lubridate)
 
 dir("../../data/FCA_annuities", full.names = T)
 
+base_size_for_plots <- 16
+
 annuity_data_2018 <- read_excel("../../data/FCA_annuities/psd-ri-2018.xlsx",
     sheet = "Quarterly ",
     range = "B9:BD28"
@@ -73,7 +75,7 @@ annuity_plot <- ggplot(joined_data) +
     geom_point(aes(x = date, y = num_sales, colour = product_type)) +
     geom_line(aes(x = date, y = num_sales, colour = product_type)) +
     scale_x_date(date_breaks = "years", date_labels = "%Y") +
-    theme_bw() +
+    theme_bw(base_size = base_size_for_plots) +
     labs(
         x = "", y = "Sales", title = "Select Product Sales Data",
         colour = "Product type"
@@ -133,7 +135,7 @@ annuity_sizes_plot <- ggplot(
 ) +
     geom_col() +
     labs(title = "Number of pots accessed by size, 2021-22") +
-    theme_bw() +
+    theme_bw(base_size = base_size_for_plots) +
     scale_y_continuous(labels = scales::comma) +
     coord_flip()
 

@@ -88,8 +88,7 @@ names(unclean_name_vector) <- unclean_names
 # select stats to have at the bottom
 bottom_stats <- modelsummary::gof_map %>%
     filter(raw %in% c(
-        "nobs", "r.squared", "adj.r.squared", "std.errors",
-        "vcov.type"
+        "nobs", "r.squared", "adj.r.squared"
     ))
 
 align_string_ms <- function(col_names, type_alignment = "d") {
@@ -129,23 +128,20 @@ out_models_only_dc <- lapply(
 )
 names(out_models_only_dc) <- sapply(lhs, ReturnCleanName)
 
-# Ok lets write code that makes a nice table from this
-# and then put into latex
-# and then chat about it!
-
-
-
 
 modelsummary(
     out_models_only_dc,
     output = "../Texfiles/tables/elsa_results_only_dc.tex",
-    vcov = "robust",
     title = "DC Only \\label{tab:DcOnlyRes}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_only_dc)),
-    gof_map = bottom_stats
+    gof_map = bottom_stats,
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )
 
 
@@ -172,15 +168,17 @@ names(out_models_all_data) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_all_data,
     output = "../Texfiles/tables/elsa_results_all_with_interact.tex",
-    vcov = "robust",
     title = "All individuals with interaction \\label{tab:ElsaAllData}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_all_data)),
-    gof_map = bottom_stats
+    gof_map = bottom_stats,
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )
-
 
 # ----------- Interaction with pension pot size --------------
 
@@ -204,14 +202,19 @@ names(out_models_dc_pot_interaction) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_dc_pot_interaction,
     output = "../Texfiles/tables/elsa_results_dc_pot_interact.tex",
-    vcov = "robust",
     title = "DC Pension Size interaction \\label{tab:DcOnlyInteract}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_dc_pot_interaction)),
-    gof_map = bottom_stats
+    gof_map = bottom_stats,
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )
+
+
 
 # ----------- Interaction with financial wealth --------------
 
@@ -235,13 +238,15 @@ names(out_models_fin_wealth_interaction) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_fin_wealth_interaction,
     output = "../Texfiles/tables/elsa_results_fin_wealth_interact.tex",
-    vcov = "robust",
     title = "DC Financial Wealth interaction \\label{tab:DcOnlyFinWealthInteract}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_fin_wealth_interaction)),
-    gof_map = bottom_stats
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )
 
 
@@ -273,13 +278,16 @@ names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_only_dc_only_retexp,
     output = "../Texfiles/tables/rob_elsa_results_only_dc_only_exp.tex",
-    vcov = "robust",
     title = "DC & expected retirement is real retirement only  \\label{tab:DcOnlyExpOnlyRes}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_only_dc_only_retexp)),
-    gof_map = bottom_stats
+    gof_map = bottom_stats,
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )
 
 
@@ -305,11 +313,14 @@ names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_only_dc_only_retexp,
     output = "../Texfiles/tables/rob_elsa_results_only_dc_only_late_ret_year.tex",
-    vcov = "robust",
     title = "DC only and retired later than 2012  \\label{tab:DcOnlyNot2012}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_only_dc_only_retexp)),
-    gof_map = bottom_stats
+    gof_map = bottom_stats,
+    vcov = ~pre_post_ref_bin,
+    notes = "I use robust standard errors clustered at the treatment level
+    since standard errors are
+    likely correlated within these groups."
 )

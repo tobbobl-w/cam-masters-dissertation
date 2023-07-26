@@ -86,10 +86,10 @@ header_to_add <- c(1, rep(2, length(function_names) - 1))
 
 names(header_to_add) <- function_names
 
-align_string <- function(col_names) {
+align_string <- function(col_names, alignment = "r") {
     # Left align first col
     # right align others
-    right <- rep("r", length(col_names) - 1)
+    right <- rep(alignment, length(col_names) - 1)
     # first collapse the vector
     # then join with l
     full_string <- paste0("l", paste0(right, collapse = ""))
@@ -198,7 +198,7 @@ coef_table <- kbl(cov_balance,
     booktabs = TRUE,
     format = "latex",
     caption = "Covariate Balance \\label{tab:cov_balance}",
-    align = align_string(col_names)
+    align = align_string(col_names, alignment = "d")
 )
 
 writeLines(
