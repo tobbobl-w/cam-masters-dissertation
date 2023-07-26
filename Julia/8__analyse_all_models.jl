@@ -1,3 +1,4 @@
+using DelimitedFiles
 
 # so we want to track consumption in early retirement for individuals in ELSA given 
 # take retirement year info
@@ -277,6 +278,58 @@ CSV.write(
 # for each person trace whole consumption and asset path
 # and then plot those
 
+
+# For this for each model we need to get all the asset paths
+# the best way to do this is probably push to a vector of ids and push to a another vector of vectors that 
+# we can later concatenate
+
+
+for row in eachrow(elsa_filtered)
+
+    id_wave = row["id_wave"]
+    gender = row["gender"]
+    age = row["age"]
+    retired_age = row["retired_age"]
+    year = row["year"]
+    pension = row["pen_grid"]
+    assets = row["ass_grid"]
+
+    birth_year = year - age
+    
+    out_folder = "../data/ELSA/lifecycle_outputs/model_ass_cons_paths/"
+
+    # Some ids dont work so we use try catch. If it fails the program continues to the next item in the loop rather than stopping
+    try
+        sub_pol_func = RetrievePolicyFunction(
+        false, "subjective", 1947, gender,  id_wave
+    )
+    stan_pol_func = RetrievePolicyFunction(
+        false, "objective", birth_year, gender,  id_wave
+    )
+
+    beq_pol_func = RetrievePolicyFunction(
+        true, "objective", birth_year, gender,  id_wave
+    )
+    catch 
+        no_pol = true
+    else 
+
+        big_vec = [AssetPathFunction(sub_pol_func, assets, pension),
+        AssetPathFunction(stan_pol_func, assets, pension),
+        AssetPathFunction(beq_pol_func, assets, pension)]
+        out_string = out_folder* id_wave*".csv"
+        writedlm(out_string, big_vec)
+
+    end
+
+end 
+
+
+# want to just mash these together into a csv that I can do something with in r. 
+# call the csv name the id name
+
+
+    # end 
 
 
 

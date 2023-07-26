@@ -86,7 +86,9 @@ annuity_plot <- ggplot(joined_data) +
         xintercept = pen_freedoms_force,
         linetype = "dotted"
     ) +
-    geom_text(data = label_df, aes(x = date, y = y, label = labels))
+    geom_text(data = label_df, aes(x = date, y = y, label = labels)) +
+    scale_y_continuous(labels = scales::comma)
+
 
 
 if (!dir.exists("../Texfiles/figures")) {
@@ -96,6 +98,9 @@ if (!dir.exists("../Texfiles/figures")) {
 ggsave(
     "../Texfiles/figures/annuity_overtime.pdf",
     annuity_plot,
+    height = 5,
+    width = 11,
+    units = "in"
 )
 
 
@@ -127,9 +132,10 @@ annuity_sizes_plot <- ggplot(
     )
 ) +
     geom_col() +
-    coord_flip() +
     labs(title = "Number of pots accessed by size, 2021-22") +
-    theme_bw()
+    theme_bw() +
+    scale_y_continuous(labels = scales::comma) +
+    coord_flip()
 
 ggsave(
     "../Texfiles/figures/annuity_pot_sizes.pdf",

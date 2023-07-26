@@ -58,6 +58,31 @@ unclean_name_vector <- names(clean_names)
 names(unclean_name_vector) <- unclean_names
 
 
+# select stats to have at the bottom
+bottom_stats <- modelsummary::gof_map %>%
+    filter(raw %in% c(
+        "nobs", "r.squared", "adj.r.squared", "std.errors",
+        "se_type"
+    ))
+
+align_string_ms <- function(col_names, type_alignment = "d") {
+    # Left align first col
+    # right align others
+    multiplier <- 1
+
+    right <- rep(
+        type_alignment,
+        (length(col_names) * multiplier)
+    )
+    # first collapse the vector
+    # then join with l
+    full_string <- paste0("l", paste0(right, collapse = ""))
+
+    return(full_string)
+}
+
+
+
 #  ------------ join data together ------------
 joint_dt <- reg_dt %>%
     merge.data.table(
@@ -239,7 +264,9 @@ modelsummary(
     vcov = "robust",
     title = "Simulated bequest lifecycle models \\label{tab:BeqLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL
+    statistic = NULL, 
+    align = align_string_ms(names(bequest_outmodels)), 
+    gof_map = bottom_stats
 )
 
 
@@ -261,8 +288,11 @@ modelsummary(
     vcov = "robust",
     title = "Simulated standard lifecycle models \\label{tab:StandardLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL
+    statistic = NULL, 
+    align = align_string_ms(names(standard_outmodels)), 
+    gof_map = bottom_stats
 )
+
 
 
 
@@ -283,7 +313,9 @@ modelsummary(
     vcov = "robust",
     title = "Simulated subjective lifecycle models \\label{tab:SubjectiveLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL
+    statistic = NULL, 
+    align = align_string_ms(names(subjective_outmodels)), 
+    gof_map = bottom_stats
 )
 
 

@@ -2,27 +2,32 @@
 
 \caption{DC Financial Wealth interaction \label{tab:DcOnlyFinWealthInteract}}
 \centering
-\begin{tabular}[t]{lccccc}
+\begin{tabular}[t]{lddddd}
 \toprule
-  & TotalConsump & FoodConsump & FoodConsumpIn & FoodConsumpOut & ClothingConsump\\
+  & {TotalConsump} & {FoodConsump} & {FoodConsumpIn} & {FoodConsumpOut} & {ClothingConsump}\\
 \midrule
-(Intercept) & \num{792.453}\quad   (\num{658.026}) & \num{157.868}\quad   (\num{412.133}) & \num{56.231}\quad   (\num{68.529}) & \num{-89.273}\quad   (\num{230.920}) & \num{110.932}\quad   (\num{206.002})\\
-PostReform & \num{77.996}\quad   (\num{75.305}) & \num{9.980}\quad   (\num{48.402}) & \num{-2.599}\quad   (\num{8.952}) & \num{20.981}\quad   (\num{20.937}) & \num{30.043}\quad   (\num{40.234})\\
-RetiredAge & \num{2.134}\quad   (\num{10.664}) & \num{4.024}\quad   (\num{6.737}) & \num{0.201}\quad   (\num{1.097}) & \num{3.187}\quad   (\num{3.900}) & \num{-1.370}\quad   (\num{3.397})\\
-FinWealth(£000s) & \num{0.322}\quad   (\num{0.154}) & \num{0.164}\quad   (\num{0.140}) & \num{0.009}\quad   (\num{0.018}) & \num{0.117}\quad   (\num{0.069}) & \num{0.059}\quad   (\num{0.102})\\
-Gender & \num{-31.169}\quad   (\num{58.520}) & \num{-47.768}\quad   (\num{35.468}) & \num{-8.490}\quad   (\num{6.543}) & \num{-11.772}\quad   (\num{15.953}) & \num{8.354}\quad   (\num{25.126})\\
-YearsSinceRetirement & \num{0.541}\quad   (\num{44.781}) & \num{-23.842}\quad   (\num{24.362}) & \num{-2.771}\quad   (\num{4.670}) & \num{-12.460}\quad   (\num{9.195}) & \num{-11.846}\quad   (\num{20.035})\\
-OwnsHouse & \num{-139.190}\quad   (\num{107.632}) & \num{102.073}\quad   (\num{53.269}) & \num{25.433}\quad   (\num{8.712}) & \num{-8.030}\quad   (\num{30.091}) & \num{74.816}\quad   (\num{15.601})\\
-StatePension & \num{-15.442}\quad   (\num{9.020}) & \num{-7.971}\quad   (\num{6.146}) & \num{-0.775}\quad   (\num{1.089}) & \num{-4.373}\quad   (\num{3.322}) & \num{-0.596}\quad   (\num{4.659})\\
-PostReform:FinWealth(£000s) & \num{0.098}\quad   (\num{0.377}) & \num{-0.025}\quad   (\num{0.175}) & \num{-0.003}\quad   (\num{0.028}) & \num{-0.002}\quad   (\num{0.103}) & \num{-0.116}\quad   (\num{0.170})\\
+(Intercept) & 792.453 & 157.868 & 56.231 & -89.273 & 110.932\\
+ & (658.026) & (412.133) & (68.529) & (230.920) & (206.002)\\
+PostReform & 77.996 & 9.980 & -2.599 & 20.981 & 30.043\\
+ & (75.305) & (48.402) & (8.952) & (20.937) & (40.234)\\
+RetiredAge & 2.134 & 4.024 & 0.201 & 3.187 & -1.370\\
+ & (10.664) & (6.737) & (1.097) & (3.900) & (3.397)\\
+FinWealth(£000s) & 0.322 & 0.164 & 0.009 & 0.117 & 0.059\\
+ & (0.154) & (0.140) & (0.018) & (0.069) & (0.102)\\
+Gender & -31.169 & -47.768 & -8.490 & -11.772 & 8.354\\
+ & (58.520) & (35.468) & (6.543) & (15.953) & (25.126)\\
+YearsSinceRetirement & 0.541 & -23.842 & -2.771 & -12.460 & -11.846\\
+ & (44.781) & (24.362) & (4.670) & (9.195) & (20.035)\\
+OwnsHouse & -139.190 & 102.073 & 25.433 & -8.030 & 74.816\\
+ & (107.632) & (53.269) & (8.712) & (30.091) & (15.601)\\
+StatePension & -15.442 & -7.971 & -0.775 & -4.373 & -0.596\\
+ & (9.020) & (6.146) & (1.089) & (3.322) & (4.659)\\
+PostReform:FinWealth(£000s) & 0.098 & -0.025 & -0.003 & -0.002 & -0.116\\
+ & (0.377) & (0.175) & (0.028) & (0.103) & (0.170)\\
 \midrule
-Num.Obs. & \num{222} & \num{219} & \num{219} & \num{222} & \num{222}\\
-R2 & \num{0.077} & \num{0.072} & \num{0.048} & \num{0.088} & \num{0.030}\\
-R2 Adj. & \num{0.042} & \num{0.037} & \num{0.012} & \num{0.054} & \num{-0.007}\\
-AIC & \num{3329.2} & \num{3061.4} & \num{2313.1} & \num{2776.8} & \num{2936.1}\\
-BIC & \num{3363.2} & \num{3095.3} & \num{2347.0} & \num{2810.8} & \num{2970.1}\\
-Log.Lik. & \num{-1654.605} & \num{-1520.681} & \num{-1146.532} & \num{-1378.376} & \num{-1458.053}\\
-RMSE & \num{417.48} & \num{250.84} & \num{45.44} & \num{120.30} & \num{172.24}\\
+Num.Obs. & 222 & 219 & 219 & 222 & 222\\
+R2 & 0.077 & 0.072 & 0.048 & 0.088 & 0.030\\
+R2 Adj. & 0.042 & 0.037 & 0.012 & 0.054 & -0.007\\
 Std.Errors & HC3 & HC3 & HC3 & HC3 & HC3\\
 \bottomrule
 \end{tabular}

@@ -2,28 +2,34 @@
 
 \caption{DC Pension Size interaction \label{tab:DcOnlyInteract}}
 \centering
-\begin{tabular}[t]{lccccc}
+\begin{tabular}[t]{lddddd}
 \toprule
-  & TotalConsump & FoodConsump & FoodConsumpIn & FoodConsumpOut & ClothingConsump\\
+  & {TotalConsump} & {FoodConsump} & {FoodConsumpIn} & {FoodConsumpOut} & {ClothingConsump}\\
 \midrule
-(Intercept) & \num{933.480}\quad   (\num{587.440}) & \num{332.103}\quad   (\num{376.369}) & \num{52.065}\quad   (\num{71.854}) & \num{104.467}\quad   (\num{136.087}) & \num{50.218}\quad   (\num{223.994})\\
-PostReform & \num{34.354}\quad   (\num{56.785}) & \num{-0.153}\quad   (\num{39.774}) & \num{-1.974}\quad   (\num{7.885}) & \num{9.828}\quad   (\num{14.182}) & \num{27.181}\quad   (\num{26.798})\\
-RetiredAge & \num{-1.053}\quad   (\num{9.187}) & \num{0.449}\quad   (\num{5.945}) & \num{0.266}\quad   (\num{1.141}) & \num{-0.697}\quad   (\num{2.093}) & \num{-0.338}\quad   (\num{3.740})\\
-FinWealth(£000s) & \num{0.250}\quad   (\num{0.099}) & \num{0.140}\quad   (\num{0.066}) & \num{0.005}\quad   (\num{0.013}) & \num{0.109}\quad   (\num{0.035}) & \num{-0.014}\quad   (\num{0.056})\\
-Gender & \num{-49.495}\quad   (\num{54.672}) & \num{-31.847}\quad   (\num{35.608}) & \num{-7.677}\quad   (\num{6.869}) & \num{0.748}\quad   (\num{13.477}) & \num{8.021}\quad   (\num{24.741})\\
-DCValue(£000s) & \num{-0.020}\quad   (\num{0.023}) & \num{0.016}\quad   (\num{0.038}) & \num{0.004}\quad   (\num{0.008}) & \num{-0.003}\quad   (\num{0.005}) & \num{-0.002}\quad   (\num{0.009})\\
-YearsSinceRetirement & \num{17.917}\quad   (\num{39.671}) & \num{-7.264}\quad   (\num{24.534}) & \num{-0.604}\quad   (\num{4.745}) & \num{-5.456}\quad   (\num{7.920}) & \num{2.070}\quad   (\num{15.515})\\
-OwnsHouse & \num{-89.060}\quad   (\num{88.887}) & \num{116.154}\quad   (\num{48.223}) & \num{24.338}\quad   (\num{9.336}) & \num{11.136}\quad   (\num{20.678}) & \num{76.890}\quad   (\num{16.259})\\
-StatePension & \num{-9.903}\quad   (\num{8.574}) & \num{-5.061}\quad   (\num{5.539}) & \num{-1.113}\quad   (\num{1.109}) & \num{-0.018}\quad   (\num{1.803}) & \num{-3.299}\quad   (\num{4.319})\\
-PostReform:DCValue(£000s) & \num{0.008}\quad   (\num{0.038}) & \num{-0.016}\quad   (\num{0.039}) & \num{-0.003}\quad   (\num{0.009}) & \num{-0.002}\quad   (\num{0.031}) & \num{-0.002}\quad   (\num{0.019})\\
+(Intercept) & 933.480 & 332.103 & 52.065 & 104.467 & 50.218\\
+ & (587.440) & (376.369) & (71.854) & (136.087) & (223.994)\\
+PostReform & 34.354 & -0.153 & -1.974 & 9.828 & 27.181\\
+ & (56.785) & (39.774) & (7.885) & (14.182) & (26.798)\\
+RetiredAge & -1.053 & 0.449 & 0.266 & -0.697 & -0.338\\
+ & (9.187) & (5.945) & (1.141) & (2.093) & (3.740)\\
+FinWealth(£000s) & 0.250 & 0.140 & 0.005 & 0.109 & -0.014\\
+ & (0.099) & (0.066) & (0.013) & (0.035) & (0.056)\\
+Gender & -49.495 & -31.847 & -7.677 & 0.748 & 8.021\\
+ & (54.672) & (35.608) & (6.869) & (13.477) & (24.741)\\
+DCValue(£000s) & -0.020 & 0.016 & 0.004 & -0.003 & -0.002\\
+ & (0.023) & (0.038) & (0.008) & (0.005) & (0.009)\\
+YearsSinceRetirement & 17.917 & -7.264 & -0.604 & -5.456 & 2.070\\
+ & (39.671) & (24.534) & (4.745) & (7.920) & (15.515)\\
+OwnsHouse & -89.060 & 116.154 & 24.338 & 11.136 & 76.890\\
+ & (88.887) & (48.223) & (9.336) & (20.678) & (16.259)\\
+StatePension & -9.903 & -5.061 & -1.113 & -0.018 & -3.299\\
+ & (8.574) & (5.539) & (1.109) & (1.803) & (4.319)\\
+PostReform:DCValue(£000s) & 0.008 & -0.016 & -0.003 & -0.002 & -0.002\\
+ & (0.038) & (0.039) & (0.009) & (0.031) & (0.019)\\
 \midrule
-Num.Obs. & \num{208} & \num{205} & \num{205} & \num{208} & \num{208}\\
-R2 & \num{0.047} & \num{0.063} & \num{0.052} & \num{0.091} & \num{0.036}\\
-R2 Adj. & \num{0.004} & \num{0.019} & \num{0.009} & \num{0.050} & \num{-0.008}\\
-AIC & \num{3059.7} & \num{2839.1} & \num{2170.3} & \num{2448.6} & \num{2737.0}\\
-BIC & \num{3096.4} & \num{2875.6} & \num{2206.8} & \num{2485.3} & \num{2773.7}\\
-Log.Lik. & \num{-1518.847} & \num{-1408.547} & \num{-1074.133} & \num{-1213.316} & \num{-1357.514}\\
-RMSE & \num{358.96} & \num{233.23} & \num{45.64} & \num{82.62} & \num{165.27}\\
+Num.Obs. & 208 & 205 & 205 & 208 & 208\\
+R2 & 0.047 & 0.063 & 0.052 & 0.091 & 0.036\\
+R2 Adj. & 0.004 & 0.019 & 0.009 & 0.050 & -0.008\\
 Std.Errors & HC3 & HC3 & HC3 & HC3 & HC3\\
 \bottomrule
 \end{tabular}

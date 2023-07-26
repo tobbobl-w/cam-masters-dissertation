@@ -85,6 +85,29 @@ unclean_names <- unname(unlist(clean_names))
 unclean_name_vector <- names(clean_names)
 names(unclean_name_vector) <- unclean_names
 
+# select stats to have at the bottom
+bottom_stats <- modelsummary::gof_map %>%
+    filter(raw %in% c(
+        "nobs", "r.squared", "adj.r.squared", "std.errors",
+        "vcov.type"
+    ))
+
+align_string_ms <- function(col_names, type_alignment = "d") {
+    # Left align first col
+    # right align others
+    multiplier <- 1
+
+    right <- rep(
+        type_alignment,
+        (length(col_names) * multiplier)
+    )
+    # first collapse the vector
+    # then join with l
+    full_string <- paste0("l", paste0(right, collapse = ""))
+
+    return(full_string)
+}
+
 
 # --------- dc only models ---------
 
@@ -111,14 +134,18 @@ names(out_models_only_dc) <- sapply(lhs, ReturnCleanName)
 # and then chat about it!
 
 
+
+
 modelsummary(
     out_models_only_dc,
     output = "../Texfiles/tables/elsa_results_only_dc.tex",
     vcov = "robust",
     title = "DC Only \\label{tab:DcOnlyRes}",
     coef_rename = unclean_name_vector,
-    estimate = "{estimate}\\quad   ({std.error})",
-    statistic = NULL
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_only_dc)),
+    gof_map = bottom_stats
 )
 
 
@@ -148,8 +175,10 @@ modelsummary(
     vcov = "robust",
     title = "All individuals with interaction \\label{tab:ElsaAllData}",
     coef_rename = unclean_name_vector,
-    estimate = "{estimate}\\quad   ({std.error})",
-    statistic = NULL
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_all_data)),
+    gof_map = bottom_stats
 )
 
 
@@ -178,8 +207,10 @@ modelsummary(
     vcov = "robust",
     title = "DC Pension Size interaction \\label{tab:DcOnlyInteract}",
     coef_rename = unclean_name_vector,
-    estimate = "{estimate}\\quad   ({std.error})",
-    statistic = NULL
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_dc_pot_interaction)),
+    gof_map = bottom_stats
 )
 
 # ----------- Interaction with financial wealth --------------
@@ -207,6 +238,78 @@ modelsummary(
     vcov = "robust",
     title = "DC Financial Wealth interaction \\label{tab:DcOnlyFinWealthInteract}",
     coef_rename = unclean_name_vector,
-    estimate = "{estimate}\\quad   ({std.error})",
-    statistic = NULL
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_fin_wealth_interaction)),
+    gof_map = bottom_stats
+)
+
+
+
+# --------- dc only models expected_ret == real ret ---------
+
+rhs <- "pre_post_ref_bin + retired_age + fin_wealth +
+ragender + dc_pot + years_since_retirement + owns_house + public_pension"
+
+lhs <- c(
+    "total_monthly_consumption", "monthly_food_in", "monthly_food_out",
+    "monthly_food_total", "monthly_clothing"
+) %>% VariableOrder()
+
+consump_forms <- paste0(lhs, " ~ ", rhs)
+
+out_models_only_dc_only_retexp <- lapply(
+    consump_forms,
+    RunRegression,
+    expression(ever_dc_pen == "yes" & abs(exp_real_ret_age) <= 1)
+)
+names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
+
+# Ok lets write code that makes a nice table from this
+# and then put into latex
+# and then chat about it!
+
+
+modelsummary(
+    out_models_only_dc_only_retexp,
+    output = "../Texfiles/tables/rob_elsa_results_only_dc_only_exp.tex",
+    vcov = "robust",
+    title = "DC & expected retirement is real retirement only  \\label{tab:DcOnlyExpOnlyRes}",
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_only_dc_only_retexp)),
+    gof_map = bottom_stats
+)
+
+
+# --------- DC only drop 2012 retirees
+
+rhs <- "pre_post_ref_bin + retired_age + fin_wealth +
+ragender + dc_pot + years_since_retirement + owns_house + public_pension"
+
+lhs <- c(
+    "total_monthly_consumption", "monthly_food_in", "monthly_food_out",
+    "monthly_food_total", "monthly_clothing"
+) %>% VariableOrder()
+
+consump_forms <- paste0(lhs, " ~ ", rhs)
+
+out_models_only_dc_only_retexp <- lapply(
+    consump_forms,
+    RunRegression,
+    expression(ever_dc_pen == "yes" & retirement_year > 2012)
+)
+names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
+
+modelsummary(
+    out_models_only_dc_only_retexp,
+    output = "../Texfiles/tables/rob_elsa_results_only_dc_only_late_ret_year.tex",
+    vcov = "robust",
+    title = "DC only and retired later than 2012  \\label{tab:DcOnlyNot2012}",
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}",
+    statistic = "({std.error})",
+    align = align_string_ms(names(out_models_only_dc_only_retexp)),
+    gof_map = bottom_stats
 )

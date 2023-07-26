@@ -86,11 +86,25 @@ header_to_add <- c(1, rep(2, length(function_names) - 1))
 
 names(header_to_add) <- function_names
 
+align_string <- function(col_names) {
+    # Left align first col
+    # right align others
+    right <- rep("r", length(col_names) - 1)
+    # first collapse the vector
+    # then join with l
+    full_string <- paste0("l", paste0(right, collapse = ""))
+
+    stopifnot(nchar(full_string) == length(col_names))
+
+    return(full_string)
+}
+
 ss_table <- kbl(ss_stat_out,
     col.names = col_names,
     booktabs = TRUE,
     format = "latex",
-    caption = "Summary statistics \\label{tab:sum_stats} "
+    caption = "Summary statistics \\label{tab:sum_stats} ",
+    align = align_string(names(ss_stat_out))
 ) %>%
     add_header_above(header_to_add) %>%
     kable_styling(font_size = 10)
@@ -183,7 +197,8 @@ coef_table <- kbl(cov_balance,
     col.names = col_names,
     booktabs = TRUE,
     format = "latex",
-    caption = "Covariate Balance \\label{tab:cov_balance}"
+    caption = "Covariate Balance \\label{tab:cov_balance}",
+    align = align_string(col_names)
 )
 
 writeLines(

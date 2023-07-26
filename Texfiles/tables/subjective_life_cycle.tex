@@ -2,34 +2,29 @@
 
 \caption{Simulated subjective lifecycle models \label{tab:SubjectiveLifeCycle}}
 \centering
-\begin{tabular}[t]{lcccc}
+\begin{tabular}[t]{ldddd}
 \toprule
-  & DCOnly & AllDataDCInteraction & DCOnlyPensionInt & DCOnyFinancialInt\\
+  & {DCOnly} & {AllDataDCInteraction} & {DCOnlyPensionInt} & {DCOnyFinancialInt}\\
 \midrule
-(Intercept) & \num{-1026.675} & \num{-779.754} & \num{-1025.583} & \num{-1031.885}\\
-PostReform & \num{-62.876} & \num{-14.694} & \num{-59.004} & \num{63.140}\\
-RetiredAge & \num{16.559} & \num{12.666} & \num{16.516} & \num{16.386}\\
-FinancialWealth (thousands) & \num{5.054} & \num{4.749} & \num{5.050} & \num{5.433}\\
-Gender & \num{-62.495} & \num{-30.426} & \num{-61.888} & \num{-52.366}\\
-DCValue (thousands) & \num{0.002} & \num{0.008} & \num{0.012} & \\
-YearsSinceRetirement & \num{-33.070} & \num{1.922} & \num{-32.613} & \num{-42.024}\\
-OwnsHouse & \num{66.452} & \num{44.938} & \num{65.386} & \num{51.098}\\
-StatePension & \num{92.846} & \num{92.993} & \num{92.800} & \num{91.539}\\
-DCPension &  & \num{7.564} &  & \\
-DBPension &  & \num{-13.519} &  & \\
-PostReform:DCPension &  & \num{-30.893} &  & \\
-PostReform:DBPension &  & \num{16.740} &  & \\
-PostReform:DCValue (thousands) &  &  & \num{-0.012} & \\
-PostReform:FinancialWealth (thousands) &  &  &  & \num{-0.949}\\
+(Intercept) & -1026.675 & -779.754 & -1025.583 & -1031.885\\
+PostReform & -62.876 & -14.694 & -59.004 & 63.140\\
+RetiredAge & 16.559 & 12.666 & 16.516 & 16.386\\
+FinWealth(£000s) & 5.054 & 4.749 & 5.050 & 5.433\\
+Gender & -62.495 & -30.426 & -61.888 & -52.366\\
+DCValue(£000s) & 0.002 & 0.008 & 0.012 & {}\\
+YearsSinceRetirement & -33.070 & 1.922 & -32.613 & -42.024\\
+OwnsHouse & 66.452 & 44.938 & 65.386 & 51.098\\
+StatePension & 92.846 & 92.993 & 92.800 & 91.539\\
+DCPension & {} & 7.564 & {} & {}\\
+DBPension & {} & -13.519 & {} & {}\\
+PostReform:DCPension & {} & -30.893 & {} & {}\\
+PostReform:DBPension & {} & 16.740 & {} & {}\\
+PostReform:DCValue(£000s) & {} & {} & -0.012 & {}\\
+PostReform:FinWealth(£000s) & {} & {} & {} & -0.949\\
 \midrule
-Num.Obs. & \num{139} & \num{584} & \num{139} & \num{147}\\
-R2 & \num{0.961} & \num{0.943} & \num{0.961} & \num{0.966}\\
-R2 Adj. & \num{0.958} & \num{0.942} & \num{0.958} & \num{0.964}\\
-AIC & \num{1781.1} & \num{7552.2} & \num{1782.6} & \num{1856.3}\\
-BIC & \num{1810.4} & \num{7613.4} & \num{1814.9} & \num{1886.2}\\
-Log.Lik. & \num{-880.536} & \num{-3762.108} & \num{-880.319} & \num{-918.173}\\
-RMSE & \num{136.44} & \num{151.87} & \num{136.22} & \num{124.85}\\
-Std.Errors & HC3 & HC3 & HC3 & HC3\\
+Num.Obs. & 139 & 584 & 139 & 147\\
+R2 & 0.961 & 0.943 & 0.961 & 0.966\\
+R2 Adj. & 0.958 & 0.942 & 0.958 & 0.964\\
 \bottomrule
 \end{tabular}
 \end{table}

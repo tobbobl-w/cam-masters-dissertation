@@ -2,34 +2,29 @@
 
 \caption{Simulated bequest lifecycle models \label{tab:BeqLifeCycle}}
 \centering
-\begin{tabular}[t]{lcccc}
+\begin{tabular}[t]{ldddd}
 \toprule
-  & DCOnly & AllDataDCInteraction & DCOnlyPensionInt & DCOnyFinancialInt\\
+  & {DCOnly} & {AllDataDCInteraction} & {DCOnlyPensionInt} & {DCOnyFinancialInt}\\
 \midrule
-(Intercept) & \num{-447.672} & \num{-543.511} & \num{-448.371} & \num{-439.946}\\
-PostReform & \num{16.687} & \num{-10.850} & \num{14.207} & \num{24.811}\\
-RetiredAge & \num{7.577} & \num{9.155} & \num{7.605} & \num{7.446}\\
-FinancialWealth (thousands) & \num{4.076} & \num{4.071} & \num{4.078} & \num{4.103}\\
-Gender & \num{13.731} & \num{19.651} & \num{13.342} & \num{13.384}\\
-DCValue (thousands) & \num{0.001} & \num{0.001} & \num{-0.005} & \\
-YearsSinceRetirement & \num{-1.225} & \num{-0.888} & \num{-1.517} & \num{-2.273}\\
-OwnsHouse & \num{5.064} & \num{17.853} & \num{5.746} & \num{3.839}\\
-StatePension & \num{84.422} & \num{84.994} & \num{84.451} & \num{84.404}\\
-DCPension &  & \num{-20.629} &  & \\
-DBPension &  & \num{0.556} &  & \\
-PostReform:DCPension &  & \num{25.529} &  & \\
-PostReform:DBPension &  & \num{2.655} &  & \\
-PostReform:DCValue (thousands) &  &  & \num{0.008} & \\
-PostReform:FinancialWealth (thousands) &  &  &  & \num{-0.061}\\
+(Intercept) & -447.672 & -543.511 & -448.371 & -439.946\\
+PostReform & 16.687 & -10.850 & 14.207 & 24.811\\
+RetiredAge & 7.577 & 9.155 & 7.605 & 7.446\\
+FinWealth(£000s) & 4.076 & 4.071 & 4.078 & 4.103\\
+Gender & 13.731 & 19.651 & 13.342 & 13.384\\
+DCValue(£000s) & 0.001 & 0.001 & -0.005 & {}\\
+YearsSinceRetirement & -1.225 & -0.888 & -1.517 & -2.273\\
+OwnsHouse & 5.064 & 17.853 & 5.746 & 3.839\\
+StatePension & 84.422 & 84.994 & 84.451 & 84.404\\
+DCPension & {} & -20.629 & {} & {}\\
+DBPension & {} & 0.556 & {} & {}\\
+PostReform:DCPension & {} & 25.529 & {} & {}\\
+PostReform:DBPension & {} & 2.655 & {} & {}\\
+PostReform:DCValue(£000s) & {} & {} & 0.008 & {}\\
+PostReform:FinWealth(£000s) & {} & {} & {} & -0.061\\
 \midrule
-Num.Obs. & \num{139} & \num{584} & \num{139} & \num{147}\\
-R2 & \num{0.996} & \num{0.995} & \num{0.996} & \num{0.996}\\
-R2 Adj. & \num{0.995} & \num{0.995} & \num{0.995} & \num{0.995}\\
-AIC & \num{1420.0} & \num{5938.7} & \num{1419.6} & \num{1496.3}\\
-BIC & \num{1449.4} & \num{5999.9} & \num{1451.9} & \num{1526.2}\\
-Log.Lik. & \num{-700.021} & \num{-2955.338} & \num{-698.814} & \num{-738.142}\\
-RMSE & \num{37.23} & \num{38.15} & \num{36.91} & \num{36.69}\\
-Std.Errors & HC3 & HC3 & HC3 & HC3\\
+Num.Obs. & 139 & 584 & 139 & 147\\
+R2 & 0.996 & 0.995 & 0.996 & 0.996\\
+R2 Adj. & 0.995 & 0.995 & 0.995 & 0.995\\
 \bottomrule
 \end{tabular}
 \end{table}

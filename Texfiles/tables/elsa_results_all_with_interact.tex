@@ -2,31 +2,40 @@
 
 \caption{All individuals with interaction \label{tab:ElsaAllData}}
 \centering
-\begin{tabular}[t]{lccccc}
+\begin{tabular}[t]{lddddd}
 \toprule
-  & TotalConsump & FoodConsump & FoodConsumpIn & FoodConsumpOut & ClothingConsump\\
+  & {TotalConsump} & {FoodConsump} & {FoodConsumpIn} & {FoodConsumpOut} & {ClothingConsump}\\
 \midrule
-(Intercept) & \num{579.577}\quad   (\num{243.317}) & \num{354.694}\quad   (\num{149.347}) & \num{73.889}\quad   (\num{29.662}) & \num{35.524}\quad   (\num{53.120}) & \num{123.304}\quad   (\num{66.782})\\
-PostReform & \num{95.284}\quad   (\num{45.887}) & \num{14.554}\quad   (\num{28.679}) & \num{-1.433}\quad   (\num{5.683}) & \num{20.816}\quad   (\num{8.903}) & \num{-0.927}\quad   (\num{14.105})\\
-DCPension & \num{49.070}\quad   (\num{34.029}) & \num{29.780}\quad   (\num{22.514}) & \num{3.270}\quad   (\num{4.530}) & \num{14.810}\quad   (\num{7.425}) & \num{-2.930}\quad   (\num{10.399})\\
-DBPension & \num{91.877}\quad   (\num{28.544}) & \num{18.263}\quad   (\num{18.162}) & \num{0.203}\quad   (\num{3.692}) & \num{17.584}\quad   (\num{5.677}) & \num{23.123}\quad   (\num{10.171})\\
-RetiredAge & \num{2.426}\quad   (\num{3.876}) & \num{-0.475}\quad   (\num{2.428}) & \num{-0.106}\quad   (\num{0.482}) & \num{-0.040}\quad   (\num{0.841}) & \num{-1.529}\quad   (\num{1.058})\\
-FinWealth(£000s) & \num{0.166}\quad   (\num{0.066}) & \num{0.073}\quad   (\num{0.038}) & \num{-0.002}\quad   (\num{0.006}) & \num{0.079}\quad   (\num{0.018}) & \num{0.017}\quad   (\num{0.021})\\
-Gender & \num{-18.178}\quad   (\num{25.573}) & \num{-18.902}\quad   (\num{15.135}) & \num{-4.631}\quad   (\num{3.026}) & \num{1.138}\quad   (\num{5.091}) & \num{0.596}\quad   (\num{9.155})\\
-DCValue(£000s) & \num{-0.012}\quad   (\num{0.007}) & \num{0.004}\quad   (\num{0.012}) & \num{0.002}\quad   (\num{0.002}) & \num{-0.003}\quad   (\num{0.004}) & \num{-0.004}\quad   (\num{0.003})\\
-YearsSinceRetirement & \num{37.759}\quad   (\num{18.649}) & \num{-9.921}\quad   (\num{10.879}) & \num{-2.125}\quad   (\num{2.106}) & \num{-0.990}\quad   (\num{3.686}) & \num{6.843}\quad   (\num{6.835})\\
-OwnsHouse & \num{-89.951}\quad   (\num{36.898}) & \num{111.079}\quad   (\num{18.860}) & \num{20.631}\quad   (\num{3.860}) & \num{21.502}\quad   (\num{6.623}) & \num{43.088}\quad   (\num{9.516})\\
-StatePension & \num{-5.951}\quad   (\num{3.933}) & \num{-2.951}\quad   (\num{2.799}) & \num{-0.447}\quad   (\num{0.563}) & \num{-0.975}\quad   (\num{0.799}) & \num{0.673}\quad   (\num{1.577})\\
-PostReform:DCPension & \num{10.810}\quad   (\num{63.408}) & \num{-5.036}\quad   (\num{40.318}) & \num{-0.635}\quad   (\num{7.736}) & \num{-1.427}\quad   (\num{14.718}) & \num{36.586}\quad   (\num{31.925})\\
-PostReform:DBPension & \num{-138.614}\quad   (\num{53.735}) & \num{-25.662}\quad   (\num{32.791}) & \num{-2.118}\quad   (\num{6.416}) & \num{-16.402}\quad   (\num{11.582}) & \num{-14.759}\quad   (\num{21.472})\\
+(Intercept) & 579.577 & 354.694 & 73.889 & 35.524 & 123.304\\
+ & (243.317) & (149.347) & (29.662) & (53.120) & (66.782)\\
+PostReform & 95.284 & 14.554 & -1.433 & 20.816 & -0.927\\
+ & (45.887) & (28.679) & (5.683) & (8.903) & (14.105)\\
+DCPension & 49.070 & 29.780 & 3.270 & 14.810 & -2.930\\
+ & (34.029) & (22.514) & (4.530) & (7.425) & (10.399)\\
+DBPension & 91.877 & 18.263 & 0.203 & 17.584 & 23.123\\
+ & (28.544) & (18.162) & (3.692) & (5.677) & (10.171)\\
+RetiredAge & 2.426 & -0.475 & -0.106 & -0.040 & -1.529\\
+ & (3.876) & (2.428) & (0.482) & (0.841) & (1.058)\\
+FinWealth(£000s) & 0.166 & 0.073 & -0.002 & 0.079 & 0.017\\
+ & (0.066) & (0.038) & (0.006) & (0.018) & (0.021)\\
+Gender & -18.178 & -18.902 & -4.631 & 1.138 & 0.596\\
+ & (25.573) & (15.135) & (3.026) & (5.091) & (9.155)\\
+DCValue(£000s) & -0.012 & 0.004 & 0.002 & -0.003 & -0.004\\
+ & (0.007) & (0.012) & (0.002) & (0.004) & (0.003)\\
+YearsSinceRetirement & 37.759 & -9.921 & -2.125 & -0.990 & 6.843\\
+ & (18.649) & (10.879) & (2.106) & (3.686) & (6.835)\\
+OwnsHouse & -89.951 & 111.079 & 20.631 & 21.502 & 43.088\\
+ & (36.898) & (18.860) & (3.860) & (6.623) & (9.516)\\
+StatePension & -5.951 & -2.951 & -0.447 & -0.975 & 0.673\\
+ & (3.933) & (2.799) & (0.563) & (0.799) & (1.577)\\
+PostReform:DCPension & 10.810 & -5.036 & -0.635 & -1.427 & 36.586\\
+ & (63.408) & (40.318) & (7.736) & (14.718) & (31.925)\\
+PostReform:DBPension & -138.614 & -25.662 & -2.118 & -16.402 & -14.759\\
+ & (53.735) & (32.791) & (6.416) & (11.582) & (21.472)\\
 \midrule
-Num.Obs. & \num{929} & \num{920} & \num{921} & \num{926} & \num{929}\\
-R2 & \num{0.039} & \num{0.049} & \num{0.030} & \num{0.102} & \num{0.029}\\
-R2 Adj. & \num{0.027} & \num{0.036} & \num{0.018} & \num{0.091} & \num{0.017}\\
-AIC & \num{13603.3} & \num{12622.8} & \num{9669.3} & \num{10650.0} & \num{11785.3}\\
-BIC & \num{13671.0} & \num{12690.3} & \num{9736.8} & \num{10717.6} & \num{11853.0}\\
-Log.Lik. & \num{-6787.670} & \num{-6297.391} & \num{-4820.635} & \num{-5311.000} & \num{-5878.642}\\
-RMSE & \num{360.50} & \num{227.25} & \num{45.39} & \num{74.92} & \num{135.50}\\
+Num.Obs. & 929 & 920 & 921 & 926 & 929\\
+R2 & 0.039 & 0.049 & 0.030 & 0.102 & 0.029\\
+R2 Adj. & 0.027 & 0.036 & 0.018 & 0.091 & 0.017\\
 Std.Errors & HC3 & HC3 & HC3 & HC3 & HC3\\
 \bottomrule
 \end{tabular}
