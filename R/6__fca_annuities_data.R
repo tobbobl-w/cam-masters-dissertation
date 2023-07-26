@@ -134,4 +134,7 @@ annuity_sizes_plot <- ggplot(
 ggsave(
     "../Texfiles/figures/annuity_pot_sizes.pdf",
     annuity_sizes_plot,
+    height = 5,
+    width = 11,
+    units = "in"
 )

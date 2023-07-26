@@ -48,12 +48,11 @@ ss_stat_out <- data_for_regressions %>%
         all_of(summary_cols),
         list(
             mean = \(x) mean(x, na.rm = T),
-            sd = \(x) sd(x, na.rm = T),
+            # sd = \(x) sd(x, na.rm = T),
             min = \(x) min(x, na.rm = T),
             max = \(x) max(x, na.rm = T),
-            median = \(x) median(x, na.rm = T)
-            # ,
-            # non_missing = \(x) sum(!is.na(x))
+            median = \(x) median(x, na.rm = T),
+            non_missing = \(x) sum(!is.na(x))
         ),
         .names = "{.col}__{.fn}"
     )) %>%
@@ -83,19 +82,18 @@ col_names <- names(ss_stat_out) %>%
     str_replace("name", "") %>%
     str_to_title()
 
-
 header_to_add <- c(1, rep(2, length(function_names) - 1))
 
 names(header_to_add) <- function_names
 
-# TODO
 ss_table <- kbl(ss_stat_out,
     col.names = col_names,
     booktabs = TRUE,
     format = "latex",
-    caption = "Summary statistics \\label{tab:sum_stats}"
+    caption = "Summary statistics \\label{tab:sum_stats} "
 ) %>%
-    add_header_above(header_to_add)
+    add_header_above(header_to_add) %>%
+    kable_styling(font_size = 10)
 
 writeLines(
     ss_table,
@@ -128,11 +126,10 @@ writeLines(
 
 
 
-
 CreateCovBalanceFormulas <- function(variable_name) {
     string_linear <- paste0(
         variable_name,
-        " ~ pre_post_ref + rabyear + rabyear*pre_post_ref"
+        " ~ pre_post_ref"
     )
 
     formula_to_use <- formula(string_linear)
@@ -141,11 +138,13 @@ CreateCovBalanceFormulas <- function(variable_name) {
 }
 
 
+
 RunCovariateBalance <- function(variable_name) {
     print(variable_name)
     formula_to_use <- CreateCovBalanceFormulas(variable_name)
 
-    output <- lm(formula_to_use, data_for_regressions)
+    output <- lm(formula_to_use, data_for_regressions[ever_dc_pen == "yes"])
+
     sum_output <- summary(output)
 
     # Extract coefficient on pre_post_ref and its sd

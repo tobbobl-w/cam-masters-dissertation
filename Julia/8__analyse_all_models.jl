@@ -143,10 +143,10 @@ savefig(asset_plot,
 
 
 
-# ---------- First no bequests, objective life expectancy -------------
+# ---------- First bequests, objective life expectancy -------------
 # --------- Bequest models ---------------
 
-objective_consumptions = []
+objective_beq_consumptions = []
 
 for row_index in 1:nrow(elsa_filtered)
 
@@ -169,12 +169,10 @@ for row_index in 1:nrow(elsa_filtered)
         row_to_get["ass_grid"],
         row_to_get["pen_grid"]
     )
-    append!(objective_consumptions, outputs)
+    append!(objective_beq_consumptions, outputs)
 end
 
-objective_consumptions
-
-bequest_motive_data = reshape(objective_consumptions, 5, Int(7240/5)) |>
+bequest_motive_data = reshape(objective_beq_consumptions, 5, Int(7240/5)) |>
 permutedims |>
 Tables.table |>
 DataFrame
@@ -222,8 +220,7 @@ rename!(standard_theory_data, Symbol.(names_vec))
 
 CSV.write(
     "../data/ELSA/lifecycle_outputs/standard_model_consumption_simulation.csv",
-
-standard_theory_data)
+    standard_theory_data)
 
 
 
@@ -233,27 +230,11 @@ standard_theory_data)
 
 # check which ids we have run and only ask to get those
 
-
-
-CheckInFolder = function(id_wave) 
-    folder_name = "../Data/ELSA/lifecycle_outputs/id_wave/"
-    regex_search = Regex(id_wave)
-
-    files_in_folder = readdir(folder_name)
-    vector_of_matches = .!(isnothing.(match.(regex_search, files_in_folder)))
-
-    if sum(vector_of_matches) == 1
-        return true
-    else
-        return false
-    end 
-end 
-
 ids_in_folder =  elsa_filtered.id_wave[CheckInFolder.(elsa_filtered.id_wave)]
 # must have been running the wrong ids
 # hopefully will speed up when I have fewer things running
 
-objective_consumptions = []
+subjective_consumption = []
 
 for wave_id in ids_in_folder
 
@@ -274,32 +255,27 @@ for wave_id in ids_in_folder
         row_to_get["ass_grid"],
         row_to_get["pen_grid"]
     )
-    append!(objective_consumptions, outputs)
+    append!(subjective_consumption, outputs)
 end
 
 
+subjective__theory_data = reshape(
+    subjective_consumption, 5, Int(length(subjective_consumption)/5)) |>
+    permutedims |>
+    Tables.table |>
+    DataFrame
 
-outputs = ReturnConsumptionWithAnnuity(
-        false, 
-        "subjective", 
-        row_to_get["gender"],
-        row_to_get["id_wave"],
-        row_to_get["retired_age"],
-        row_to_get["retirement_year"],
-        row_to_get["year"],
-        row_to_get["ass_grid"],
-        row_to_get["pen_grid"]
-    )
-    birth_year = ret_year - ret_age
-    
-    ret_age = row_to_get["retired_age"]
+rename!(subjective__theory_data, Symbol.(names_vec))
 
-    pol_func = RetrievePolicyFunction(
-        false, # bequests
-        "subjective", # life exp type
-        0,
-        "male",
-        "112968-8")
+CSV.write(
+    "../data/ELSA/lifecycle_outputs/subjective_model_consumption_simulation.csv",
+    subjective__theory_data)
+
+
+
+# ------------ Also get retirement asset plot ------------
+# for each person trace whole consumption and asset path
+# and then plot those
 
 
 

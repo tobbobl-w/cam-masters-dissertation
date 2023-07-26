@@ -23,6 +23,15 @@ standard_consump_dt <-
     ) %>%
     select(id_wave, consump_stan_ann, consump_stan_no_ann)
 
+subjective_consump_dt <-
+    fread("../../data/ELSA/lifecycle_outputs/subjective_model_consumption_simulation.csv") %>%
+    rename(
+        consump_sub_ann = annuity_consump,
+        consump_sub_no_ann = no_annuity_consump
+    ) %>%
+    select(id_wave, consump_sub_ann, consump_sub_no_ann)
+
+
 # standard_consump_dt[, .(annuity_cost, annuity_payment)]
 # bequest_consump_dt[, .(annuity_cost, annuity_payment)]
 
@@ -59,6 +68,10 @@ joint_dt <- reg_dt %>%
         standard_consump_dt,
         by = "id_wave"
     ) %>%
+    merge.data.table(
+        subjective_consump_dt,
+        by = "id_wave"
+    ) %>%
     # for 'treated' consumption is without annuity
     # for 'control' consumption is with annuity
     mutate(bequest_consumption = fifelse(
@@ -70,6 +83,11 @@ joint_dt <- reg_dt %>%
         consump_stan_ann,
         consump_stan_no_ann
     )) %>%
+    mutate(subjective_consumption = fifelse(
+        pre_post_ref == "control" & ever_dc_pen == "yes",
+        consump_sub_ann,
+        consump_sub_no_ann
+    )) %>%
     mutate(rich_enough = fifelse(
         unlist(mapply(
             function(x, y) all.equal(x, y) == TRUE,
@@ -77,7 +95,12 @@ joint_dt <- reg_dt %>%
             consump_beq_no_ann
         )),
         "no", "yes"
-    ))
+    )) %>%
+    mutate(
+        bequest_consumption = bequest_consumption / 12,
+        standard_consumption = standard_consumption / 12,
+        subjective_consumption = subjective_consumption / 12
+    )
 
 
 joint_dt %>%
@@ -88,8 +111,71 @@ joint_dt %>%
     filter(public_pension > 5) %>%
     select(id_wave)
 
+# --------------- Save some summary statistics ---------------
+
+mean_consumption_out <- joint_dt %>%
+    filter(ever_dc_pen == "yes") %>%
+    group_by(pre_post_ref) %>%
+    summarise(across(
+        c("bequest_consumption", "standard_consumption", "subjective_consumption", "total_monthly_consumption"),
+        list(
+            mean = \(x) mean(x, na.rm = TRUE),
+            sd = \(x) sd(x, na.rm = TRUE),
+            non_missing = \(x) sum(!is.na(x))
+        )
+    )) %>%
+    data.table() %>%
+    melt(
+        id.vars = "pre_post_ref"
+    ) %>%
+    mutate(
+        function_type = str_extract(variable, "mean|sd|non_missing"),
+        data_type = str_extract(variable, ".+(?<=_cons)")
+    ) %>%
+    dcast(data_type ~ function_type + pre_post_ref) %>%
+    mutate(data_type = str_remove(data_type, "_cons")) %>%
+    mutate(data_type = str_to_title(str_replace(data_type, "_", " "))) %>%
+    mutate(
+        data_type =
+            fifelse(data_type == "Total Monthly", "Total Monthly (ELSA)", data_type)
+    )
+
+function_names <- names(mean_consumption_out) %>%
+    str_remove("_(control|treat)") %>%
+    str_replace("_|(row_name)|(data_type)", " ") %>%
+    str_to_title() %>%
+    unique()
+
+col_names <- names(mean_consumption_out) %>%
+    str_extract("data_type|control|treat") %>%
+    str_replace("data_type", "") %>%
+    str_to_title()
+
+header_to_add <- c(1, rep(2, length(function_names) - 1))
+
+names(header_to_add) <- function_names
+
+# TODO
+consumption_out <- kbl(mean_consumption_out,
+    col.names = col_names,
+    booktabs = TRUE,
+    format = "latex",
+    caption = "Model consumption predictions \\label{tab:simulation_prediction}"
+) %>%
+    add_header_above(header_to_add)
+
+writeLines(
+    consumption_out,
+    "../Texfiles/tables/simulation_summary_stats.tex"
+)
 
 
+
+
+
+
+
+# -------------- Run regression models on simulated data --------------
 models <- list(
     dc_only = list(
         filter_expression = expression(ever_dc_pen == "yes"),
@@ -144,6 +230,7 @@ bequest_outmodels <- lapply(
     RunModelsFunction,
     reg_variable
 )
+
 names(bequest_outmodels) <- unname(col_smart_names)
 
 modelsummary(
@@ -151,7 +238,8 @@ modelsummary(
     output = "../Texfiles/tables/beq_life_cycle.tex",
     vcov = "robust",
     title = "Simulated bequest lifecycle models \\label{tab:BeqLifeCycle}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    statistic = NULL
 )
 
 
@@ -172,10 +260,31 @@ modelsummary(
     output = "../Texfiles/tables/standard_life_cycle.tex",
     vcov = "robust",
     title = "Simulated standard lifecycle models \\label{tab:StandardLifeCycle}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    statistic = NULL
 )
 
 
+
+# ------ subjective prob life cycle models -------------
+
+reg_variable <- "subjective_consumption"
+
+subjective_outmodels <- lapply(
+    models,
+    RunModelsFunction,
+    reg_variable
+)
+names(subjective_outmodels) <- unname(col_smart_names)
+
+modelsummary(
+    subjective_outmodels,
+    output = "../Texfiles/tables/subjective_life_cycle.tex",
+    vcov = "robust",
+    title = "Simulated subjective lifecycle models \\label{tab:SubjectiveLifeCycle}",
+    coef_rename = unclean_name_vector,
+    statistic = NULL
+)
 
 
 

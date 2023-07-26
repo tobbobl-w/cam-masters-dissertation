@@ -139,7 +139,9 @@ harm_long[ret_in & ret_equals, .(retired_age, age_at_interview, ret_in)]
 
 
 # We want recent retirees in the three years after they have retired.
-data_for_regressions <- harm_long[ret_in == TRUE & !is.na(pre_post_ref)]
+data_for_regressions <- harm_long[ret_in == TRUE & !is.na(pre_post_ref)] %>%
+    # One value of 450,000 for consumption
+    filter(total_monthly_consumption < 3500)
 
 
 data_for_regressions[, id_wave := paste0(idauniq, "-", wave)]

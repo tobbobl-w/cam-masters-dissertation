@@ -116,8 +116,11 @@ modelsummary(
     output = "../Texfiles/tables/elsa_results_only_dc.tex",
     vcov = "robust",
     title = "DC Only \\label{tab:DcOnlyRes}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}\\quad   ({std.error})",
+    statistic = NULL
 )
+
 
 
 # ------------ all data with interaction -------
@@ -144,7 +147,9 @@ modelsummary(
     output = "../Texfiles/tables/elsa_results_all_with_interact.tex",
     vcov = "robust",
     title = "All individuals with interaction \\label{tab:ElsaAllData}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}\\quad   ({std.error})",
+    statistic = NULL
 )
 
 
@@ -172,7 +177,9 @@ modelsummary(
     output = "../Texfiles/tables/elsa_results_dc_pot_interact.tex",
     vcov = "robust",
     title = "DC Pension Size interaction \\label{tab:DcOnlyInteract}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}\\quad   ({std.error})",
+    statistic = NULL
 )
 
 # ----------- Interaction with financial wealth --------------
@@ -199,25 +206,7 @@ modelsummary(
     output = "../Texfiles/tables/elsa_results_fin_wealth_interact.tex",
     vcov = "robust",
     title = "DC Financial Wealth interaction \\label{tab:DcOnlyFinWealthInteract}",
-    coef_rename = unclean_name_vector
+    coef_rename = unclean_name_vector,
+    estimate = "{estimate}\\quad   ({std.error})",
+    statistic = NULL
 )
-
-
-# Ok these are key results tables done
-# things to do now are clean up
-
-
-
-# & ever_dc_pen == TRUE
-
-# also works without dc filter
-# affects are prob large enough to be ok after adjusting for cpi inflation
-
-
-# what about couples??
-# lets try and solve subjective code
-# done this
-
-
-
-# Lets also run a diff in diff where the control group are retirees without a db pension

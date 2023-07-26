@@ -552,12 +552,11 @@ ReturnConsumptionWithAnnuity = function (
     years_solved_for = size(pol_func)[3]
     years_of_retirment_for_individual = terminal_age - ret_age
 
-    if life_prob_types == "subjective"
-        years_of_retirment_for_individual = years_of_retirment_for_individual - 1
+    if life_prob_types == "objective"
+        start_index = 1 + years_solved_for - years_of_retirment_for_individual
+    elseif life_prob_types == "subjective"
+        start_index = 1
     end
-
-    start_index = 1 + years_solved_for - years_of_retirment_for_individual
-
     pol_func_at_start_of_retirement = pol_func[:, :, start_index:end]
 
 
@@ -625,7 +624,20 @@ ReturnConsumptionWithAnnuity = function (
 end
 
 
+CheckInFolder = function (id_wave)
+    folder_name = "../Data/ELSA/lifecycle_outputs/id_wave/"
+    regex_search = Regex(id_wave)
 
+    files_in_folder = readdir(folder_name)
+    vector_of_matches = .!(isnothing.(match.(regex_search, files_in_folder)))
+
+    if sum(vector_of_matches) == 0
+        return false
+    else
+        return true
+    end
+
+end
 
 # ---------- testing --------------
 
