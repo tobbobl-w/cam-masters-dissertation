@@ -18,17 +18,49 @@
 \usepackage[parfill]{parskip}
 \date{July 2023}
 \title{Retirement Consumption: Evidence from UK Pension Reform}
-\author{INSERT NUMBER HERE}
 \usepackage[letterpaper, margin=1.1in]{geometry}
-\linespread{1.25}
+\linespread{1.5}
 
 \begin{document}
+\begin{titlepage}
+    \begin{center}
 
+        \normalsize
+        {MPhil in Economic Research}
+        \vfill
+
+        \huge
+        Retirement Consumption: Evidence from UK Pension Reform
+        \vfill
+        \normalsize
+        Candidate number: 5348H
+
+        Date: 27th July, 2023
+
+        Word count: [Insert]
+        \vfill
+        I confirm that this is entirely my own work and has not previously been submitted for assessment, and I have read and understood the University’s and Faculty’s definition of Plagiarism
+    \end{center}
+\end{titlepage}
 \newpage
 \maketitle
+\begin{abstract}
+    I find the consumption response of early retirees to the `pensions freedom
+    act', which meant defined contribution pensions could be used for other
+    options than just purchasing an annuity. I use a discontinuity in year of
+    retirement and a difference in difference approach using those who were
+    unaffected by the policy reform as a natural control group. I then solve
+    three sets of lifecycle models from age of retirement until an agent reaches
+    110. I simulate their consumption with and without annuities, i.e. a the
+    policy reform, and match their consumption response to what was seen in the
+    empirical models. I find that a lifecycle model with a bequest motive best
+    fits this consumption response.
+\end{abstract}
+\newpage
 \tableofcontents
 \newpage
 
+\section{Introduction}
 Classical economic theory suggests that retirement annuities, which provide a
 guaranteed income stream until the end of life, should be highly valued by
 individuals as a way to insure against late death \cite{yaari_65}. However, in
@@ -114,14 +146,19 @@ saving puzzle, which seeks to explain why retirees drawdown assets slowly, ; and
 lifecycle models, whereby the above problems are explained using a tractable
 model of human decision making.
 
-\cite{yaari_65} showed that under standard assumptions we would expect
-individuals to annuitise all of their wealth at retirement to insure against the
-risk of long life. Since then there has been much literature discussing possible
-reasons that people do not annuitise. \cite{finkelstein_porteba_2002} and
-\cite{finkelstein_porteba_2004} find evidence of adverse selection, thereby
-making the 'money's worth' of annuities lower for the general population as
-opposed to the population of annuitants. However, they also find that theory
-would still predict annuitisation.
+\cite{yaari_65} showed that under standard assumptions with risk averse agents
+we would expect individuals to annuitise all of their wealth at retirement to
+insure against the risk of long life. And more recently
+\cite{davidoff_brown_diamond_aer_2005} show that complete annuitisation is
+optimal under a broader range of assumptions.
+Since then there has been much literature discussing possible reasons that
+people do not annuitise. \cite{finkelstein_porteba_2002,
+    finkelstein_porteba_2004} for the UK market and \cite{mitchell_et_al_1999} for
+the US market and  find evidence of adverse selection, thereby making the
+'money's worth' of annuities lower for the general population as opposed to the
+population of annuitants. However, they also find that theory would still
+predict annuitisation because the money's worth of annuities is not that far
+from actuarily fair.
 
 \cite{friedman_warshawsky_qje_1990} show that annuitisation decisions can be
 fully explained by a mixture of bequest motives and actuarily unfair annuities.
@@ -135,12 +172,16 @@ in the American annuity market but this cannot fully explain the annuitisation
 puzzle. Only when bequest motives are added to the model can annuitisation rates
 be rationalized.
 
-\cite{lockwood_red_2012} builds on this and shows that a realistic bequest
-motive in lifecycle simulations achieves realistic annuitisation rates. He
-solves a simple lifecycle model with bequest motives taken from several recent
-papers in the literature. The bequest motives he picks therefore match other
-important aspects of the lifecycle model such as how much individuals actually
-bequest and how rich individuals are when they bequest.
+More recently, \cite{lockwood_red_2012} builds on this and shows that a
+realistic bequest motive in lifecycle simulations achieves realistic
+annuitisation rates. He solves a simple lifecycle model with bequest motives
+taken from several recent papers in the retirement savings literature. The
+bequest motives he picks therefore match other important aspects of the
+lifecycle model such as how much individuals actually bequest and how rich
+individuals are when they bequest. Also, \cite{odea_sturrock_rest_2023} find that subjective life expectancies can
+explain a large part of the annuitisation puzzle especially if agents are less
+risk averse.
+
 
 \cite{lockwood_aer_2018}
 
@@ -272,14 +313,14 @@ annuitisation as is shown by the graph.
 \begin{figure}[h]
     \caption{New pension pots accessed }
     \centering
-    \includegraphics[width=0.7\columnwidth]{figures/annuity_overtime.pdf}
+    \includegraphics[width=0.9\columnwidth]{figures/annuity_overtime.pdf}
     \label{fig:annovertime}
 \end{figure}
 
 \begin{figure}[h]
     \caption[Caption for LOF]{How pension pots are accessed\protect\footnotemark}
     \centering
-    \includegraphics[width=0.7\columnwidth]{figures/annuity_pot_sizes.pdf}
+    \includegraphics[width=0.9\columnwidth]{figures/annuity_pot_sizes.pdf}
     \label{fig:ann2122}
     \
 \end{figure}
@@ -312,8 +353,10 @@ freedoms act it will not impact my results.
 
 \subsection{Covariate Balance}
 
-Table \ref{tab:sum_stats} shows various summary statistics for each variable of
-interest from ELSA and the ONS.
+Table \ref{tab:sum_stats}\footnote{There are hyperlinks on the table number so,
+    if your pdf viewer supports this, you can click to go to the table or
+    figure} shows various summary statistics for each variable of interest from
+ELSA and the ONS.
 
 As required, retirement year is between 2011 and 2013 for the control group and
 2015 and 2017 for the treatment group. However, as discussed above their ELSA
@@ -363,7 +406,7 @@ regression discontinuity models I only use individuals who have a DC pension so
 it does not matter that there are more individuals with DC pensions in the
 second group.
 \begin{landscape}
-    \tiny
+    \linespread{1.25}
     \input{tables/r_summary_stats.tex}
     \normalsize
 \end{landscape}
@@ -383,7 +426,12 @@ In particular I run:
 
 Where $Y_{i}$ are the different demographic and financial characteristics.
 
+
+\linespread{1.25}
 \input{tables/cov_balance.tex}
+\linespread{1.5}
+
+
 
 Table \ref{tab:cov_balance} shows these results. As expected, retirement year
 and interview year are greater for the treated group. The difference between
@@ -526,20 +574,27 @@ To be precise, I run:
     Cons_{it} =  \gamma X_{it} + \beta PostReform_{it}*DCValue_{it} + \epsilon_{it}
 \end{equation*}
 
+
 \begin{landscape}
+    \linespread{1}
+
     \input{tables/elsa_results_only_dc.tex}
 \end{landscape}
 
-
 \begin{landscape}
+    \linespread{1}
+
     \input{tables/elsa_results_all_with_interact.tex}
 \end{landscape}
 
 \begin{landscape}
+    \linespread{1}
+
     \input{tables/elsa_results_dc_pot_interact.tex}
 \end{landscape}
 
 \begin{landscape}
+    \linespread{1}
     \input{tables/elsa_results_fin_wealth_interact.tex}
 \end{landscape}
 
@@ -562,9 +617,44 @@ similar pattern to Table \ref{tab:DcOnlyInteract}. The reform is associated with
 an increase in consumption, but more financial wealth decreases the effect
 rather than making it stronger. This could be because those with higher levels
 of financial wealth have more assets in other savings apart from retirement
-savings \cite{cribb_karjalainen_ifs_2023} and therefore the DC pot is a smaller
+savings \citep{cribb_karjalainen_ifs_2023} and therefore the DC pot is a smaller
 proportion of overall assets meaning the policy change did not affect them as
 much.
+
+\subsection{Robustness Checks}
+
+I carry out two checks for robustness. Firstly, I exclude those individuals who
+retired year was greater than a year away from their expected retirement year in
+the first interview they gave with ELSA. This checks whether the effects shown
+above are being driven by individuals either retiring early to buy cheaper
+annuities or retiring later and avoiding annuitisation altogether.
+
+I also check whether the EU reform to annuity pricing is changing the results in
+some way. Since the reform only came into affect in December 2012 there are some
+retirees in our sample who may have been able to purchase an annuity before
+annuity pricing was made the same for men and women. I drop anyone with a
+retirement year in 2012 or 2011 and repeat the analysis from Table \ref{tab:DcOnlyRes}.
+
+\begin{landscape}
+    \linespread{1}
+    \input{tables/rob_elsa_results_only_dc_only_exp.tex}
+\end{landscape}
+
+\begin{landscape}
+    \linespread{1}
+    \input{tables/rob_elsa_results_only_dc_only_late_ret_year.tex}
+\end{landscape}
+
+Tables \ref{tab:DcOnlyExpOnlyRes} and \ref{tab:DcOnlyNot2012} show these
+results. In Table \ref{tab:DcOnlyExpOnlyRes} we can see the sign is reversed on
+PostReform in all consumption categories apart from clothing, however the sample size is a third of what it
+was prior to excluding individuals so there is even more uncertainty in these
+estimates. Table \ref{tab:DcOnlyNot2012} the sample size is again much smaller
+and the sign has flipped on all consumption categories apart from clothing. The
+implication of this regression is that those who retired in 2013 had a higher
+level of consumption in early retirement than those who retired post 2014.
+Although these results give
+
 
 In conclusion, the results in the tables above show that in the basic regression
 discontinuity setup there is an impact of the policy reform on consumption, and
@@ -649,13 +739,15 @@ period that maximise the utility function and the value function this period
 given all the potential income and asset states, I calculate the value of the
 last period. This is then used in the problem the year before that. I repeat
 this process back to the age of retirement to obtain optimal consumption amounts
-for each year of retirement and associated value functions.
+for each year of retirement and associated value functions. I write code in
+Julia that solves this maximisation problem.
 
 To simulate the ELSA data I solve this retirement problem for each new retiree
 in the dataset dependent on their objective probability of death each period. I
 estimate with subjective life expectancies and objective life expectancies. I
 also estimate the model both with and without a bequest motive which was picked
-to roughly fit the real annuity rates seen in the data.
+to roughly fit the rates of annuitisation that are observed in the real world,
+which are around 6\%.
 
 In retiree's first year of retirement I somtimes annuitise some of their wealth.
 In practical terms, this is moving down the asset grid but up the permanent
@@ -670,13 +762,12 @@ using objective life tables from the ONS using the following equation:
 
 Where $C$ is the one-off payment, $\delta$ is the `money's worth' of an annuity
 and $p_{t|Retage}$ is the probability of death at age $t$ conditional on being
-age $Retage$. So individuals can move C on the asset grid for gaining Ann on the
+age $Retage$. So individuals can move down $C$ on the asset grid for gaining $Ann$ on the
 income grid for the rest of their lives. The `money's worth' of an annuity is
 the ratio of expected present discounted value to the price of an annuity that
-an individual can purchase. Generally, for annuities, they have been found to be
-between $0.8$ and $0.9$ for the population as a whole in the UK,
-\cite{finkelstein_porteba_2002} \cite{finkelstein_porteba_2004}. 
-
+an individual can purchase. Generally they have been found to be
+between $0.8$ and $0.9$ for the population as a whole in the UK
+\citep{finkelstein_porteba_2002, finkelstein_porteba_2004, mitchell_et_al_1999}.
 
 \section{Lifecycle Results}
 
@@ -799,14 +890,20 @@ possible using the entire ELSA data like \textbf{cite paper eric sent me}, does
 not allow us to use incorporate policy changes into model.
 
 \begin{landscape}
+    \linespread{1.25}
+
     \input{tables/standard_life_cycle.tex}
 \end{landscape}
 
 \begin{landscape}
+    \linespread{1.25}
+
     \input{tables/beq_life_cycle.tex}
 \end{landscape}
 
 \begin{landscape}
+    \linespread{1.25}
+
     \input{tables/subjective_life_cycle.tex}
 \end{landscape}
 
@@ -883,6 +980,8 @@ figure below.
 
 \section{Conclusion}
 
+I have shown that consumption in early retirement increased overall and
+particularly on
 
 \subsection{Rough plan}
 \begin{itemize}
@@ -902,11 +1001,7 @@ figure below.
           \textbf{Follow up by changing chat because the parameter estimates for
               the diff in diff have changed a bit -- DONE but check again when I
               have gone through it -- haven't checked the comparisons }
-
-
     \item \textbf{Abstract}
-    \item \textbf{Talk about covariate balance table? We could just set it for
-              the DC groups. }
     \item \textbf{Add bit about testing just those people who retired when they
               expected to retire.}
     \item \textbf{Could add consumption and retirement year plot?}
@@ -915,7 +1010,10 @@ figure below.
     \item Conclusion
 \end{itemize}
 
-
+\section{Appendix}
+\begin{landscape}
+    \input{tables/elsa_results_only_dc_only_exp.tex}
+\end{landscape}
 
 \bibliographystyle{chicago}
 \bibliography{references}
