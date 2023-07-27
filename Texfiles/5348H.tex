@@ -37,7 +37,7 @@
 
         Date: 27th July, 2023
 
-        Word count: 8336\footnote{This is an estimate that my LaTeX editor gave me.} + 1650 (figure and table word equivalent)
+        Word count: 8336\footnote{This is an estimate that my \LaTeX editor gave me.} + 1650 (figure and table word equivalent)
         \vfill
         I confirm that this is entirely my own work and has not previously been submitted for assessment, and I have read and understood the University’s and Faculty’s definition of Plagiarism
     \end{center}
@@ -547,8 +547,8 @@ group against.
 The key identifying assumption for DD is the parallel trends assumption. In this
 context, it means that consumption differences between the DB, DC and no pension
 groups across cohorts would have been the same were it not for the policy change.
-Therefore for DD to be invalid, we would need a reason to expect that the
-individuals with a DB and no pension who are retiring post 2014 are impacted by
+Therefore, for DD to be invalid, we would need a reason to expect that the
+individuals with a DB and no pension who are retiring post-2014 are impacted by
 some factor that did not equally impact the DC group. Given that there were no
 other pension reforms at this time that differently affected these groups, I
 claim that the parallel trends assumption holds.
@@ -687,11 +687,11 @@ much noise in the consumption values each year.
 
 Theoretically, a null or small change in consumption is evidence for a
 bequest motive explaining a lack of annuitisation rather than pessimistic life
-expectancies being the cause. In the next, section I solve and simulate a
+expectancies being the cause. In the next section, I solve and simulate a
 lifecycle model for individuals in the ELSA dataset. I find that the bequest
 motive most closely matches the patterns observed in the empirical models above.
 
-\section{Life cycle theory}
+\section{Lifecycle theory}
 
 In the second part of the paper, I first solve a modified retirement lifecycle
 model, then simulate the ELSA data and run the empirical models from
@@ -804,7 +804,7 @@ To see that $\delta$ is the money's worth, I rearrange the above equation:
 
 Having found optimal policy functions and value functions, I can now simulate the
 change in consumption given different rates of annuitisation versus no
-annuitisation. There are multiple benefits to building a model of individual's
+annuitisation. There are multiple benefits to building a model of individuals'
 decisions. Firstly, we can directly compare what a given individual would have
 consumed with what they actually consumed, conditional on our model being
 correct. In other words, we have the counterfactual world in which individuals
@@ -833,12 +833,12 @@ annuitised (either 0\% or 50\%) and the different lifecycle model types.
 Figures \ref{fig:AssetPlot} and \ref{fig:ConsumpPlot} show the retirement path
 of consumption and assets for a median retiree. This hypothetical female has
 £120,000 of assets at age 65 when she retired in 2012 with a state pension
-income of £6000. The dashed lines show consumption and assets with an annuity
-that costs half of her wealth. This buys her £3500 of annuity income, which,
-given her objective life expectancy is a money's worth of about 90\%.
+income of £6,000. The dashed lines show consumption and assets with an annuity
+that costs half of her wealth. This buys her £3,500 of annuity income, which,
+given her objective life expectancy, is a money's worth of about 90\%.
 
 We can see that the asset path with the bequest motive remains higher for longer
-but still decreases, and by her late 90s she has completely run down her
+but still decreases, and by the woman's late 90s she has completely run down her
 wealth. Interestingly, the asset path with the quickest run down is the standard
 lifecycle model using objective life expectancies, which points towards this
 individual being optimistic about her life chances. Also rather surprisingly,
@@ -866,7 +866,7 @@ significant differences at the start of retirement. This means that different
 lifecycle models will produce substantive differences in predictions, so knowing
 which model is correct is important for policy.
 
-To simulate consumption and asset paths for the individuals in my ELSA dataset.
+To simulate consumption and asset paths for the individuals in my ELSA dataset,
 I round financial wealth and state pension income to the closest point on the
 discrete asset and pension grids respectively. I then take the treatment group
 and evaluate their consumption in the year of interview with an annuity, given
