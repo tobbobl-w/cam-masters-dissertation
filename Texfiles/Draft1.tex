@@ -37,7 +37,7 @@
 
         Date: 27th July, 2023
 
-        Word count: 8335\footnote{This is an estimate that my LaTeX editor gave me.} + 1750 (figure and table word equivalent)
+        Word count: 8336\footnote{This is an estimate that my LaTeX editor gave me.} + 1650 (figure and table word equivalent)
         \vfill
         I confirm that this is entirely my own work and has not previously been submitted for assessment, and I have read and understood the University’s and Faculty’s definition of Plagiarism
     \end{center}
@@ -519,7 +519,7 @@ reform but food consumed away from the house does increase. A shock to income,
 caused by no longer needing to annuitise, may cause spending on luxury goods to
 increase and for spending on their substitutes, like food in the house relative
 to food away from home, to decrease. This wealth effect may be driving the
-results we observe in Table \ref{tab:DcOnlyRes} since food consumption outside the
+results we observe in Table \ref{tab:DcOnlyRes}, since food consumption outside the
 home increases as does expenditure on clothing -- seen in column 5.
 
 One concern is that the group who retired after 2014 are just generally
@@ -546,7 +546,7 @@ group against.
 
 The key identifying assumption for DD is the parallel trends assumption. In this
 context, it means that consumption differences between the DB, DC and no pension
-group across cohorts would have been the same were it not for the policy change.
+groups across cohorts would have been the same were it not for the policy change.
 Therefore for DD to be invalid, we would need a reason to expect that the
 individuals with a DB and no pension who are retiring post 2014 are impacted by
 some factor that did not equally impact the DC group. Given that there were no
@@ -761,9 +761,9 @@ for individuals with no bequest motive or with assets below £20,000 ($c_{0}$).
 Using the policy function at age 110, which we just found by doing the
 optimisation at age 110, I calculate the value for all income and asset states
 at age 110. This value is then used to solve the problem an individual at age
-109 faces, specifically, for each income and asset state, they need to find the
+109 faces. Specifically, for each income and asset state, they need to find the
 assets next period that maximise: utility from consumption; bequests multiplied
-by the probability of death; and thevalue function at age 110, discounted by
+by the probability of death; and the value function at age 110, discounted by
 $\beta$, multiplied by the probability of being alive. I repeat this process
 back to the age of retirement to obtain optimal consumption amounts for each
 year of retirement and the associated value functions. I write code in Julia
@@ -791,7 +791,7 @@ $Ann$ on the permanent income grid for the rest of their lives. The `money's
 worth' of an annuity is the ratio of expected present discounted value to the
 price of an annuity that an individual can purchase. An actuarially fair annuity
 will have a money's worth of 1 whilst an annuity that pays more than it costs
-will have a money's worth greater than 1. Generally they have been found to be
+will have a money's worth greater than 1. Generally, they have been found to be
 between $0.8$ and $0.9$ for the population as a whole in the UK
 \citep{finkelstein_porteba_2002, finkelstein_porteba_2004, mitchell_et_al_1999}.
 
@@ -1029,7 +1029,7 @@ retiring with a DC pension grows, understanding the mechanisms
 behind their choices will matter more to policy makers. For example, if the
 annuitisation puzzle is caused by a bequest motive rather than low money's worth
 or short subjective life expectancies, then policies that force annuitisation or
-tax assets to fund state pensions will not be welfare enhancing.
+tax assets to fund state pensions will not be welfare-enhancing.
 
 
 
