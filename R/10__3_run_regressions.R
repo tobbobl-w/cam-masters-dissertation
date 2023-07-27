@@ -243,6 +243,7 @@ modelsummary(
     estimate = "{estimate}",
     statistic = "({std.error})",
     align = align_string_ms(names(out_models_fin_wealth_interaction)),
+    gof_map = bottom_stats,
     vcov = ~pre_post_ref_bin,
     notes = "I use robust standard errors clustered at the treatment level
     since standard errors are
@@ -278,7 +279,7 @@ names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_only_dc_only_retexp,
     output = "../Texfiles/tables/rob_elsa_results_only_dc_only_exp.tex",
-    title = "DC & expected retirement is real retirement only  \\label{tab:DcOnlyExpOnlyRes}",
+    title = "Robustness: DC only and retire in year expected  \\label{tab:DcOnlyExpOnlyRes}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",
@@ -313,7 +314,7 @@ names(out_models_only_dc_only_retexp) <- sapply(lhs, ReturnCleanName)
 modelsummary(
     out_models_only_dc_only_retexp,
     output = "../Texfiles/tables/rob_elsa_results_only_dc_only_late_ret_year.tex",
-    title = "DC only and retired later than 2012  \\label{tab:DcOnlyNot2012}",
+    title = "Robustness: DC only and retired later than 2012 \\label{tab:DcOnlyNot2012}",
     coef_rename = unclean_name_vector,
     estimate = "{estimate}",
     statistic = "({std.error})",

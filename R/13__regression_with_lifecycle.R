@@ -3,6 +3,7 @@ library(dplyr)
 library(ggplot2)
 library(stringr)
 library(modelsummary)
+library(kableExtra)
 
 source("./__ELSA_functions.R")
 clean_names <- append(clean_names, c("PostReform" = "pre_post_ref_bin"), 0)
@@ -264,8 +265,8 @@ modelsummary(
     vcov = "robust",
     title = "Simulated bequest lifecycle models \\label{tab:BeqLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL, 
-    align = align_string_ms(names(bequest_outmodels)), 
+    statistic = NULL,
+    align = align_string_ms(names(bequest_outmodels)),
     gof_map = bottom_stats
 )
 
@@ -288,8 +289,8 @@ modelsummary(
     vcov = "robust",
     title = "Simulated standard lifecycle models \\label{tab:StandardLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL, 
-    align = align_string_ms(names(standard_outmodels)), 
+    statistic = NULL,
+    align = align_string_ms(names(standard_outmodels)),
     gof_map = bottom_stats
 )
 
@@ -313,12 +314,71 @@ modelsummary(
     vcov = "robust",
     title = "Simulated subjective lifecycle models \\label{tab:SubjectiveLifeCycle}",
     coef_rename = unclean_name_vector,
-    statistic = NULL, 
-    align = align_string_ms(names(subjective_outmodels)), 
+    statistic = NULL,
+    align = align_string_ms(names(subjective_outmodels)),
     gof_map = bottom_stats
 )
 
+# -------------- all models one table
 
+all_models <- list(
+    bequest_outmodels[!grepl("PensionIn", names(bequest_outmodels))],
+    standard_outmodels[!grepl("PensionIn", names(standard_outmodels))],
+    subjective_outmodels[!grepl("PensionIn", names(subjective_outmodels))]
+) %>%
+    unlist(recursive = F)
+
+new_names <- names(all_models) %>%
+    str_replace("AllDataDCInteraction", "DCInt") %>%
+    str_replace("DCOnyFinancialInt", "FinInt")
+
+names(all_models) <- new_names
+
+# two layers of names
+# top layer is model type
+# bottom layer is
+
+top_names <- c(" " = 1, "Bequest" = 3, "Standard" = 3, "Subjective" = 3)
+tab_out <- modelsummary(
+    all_models,
+    output = "latex",
+    booktabs = T,
+    vcov = "robust",
+    title = "Empirical models with simulated consumption data \\label{tab:SubjectiveLifeCycle}",
+    coef_rename = unclean_name_vector,
+    statistic = NULL,
+    align = align_string_ms(names(all_models)),
+    gof_map = bottom_stats,
+    fmt = fmt_sprintf("%.2f"),
+)
+
+output <- "../Texfiles/tables/all_simulated_models.tex"
+
+# customize table with `kableExtra`
+tab_out_fin <- tab_out %>%
+    # column labels
+    add_header_above(top_names) %>%
+    kable_styling(font_size = 10)
+
+writeLines(
+    tab_out_fin,
+    output
+)
+
+ss_table <- kbl(all_modles,
+    col.names = col_names,
+    booktabs = TRUE,
+    format = "latex",
+    caption = "Empirical models with simulated consumption data \\label{tab:simulation} ",
+    align = align_string(names(ss_stat_out))
+) %>%
+    add_header_above(top_names) %>%
+    kable_styling(font_size = 10)
+
+writeLines(
+    ss_table,
+    "../Texfiles/tables/r_summary_stats.tex"
+)
 
 
 

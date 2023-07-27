@@ -45,7 +45,7 @@ harm_long[, ragender := fcase(
 
 harm_long[, gender_string := fcase(
     ragender == 0, "male",
-    ragender == 1, "female"
+    ragender == 1, "female" # one is female
 )]
 
 harm_long[pension_wealth_dt, dc_pot := dc_pot, on = c("idauniq", "int_year" = "year")]
@@ -160,8 +160,8 @@ data_for_regressions <- data_for_regressions[monthly_food_in < 500 | is.na(month
 data_for_regressions <- data_for_regressions[monthly_utility < 800 | is.na(monthly_utility)] # 1 row
 
 table(data_for_regressions$pre_post_ref)
-
-
+# drop early retirees
+data_for_regressions <- data_for_regressions[retired_age >= 55]
 
 fwrite(
     data_for_regressions,
