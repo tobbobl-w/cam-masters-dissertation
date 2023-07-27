@@ -45,16 +45,19 @@
 \newpage
 \maketitle
 \begin{abstract}
-    I find the consumption response of early retirees to the `pensions freedom
-    act', which meant defined contribution pensions could be used for other
-    options than just purchasing an annuity. I use a discontinuity in year of
-    retirement and a difference in difference approach using those who were
-    unaffected by the policy reform as a natural control group. I then solve
-    three sets of lifecycle models from age of retirement until an agent reaches
-    110. I simulate their consumption with and without annuities, i.e. a the
-    policy reform, and match their consumption response to what was seen in the
-    empirical models. I find that a lifecycle model with a bequest motive best
-    fits this consumption response.
+    I identify the consumption responses of retirees to the UK's `pensions
+    freedom act', a landmark law change that meant defined contribution pension
+    holders were no longer forced to annuitise their funds and could instead
+    access their pensions in a variety of ways. I use a discontinuity in year of
+    retirement and a difference-in-difference approach, harnessing those who
+    were unaffected by the policy reform as a natural control group. I then
+    solve three sets of lifecycle models, tracking assets from retirement until an
+    agent reaches age 110. I simulate their consumption with and without
+    annuities, mimicking the policy reform, and match their consumption
+    responses to what was seen in the empirical models. I find that a lifecycle
+    model with a bequest motive best fits the identified consumption response —
+    a result that could inform policymakers in designing optimal pension
+    policies for an ageing population.
 \end{abstract}
 \newpage
 \tableofcontents
@@ -68,12 +71,11 @@ developed countries, rates of annuitisation are far below the levels that theory
 predicts -- this phenomenon has been termed the ``annuity puzzle". The literature
 has suggested several reasons for this, but there is no consensus about which
 mechanism is dominant. I exploit early retirees' consumption responses to a
-reform to annuity policy in the UK to add to this literature. [\textbf{Add
-            something once I have a conclusion}].
+reform to annuity policy in the UK to add to this literature.
 
 In the UK, adults have three methods of funding retirement: the state pension;
 defined benefit (DB) employee pension schemes, which provide an income in
-retirement based on years of service and a function of wages; and defined
+retirement based on years of service and wages; and defined
 contribution (DC) pensions, under which individuals save and invest in a
 tax-advantaged account that is usually supplemented with employer contributions.
 Under the 2010-2015 coalition government in the UK, the law regarding the use of
@@ -147,56 +149,58 @@ model of human decision making.
 
 \cite{yaari_65} showed that under standard assumptions with risk averse agents
 we would expect individuals to annuitise all of their wealth at retirement to
-insure against the risk of long life. And more recently
+insure against the risk of long life. More recently,
 \cite{davidoff_brown_diamond_aer_2005} show that complete annuitisation is
-optimal under a broader range of assumptions. Since then there has been much
-discussion of possible reasons for why people do not annuitise.
+optimal under a broader range of assumptions. Since then, there has been much
+discussion of possible reasons for why people choose not to annuitise.
 \cite{finkelstein_porteba_2002, finkelstein_porteba_2004} find evidence of
 adverse selection into the UK annuity market and \cite{mitchell_et_al_1999} find
-evidence of the same in the US. This means longer lived individuals select into
+evidence of the same in the US. This means longer-lived individuals select into
 buying annuities which drives up annuity prices because providers need to pay
-individuals for longer than they originally thought they would need to. This
+individuals for longer than they originally predicted they would need to. This
 makes the `money's worth' of an annuity lower for the general population as
 opposed to the population of annuitants, putting off individuals from buying an
 annuity. However, \cite{mitchell_et_al_1999} also find that theory would still
 predict annuitisation because the money's worth of annuities is not that far
-from `actuarially fair' (this is the where the present discounted value of annuities
+from `actuarially fair' (meaning the present discounted value of annuities
 equals the price that an individual pays for it).
 
 \cite{friedman_warshawsky_qje_1990} show that annuitisation decisions can be
 fully explained by a mixture of bequest motives and `actuarially unfair'
-annuities. They solve an augmented life-cycle model and calculate annuity demand
-for a range of differences between rate of return assets would get in the stock
-market and the rate of return annuities give an individual. For plausible values
+annuities. They solve an augmented lifecycle model and calculate annuity demand
+for a range of differences between the rate of return assets would get in the stock
+market and the rate of return annuities give an individual. For plausible values,
 they find that individuals would optimally not annuitise much wealth. Similarly
 to \cite{finkelstein_porteba_2004}, \cite{friedman_warshawsky_chicago_1988} show
 that there is a significant difference between the life expectancy of annuitants
 and the general population in the American annuity market, which therefore
-implies a degree of adverse selection. But they find this cannot fully explain
-the annuitisation puzzle and only when bequest motives are added to the model
-can annuitisation rates be rationalized.
+implies a degree of adverse selection. But, they find this cannot fully explain
+the annuitisation puzzle, and only when bequest motives are added to the model
+can annuitisation rates be rationalised.
 
 More recently, \cite{lockwood_red_2012} builds on this and shows that a
 realistic bequest motive in lifecycle simulations achieves realistic
 annuitisation rates. He solves a simple lifecycle model with bequest motives
 taken from several recent papers in the retirement savings literature. The
-bequest motives he picks matches other important aspects of empirical
-distribution of bequests such as how much individuals give and the financial
+bequest motives he picks match other important aspects of the empirical
+distribution of bequests, such as how much individuals bequeath and the financial
 characteristics of these individuals. Also, \cite{odea_sturrock_rest_2023} find
 that subjective life expectancies can explain a large part of the annuitisation
-puzzle especially if agents are less risk averse.
+puzzle, especially if agents are less risk averse.
 
 Apart from bequests and annuity prices, a range of other reasons for the annuity
-puzzle have been explored. Pre-cautionary savings for unexpected end-of-life
-medical expenses might cause individuals to prefer holding assets rather than a
-an annuity. Moreover, \cite{vidalmelia_lejarragagarcia_munich_2004} suggests
-that couples might share the risk of living for a long-time between them and
+puzzle have been explored. Precautionary savings for unexpected end-of-life
+medical expenses might cause individuals to prefer holding assets rather than
+an annuity. Moreover, \cite{vidalmelia_lejarragagarcia_munich_2004} suggest
+that couples might share the risk of long life by pooling their resources, and
 therefore couples may be less likely to annuitise their wealth.
 
 Given that uncertain end-of-life medical expenses are not such an issue in the
 UK as opposed to the US, and that the focus of recent literature has been on the
 bequest model and uncertain life expectancy, I choose also to focus on bequest
-and objective life expectancy in the UK context.
+and objective life expectancy in the UK context. To my knowledge, there has been
+no attempt to analyse the consumption response to 2014 reform, nor evaluate what
+common lifecycle models predict for the policy change.
 
 \section{Data and Policy reform}
 
@@ -412,9 +416,6 @@ masse decided to delay retirement and avoid annuitisation. Moreover, for the
 regression discontinuity models I only use individuals who have a DC pension, so
 it does not matter that there are more individuals with DC pensions in the
 second group.
-
-\textbf{conclusion: chat about couples, chat about better data on at what
-    stage of retirement individuals buy annuities}
 
 \begin{landscape}
     \linespread{1.25}
@@ -906,9 +907,15 @@ therefore can consume more early in retirement. Likewise, it makes sense that
 the bequest model predicts lower consumption, since there is utility to be
 gained from saving so that an individual can bequest to their heirs.
 
-I now run the empirical models on this simulated data. This lets us
-see which lifecycle model gives us the closest match to the coefficients seen in the
-real data.
+
+I now run the empirical models on this simulated data. This lets us see which
+lifecycle model gives us the closest match to the coefficients seen in the real
+data. In the structural modelling literature, it is often common to run policy
+tests on estimated models to see if simulated responses match real world
+responses, for example see \cite{mcgee_2021}. Due to the time constraints of
+this project, I did not estimate a full structural model but I do check which
+lifecycle model fits the response seen in the ELSA data.
+
 
 \begin{landscape}
     \linespread{1.25}
@@ -954,17 +961,16 @@ In the second column, the coefficient of interest is the DC pension interaction
 with the treatment variable since I use the DD setup again. The bequest model
 has a coefficient of 25.5, the standard model one of 17.8 and the standard model
 with subjective life expectancies has one of -30.9. The bequest and subjective
-coefficients are
-higher than the coefficient seen in Table \ref{tab:ElsaAllData} with the
-predictions from the standard model matching the empirical model best. The
-subjective model again has the opposite sign to the one seen in the empirical
-model.
+coefficients are higher than the coefficient seen in Table \ref{tab:ElsaAllData}
+with the predictions from the standard model matching the empirical model best.
+The subjective model again has the opposite sign to the one seen in the
+empirical model.
 
 The interaction models in columns 3 and 4 both have correct signs for the main
 reform effect in the standard and bequest models, although in both the
-interaction with financial wealth has a negative coefficient showing that the
+interaction with financial wealth has a negative coefficient, showing that the
 increase in consumption caused by the reform was progressively lower for those
-who would have had to annuitise more wealth. In the subjective model table the
+who would have had to annuitise more wealth. In the subjective model table, the
 signs are again wrong apart from for the main treatment effect in the financial
 interaction column. The lifecycle model that appears closest to the empirical
 results is again the bequest model, which matches the signs from Tables
@@ -975,59 +981,56 @@ Across all regressions, the lifecycle model using subjective life expectancies
 does not match the change in consumption that is seen when using ELSA data. It
 is surprising that the consumption response is also very different to the other
 lifecycle models used. One possible explanation for this could be that the
-control and treatment groups have quite different sets of objective life
-expectancies which therefore cause different consumption paths in early
-retirement. The structure that the Weibull distribution imposes on the
-death probabilities could also be causing discontinuities in a given
-individuals subjective probability of death between two periods, which would
-impact how they consume across that part of retirement.
+control and treatment groups have quite different sets of subjective life
+expectancies, which therefore cause different consumption paths in early
+retirement. This heterogeneity in death probabilities would not occur in the
+with the other models because the objective death probabilities at a given age
+for different birth cohorts are not that large. The structure that the Weibull
+distribution imposes on the death probabilities could also be causing
+discontinuities in a given individuals subjective probability of death between
+two periods, which would impact how they consume across that part of retirement.
 
-The evidence just presented points towards predictions from the bequest model
-being best able to replicate the consumption response in the data. As
-highlighted above, the benefit of having a theoretical model is that we can
-trace out future values of consumption for individuals, only needing to know
-their starting point. So using the bequest solution to the retirement problem, I
-plot the whole path of average consumption and assets for the ELSA treated
-cohort. This plot is shown in the figure below.
-
-
-
-\textbf{Also get some plots of consumption in early retirement with and without
-    annuities for the different model types}
-
+The evidence just presented points towards simulated data using the bequest
+model being best able to replicate the consumption response observed in the
+empirical models. As highlighted above, the benefit of having a theoretical
+model is that we can trace out the asset path of consumption for individuals,
+only needing to know their retirement wealth.
 
 \section{Conclusion}
 
-I have shown that consumption in early retirement increased overall and
-particularly on
+The results from the empirical section of this paper point toward there being
+some impact of the `pensions freedom act' on the consumption of retirees early
+in retirement. The specifications that used the full available data set show a
+clear increase in total monthly consumption, and particularly an increase in food
+consumption away from home and on clothes. Although, this increase of 36 a month
+only equates to 432 a year, over a longer period it may mean some retirees end
+up with fewer resources than they require toward the end of their life.
 
-\subsection{Rough plan}
-\begin{itemize}
-    \item Intro
-          \begin{enumerate}
-              \item "Latest data from HM Revenue Customs (published in April)
-                    showed more than £45bn has been taken from pots since 2015."
-                    https://www.ftadviser.com/pensions/2022/02/08/pension-freedoms-were-they-really-a-good-idea/
-              \item what portion of savings are because of retirement savings?
-              \item Also talk about heterogeneity across countries. Some
-                    countries want to move towards more annuitisation. This
-                    annual review is a good source of info
-                    \cite{banks_crawford_ar_2022}
-              \item https://www.moneysavingexpert.com/savings/pension-freedom/
-          \end{enumerate}
+Moreover, the results from the lifecycle section show not just that the models
+create different consumption predictions, but they also add to the evidence that
+lifecycle models with bequests can do a good job of explaining the consumption
+patterns of retirees. That simulated data from a bequest model matches the
+consumption response also points towards bequests being able to explain the
+annuitisation puzzle.
 
-          \textbf{Follow up by changing chat because the parameter estimates for
-              the diff in diff have changed a bit -- DONE but check again when I
-              have gone through it -- haven't checked the comparisons }
-    \item \textbf{Abstract}
-    \item \textbf{Add bit about testing just those people who retired when they
-              expected to retire.}
-    \item \textbf{Could add consumption and retirement year plot?}
-    \item \textbf{Maybe a small discussion of controls for the main regression
-              tables as well}
-    \item Conclusion
-\end{itemize}
+Since the bequest motive model fits the consumption response best, we can worry
+about the increase in early retirement consumption less. This is because,
+as highlighted in the analysis of the median individual, assets will diverge
+from the objective and subjective lifecycle models during retirement, reducing
+at a slower rate. Therefore, the government should not worry about spending
+early in retirement being linked to low assets at the end of an individuals
+life.
 
+Future research is still needed to understand the full impact the reform has had
+on consumption across the whole of retirement, especially as more data on
+retirees impacted by the reform becomes available. Moreover, as the number of
+individuals retiring with a defined contribution pension grows, understanding
+the mechanisms behind their choices will matter more to policy makers. For
+example, the advice that is provided to individuals on retirement.
+
+
+\textbf{conclusion: chat about couples, chat about better data on at what
+    stage of retirement individuals buy annuities}
 
 
 \bibliographystyle{chicago}

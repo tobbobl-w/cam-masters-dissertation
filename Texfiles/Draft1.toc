@@ -9,4 +9,3 @@
 \contentsline {section}{\numberline {4}Life cycle theory}{28}{section.4}%
 \contentsline {section}{\numberline {5}Lifecycle Results}{31}{section.5}%
 \contentsline {section}{\numberline {6}Conclusion}{40}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Rough plan}{40}{subsection.6.1}%
