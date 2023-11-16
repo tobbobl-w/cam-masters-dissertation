@@ -1,6 +1,7 @@
 library(dplyr)
 library(ggplot2)
 library(modelsummary)
+library(data.table)
 
 source("./__ELSA_functions.R")
 
@@ -48,10 +49,45 @@ clean_names <- append(clean_names, c("PostReform" = "pre_post_ref_bin"), 0)
 ## No this is a diff in diff basically says that individuals are
 # similar apart from for the reform (after controlling for vars)
 
+names(data_for_regressions)
 
-lm(total_monthly_consumption ~ pre_post_ref_bin,
-    data = data_for_regressions
+head(data_for_regressions$idauniq)
+data_for_regressions[, .(count = .N),
+    by = .(idauniq)
+]
+
+data_for_regressions[, .(count = .N),
+    by = .(retirement_year)
+] %>%
+    ggplot(aes(
+        x = retirement_year,
+        y = count
+    )) +
+    geom_col()
+
+data_for_regressions[, .(count = .N),
+    by = .(retirement_year)
+] %>%
+    ggplot(aes(
+        x = retirement_year,
+        y = count
+    )) +
+    geom_col()
+data_for_regressions[, rv := retirement_year - 2014]
+
+
+
+
+# Ok this shold be the spec
+lm(total_monthly_consumption ~ pre_post_ref_bin + rv + rv:pre_post_ref_bin,
+    data = data_for_regressions[retirement_year >= 2012 & retirement_year <= 2016]
 )
+
+# Then I should IV buying an annuity with this
+
+data_for_regressions[retirement_year >= 2012 & retirement_year <= 2016, mean(total_monthly_consumption)]
+
+
 
 lm(total_monthly_consumption ~ pre_post_ref_bin + age_at_interview,
     data = data_for_regressions

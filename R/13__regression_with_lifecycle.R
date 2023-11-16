@@ -84,6 +84,8 @@ align_string_ms <- function(col_names, type_alignment = "d") {
 
 
 
+
+
 #  ------------ join data together ------------
 joint_dt <- reg_dt %>%
     merge.data.table(
@@ -136,6 +138,18 @@ joint_dt %>%
     filter(fin_wealth < 150) %>%
     filter(public_pension > 5) %>%
     select(id_wave)
+
+
+
+# which ids do we NOT want
+full_directory <- dir("../../data/ELSA/lifecycle_outputs/id_wave/", full.names = T)
+files_to_keep <- joint_dt$id_wave %>%
+    lapply(function(idwave) grep(idwave, full_directory, value = T)) %>%
+    lapply(function(x) x[1]) %>%
+    unlist()
+
+files_to_remove <- full_directory[!full_directory %in% files_to_keep]
+file.remove(files_to_remove)
 
 # --------------- Save some summary statistics ---------------
 

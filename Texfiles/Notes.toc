@@ -19,19 +19,20 @@
 \contentsline {section}{\numberline {6}Annuity Prices and Saving Behavior in the United States}{9}{section.6}%
 \contentsline {section}{\numberline {7}Bequest motives and the annuity puzzle}{9}{section.7}%
 \contentsline {section}{\numberline {8}Personal notes}{10}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Saturday before due date}{10}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}ELSA notes}{10}{subsection.8.2}%
-\contentsline {subsection}{\numberline {8.3}\textbf {20-07}}{10}{subsection.8.3}%
-\contentsline {subsection}{\numberline {8.4}\textbf {14-07}}{11}{subsection.8.4}%
-\contentsline {subsection}{\numberline {8.5}\textbf {12-07}}{11}{subsection.8.5}%
-\contentsline {subsection}{\numberline {8.6}\textbf {11-07}}{11}{subsection.8.6}%
-\contentsline {subsection}{\numberline {8.7}\textbf {08-07}}{12}{subsection.8.7}%
-\contentsline {subsection}{\numberline {8.8}\textbf {06-07}}{12}{subsection.8.8}%
-\contentsline {subsection}{\numberline {8.9}\textbf {04-07}}{12}{subsection.8.9}%
-\contentsline {subsection}{\numberline {8.10}\textbf {30-06}}{13}{subsection.8.10}%
-\contentsline {subsection}{\numberline {8.11}\textbf {28-06}}{13}{subsection.8.11}%
-\contentsline {subsection}{\numberline {8.12}\textbf {27-06}}{13}{subsection.8.12}%
-\contentsline {subsection}{\numberline {8.13}\textbf {19-06}}{14}{subsection.8.13}%
-\contentsline {subsection}{\numberline {8.14}\textbf {18-06}}{14}{subsection.8.14}%
-\contentsline {subsection}{\numberline {8.15}\textbf {16-06}}{15}{subsection.8.15}%
-\contentsline {subsection}{\numberline {8.16}\textbf {13-06}}{15}{subsection.8.16}%
+\contentsline {subsection}{\numberline {8.1}2023-11-15}{10}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Saturday before due date}{10}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}ELSA notes}{10}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}\textbf {20-07}}{10}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}\textbf {14-07}}{11}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}\textbf {12-07}}{11}{subsection.8.6}%
+\contentsline {subsection}{\numberline {8.7}\textbf {11-07}}{12}{subsection.8.7}%
+\contentsline {subsection}{\numberline {8.8}\textbf {08-07}}{12}{subsection.8.8}%
+\contentsline {subsection}{\numberline {8.9}\textbf {06-07}}{12}{subsection.8.9}%
+\contentsline {subsection}{\numberline {8.10}\textbf {04-07}}{12}{subsection.8.10}%
+\contentsline {subsection}{\numberline {8.11}\textbf {30-06}}{13}{subsection.8.11}%
+\contentsline {subsection}{\numberline {8.12}\textbf {28-06}}{13}{subsection.8.12}%
+\contentsline {subsection}{\numberline {8.13}\textbf {27-06}}{14}{subsection.8.13}%
+\contentsline {subsection}{\numberline {8.14}\textbf {19-06}}{14}{subsection.8.14}%
+\contentsline {subsection}{\numberline {8.15}\textbf {18-06}}{14}{subsection.8.15}%
+\contentsline {subsection}{\numberline {8.16}\textbf {16-06}}{15}{subsection.8.16}%
+\contentsline {subsection}{\numberline {8.17}\textbf {13-06}}{16}{subsection.8.17}%
