@@ -162,6 +162,7 @@ data_for_regressions <- data_for_regressions[monthly_utility < 800 | is.na(month
 table(data_for_regressions$pre_post_ref)
 # drop early retirees
 data_for_regressions <- data_for_regressions[retired_age >= 55]
+data_for_regressions[, rv := retirement_year - 2014]
 
 fwrite(
     data_for_regressions,

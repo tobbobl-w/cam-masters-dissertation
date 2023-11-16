@@ -73,9 +73,8 @@ data_for_regressions[, .(count = .N),
         y = count
     )) +
     geom_col()
+
 data_for_regressions[, rv := retirement_year - 2014]
-
-
 
 
 # Ok this shold be the spec
@@ -84,9 +83,12 @@ lm(total_monthly_consumption ~ pre_post_ref_bin + rv + rv:pre_post_ref_bin,
 )
 
 # Then I should IV buying an annuity with this
+# annuity income should be the endogenous variable
+
+# could also use state retirement age as proxy for retirement age
+
 
 data_for_regressions[retirement_year >= 2012 & retirement_year <= 2016, mean(total_monthly_consumption)]
-
 
 
 lm(total_monthly_consumption ~ pre_post_ref_bin + age_at_interview,
@@ -147,7 +149,7 @@ align_string_ms <- function(col_names, type_alignment = "d") {
 # --------- dc only models ---------
 
 
-rhs <- "pre_post_ref_bin + retired_age + fin_wealth +
+rhs <- "pre_post_ref_bin + rv + rv:pre_post_ref_bin + retired_age + fin_wealth +
 ragender + dc_pot + years_since_retirement + owns_house + public_pension"
 
 lhs <- c(

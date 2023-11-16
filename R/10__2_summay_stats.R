@@ -116,6 +116,7 @@ writeLines(
 
 
 
+
 # table not separated by treated and control
 # all_ss_stat <- data_for_regressions %>%
 #     mutate(across(all_of(summary_cols), ~ as.numeric(.x))) %>%
@@ -143,7 +144,7 @@ writeLines(
 CreateCovBalanceFormulas <- function(variable_name) {
     string_linear <- paste0(
         variable_name,
-        " ~ pre_post_ref"
+        " ~ pre_post_ref + rv + rv:pre_post_ref "
     )
 
     formula_to_use <- formula(string_linear)
@@ -157,7 +158,7 @@ RunCovariateBalance <- function(variable_name) {
     print(variable_name)
     formula_to_use <- CreateCovBalanceFormulas(variable_name)
 
-    output <- lm(formula_to_use, data_for_regressions[ever_dc_pen == "yes"])
+    output <- lm(formula_to_use, data_for_regressions)
 
     sum_output <- summary(output)
 
@@ -175,7 +176,6 @@ RunCovariateBalance <- function(variable_name) {
     ))
 }
 
-
 cov_balance <- lapply(non_consump_cols, RunCovariateBalance) %>%
     rbindlist() %>%
     mutate(
@@ -183,7 +183,6 @@ cov_balance <- lapply(non_consump_cols, RunCovariateBalance) %>%
         std_error = sprintf("%.3f", std_error)
     ) %>%
     mutate(var_name = sapply(var_name, ReturnCleanName))
-
 
 cov_balance <- cov_balance[order(match(
     cov_balance$var_name,
@@ -201,6 +200,12 @@ coef_table <- kbl(cov_balance,
     align = align_string(col_names, alignment = "d")
 )
 
+??systemfit()
+library(data.table, verbose = T)
+
+
+install.packages("systemfit")
+installed.packages()
 writeLines(
     coef_table,
     "../Texfiles/tables/cov_balance.tex"
