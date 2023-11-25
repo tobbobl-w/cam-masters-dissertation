@@ -211,26 +211,46 @@ writeLines(
     "../Texfiles/tables/cov_balance.tex"
 )
 
-# this seems quite non-sensical
-
-## Now save these variables
-
-
-# use stargazer for now because I know how it works
-# save as tex files in the latex file
 
 
 
+# I want to write my own F-stat function
+# takes multiple models and covariance matrices
+# then calcs F stat for the variable that I care
+
+model_1 = lm(
+    ragender ~  pre_post_ref + rv + rv:pre_post_ref , 
+    data = data_for_regressions
+)
+
+# i.e. constrain that pre_post_ref == 0
+model_2 = lm(
+    ragender ~  rv + rv:pre_post_ref , 
+    data = data_for_regressions
+)
+
+sigma_hat = 1/nrow(data_for_regressions)*(sum(model_1$residuals^2))
+sigma_tilda = 1/nrow(data_for_regressions)*(sum(model_2$residuals^2))
+
+n = nrow(data_for_regressions)
+coefs = length(model_1$coefficients)
+
+F_stat = (sigma_tilda - sigma_hat)/(sigma_hat/(n - coefs))
+
+coeftest(model_1)
+F_stat * 4
+
+library(lmtest)
+
+install.packages("coeftest")
+
+install.packages("lmtest")
+names(model_1)
+
+model_1  %>% 
+lapply(head)
+model_1$qr  %>% names
+
+model_1$qr$rank
 
 
-
-# 0.3 of a year longer
-
-# do this for all the above variables
-# basically want to copy the table from MD
-
-
-
-
-
-# MD has an example of a fuzzy RD that could be good to copy.

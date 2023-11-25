@@ -18,21 +18,23 @@
 \contentsline {section}{\numberline {5}The Cost of Annuities: Implications for Saving Behavior and Bequests}{8}{section.5}%
 \contentsline {section}{\numberline {6}Annuity Prices and Saving Behavior in the United States}{9}{section.6}%
 \contentsline {section}{\numberline {7}Bequest motives and the annuity puzzle}{9}{section.7}%
-\contentsline {section}{\numberline {8}Personal notes}{10}{section.8}%
-\contentsline {subsection}{\numberline {8.1}2023-11-15}{10}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Saturday before due date}{10}{subsection.8.2}%
-\contentsline {subsection}{\numberline {8.3}ELSA notes}{10}{subsection.8.3}%
-\contentsline {subsection}{\numberline {8.4}\textbf {20-07}}{10}{subsection.8.4}%
-\contentsline {subsection}{\numberline {8.5}\textbf {14-07}}{11}{subsection.8.5}%
-\contentsline {subsection}{\numberline {8.6}\textbf {12-07}}{11}{subsection.8.6}%
-\contentsline {subsection}{\numberline {8.7}\textbf {11-07}}{12}{subsection.8.7}%
-\contentsline {subsection}{\numberline {8.8}\textbf {08-07}}{12}{subsection.8.8}%
-\contentsline {subsection}{\numberline {8.9}\textbf {06-07}}{12}{subsection.8.9}%
-\contentsline {subsection}{\numberline {8.10}\textbf {04-07}}{12}{subsection.8.10}%
-\contentsline {subsection}{\numberline {8.11}\textbf {30-06}}{13}{subsection.8.11}%
-\contentsline {subsection}{\numberline {8.12}\textbf {28-06}}{13}{subsection.8.12}%
-\contentsline {subsection}{\numberline {8.13}\textbf {27-06}}{14}{subsection.8.13}%
-\contentsline {subsection}{\numberline {8.14}\textbf {19-06}}{14}{subsection.8.14}%
-\contentsline {subsection}{\numberline {8.15}\textbf {18-06}}{14}{subsection.8.15}%
-\contentsline {subsection}{\numberline {8.16}\textbf {16-06}}{15}{subsection.8.16}%
-\contentsline {subsection}{\numberline {8.17}\textbf {13-06}}{16}{subsection.8.17}%
+\contentsline {section}{\numberline {8}Lee and Lemiuex}{10}{section.8}%
+\contentsline {section}{\numberline {9}Personal notes}{10}{section.9}%
+\contentsline {subsection}{\numberline {9.1}2023-11-25}{10}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}2023-11-15}{10}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Saturday before due date}{11}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}ELSA notes}{11}{subsection.9.4}%
+\contentsline {subsection}{\numberline {9.5}\textbf {20-07}}{11}{subsection.9.5}%
+\contentsline {subsection}{\numberline {9.6}\textbf {14-07}}{12}{subsection.9.6}%
+\contentsline {subsection}{\numberline {9.7}\textbf {12-07}}{12}{subsection.9.7}%
+\contentsline {subsection}{\numberline {9.8}\textbf {11-07}}{12}{subsection.9.8}%
+\contentsline {subsection}{\numberline {9.9}\textbf {08-07}}{13}{subsection.9.9}%
+\contentsline {subsection}{\numberline {9.10}\textbf {06-07}}{13}{subsection.9.10}%
+\contentsline {subsection}{\numberline {9.11}\textbf {04-07}}{13}{subsection.9.11}%
+\contentsline {subsection}{\numberline {9.12}\textbf {30-06}}{14}{subsection.9.12}%
+\contentsline {subsection}{\numberline {9.13}\textbf {28-06}}{14}{subsection.9.13}%
+\contentsline {subsection}{\numberline {9.14}\textbf {27-06}}{14}{subsection.9.14}%
+\contentsline {subsection}{\numberline {9.15}\textbf {19-06}}{15}{subsection.9.15}%
+\contentsline {subsection}{\numberline {9.16}\textbf {18-06}}{15}{subsection.9.16}%
+\contentsline {subsection}{\numberline {9.17}\textbf {16-06}}{16}{subsection.9.17}%
+\contentsline {subsection}{\numberline {9.18}\textbf {13-06}}{16}{subsection.9.18}%
