@@ -85,7 +85,7 @@ col_names <- names(ss_stat_out) %>%
 header_to_add <- c(1, rep(2, length(function_names) - 1))
 
 names(header_to_add) <- function_names
-stop()
+
 align_string <- function(col_names, alignment = "r") {
     # Left align first col
     # right align others
@@ -200,8 +200,17 @@ coef_table <- kbl(cov_balance,
     align = align_string(col_names, alignment = "d")
 )
 
+formulas <- lapply(
+    non_consump_cols,
+    CreateCovBalanceFormulas
+)
+
 ??systemfit()
-library(data.table, verbose = T)
+library(systemfit)
+
+system <- list(demand = eqDemand, supply = eqSupply)
+
+fitOls <- systemfit(formulas, data = data_for_regressions)
 
 
 install.packages("systemfit")
