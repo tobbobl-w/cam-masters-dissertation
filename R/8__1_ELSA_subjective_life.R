@@ -18,27 +18,27 @@ source("__ELSA_functions.R")
 
 
 check_files_for_variable_name <- function(var_name) {
-    # returns the files which contain the variable name we are looking for
-    # Just helpful for seeing where variables originally came from
-    files_with_var_name <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
-        pattern = "",
-        full.names = TRUE
-    ) %>%
-        lapply(\(filename) names(fread(filename, nrows = 1))) %>%
-        lapply(function(col_names) {
-            grep(var_name,
-                col_names,
-                value = T,
-                ignore.case = T
-            )
-        }) %>%
-        sapply(length) %>%
-        sapply(\(x) x != 0)
+  # returns the files which contain the variable name we are looking for
+  # Just helpful for seeing where variables originally came from
+  files_with_var_name <- dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+    pattern = "",
+    full.names = TRUE
+  ) %>%
+    lapply(\(filename) names(fread(filename, nrows = 1))) %>%
+    lapply(function(col_names) {
+      grep(var_name,
+        col_names,
+        value = T,
+        ignore.case = T
+      )
+    }) %>%
+    sapply(length) %>%
+    sapply(\(x) x != 0)
 
-    dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
-        pattern = "",
-        full.names = TRUE
-    )[files_with_var_name]
+  dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+    pattern = "",
+    full.names = TRUE
+  )[files_with_var_name]
 }
 
 # find out which file the data is in
@@ -50,19 +50,19 @@ check_files_for_variable_name("exlo")
 
 # These are file names
 expectation_cols <- c(
-    "idauniq",
-    "ExLo80",
-    "ExLo90"
+  "idauniq",
+  "ExLo80",
+  "ExLo90"
 )
 
 ## get expectation data
 files_with_exp <- check_files_for_variable_name("exlo")
 
 data_with_exp <- lapply(files_with_exp, ReadAndSetWave) %>%
-    lapply(\(data) setnames(data, str_to_lower)) %>%
-    rbindlist(use.names = T, fill = T) %>%
-    select(idauniq, file_wave, exlo80, exlo90) %>%
-    mutate(wave = as.numeric(str_extract(file_wave, "\\d{1}"))) # make wave numeric so that we can join later
+  lapply(\(data) setnames(data, str_to_lower)) %>%
+  rbindlist(use.names = T, fill = T) %>%
+  select(idauniq, file_wave, exlo80, exlo90) %>%
+  mutate(wave = as.numeric(str_extract(file_wave, "\\d{1}"))) # make wave numeric so that we can join later
 
 
 # ok this is the data.
@@ -79,43 +79,43 @@ data_with_exp <- lapply(files_with_exp, ReadAndSetWave) %>%
 
 # Get objective life probs
 life_exp_list <- list(
-    female = fread("../../data/ONS/Females_transition_probs.csv"),
-    male = fread("../../data/ONS/Males_transition_probs.csv")
+  female = fread("../../data/ONS/Females_transition_probs.csv"),
+  male = fread("../../data/ONS/Males_transition_probs.csv")
 )
 
 ons_life_exp <- mapply(
-    function(data, gender_name) {
-        # Melt the data to long, and set the gender
-        melt(data,
-            id.vars = "age",
-            variable.name = "birth_year",
-            value.name = "death_rate"
-        ) %>%
-            mutate(gender = gender_name) %>%
-            mutate(birth_year = str_extract(birth_year, "\\d{4}")) %>%
-            mutate(birth_year = as.integer(birth_year))
-    },
-    life_exp_list,
-    names(life_exp_list),
-    SIMPLIFY = FALSE
+  function(data, gender_name) {
+    # Melt the data to long, and set the gender
+    melt(data,
+      id.vars = "age",
+      variable.name = "birth_year",
+      value.name = "death_rate"
+    ) %>%
+      mutate(gender = gender_name) %>%
+      mutate(birth_year = str_extract(birth_year, "\\d{4}")) %>%
+      mutate(birth_year = as.integer(birth_year))
+  },
+  life_exp_list,
+  names(life_exp_list),
+  SIMPLIFY = FALSE
 ) %>%
-    rbindlist()
+  rbindlist()
 ## Calculate real prob of being alive at 110 using ONS lifetables
 
 ons_life_exp %>%
-    filter(birth_year == 1975) %>%
-    filter(gender == "male") %>%
-    arrange(-age) %>%
-    mutate(prob_110 = cumprod(1 - death_rate))
+  filter(birth_year == 1975) %>%
+  filter(gender == "male") %>%
+  arrange(-age) %>%
+  mutate(prob_110 = cumprod(1 - death_rate))
 
 
 ons_p110 <- ons_life_exp %>%
-    mutate(surv_prob = 1 - death_rate) %>%
-    filter(!is.na(surv_prob)) %>%
-    group_by(gender, birth_year) %>%
-    arrange(-age) %>%
-    mutate(prob110 = lag(cumprod(surv_prob))) %>% # cumulative prov of being alive
-    select(age, gender, birth_year, prob110)
+  mutate(surv_prob = 1 - death_rate) %>%
+  filter(!is.na(surv_prob)) %>%
+  group_by(gender, birth_year) %>%
+  arrange(-age) %>%
+  mutate(prob110 = lag(cumprod(surv_prob))) %>% # cumulative prov of being alive
+  select(age, gender, birth_year, prob110)
 
 
 
@@ -127,18 +127,18 @@ long_harm[ragender %in% c(1, 2), gender := fifelse(ragender == 1, "male", "femal
 
 # Join long harmonized with ons life exp and subjective life exp
 joined_harm <- left_join(
-    long_harm,
-    ons_p110,
-    by = c(
-        "rabyear" = "birth_year",
-        "age_at_interview" = "age",
-        "gender"
-    )
+  long_harm,
+  ons_p110,
+  by = c(
+    "rabyear" = "birth_year",
+    "age_at_interview" = "age",
+    "gender"
+  )
 ) %>%
-    left_join(
-        data_with_exp,
-        by = c("idauniq", "wave")
-    )
+  left_join(
+    data_with_exp,
+    by = c("idauniq", "wave")
+  )
 
 
 "exlo80" # prob live to certain age
@@ -147,36 +147,36 @@ joined_harm <- left_join(
 
 
 ready_for_nls <- joined_harm %>%
-    ungroup() %>%
-    select(idauniq, exlo80, exlo90, prob110, wave, age = age_at_interview) %>%
-    filter(!is.na(exlo80) & !is.na(exlo90) & !is.na(prob110)) %>%
-    filter(exlo80 >= 0, exlo80 <= 100) %>% # do not allow expectations out of the unit interval
-    filter(exlo90 >= 0, exlo90 <= 100) %>%
-    mutate(across(c("exlo80", "exlo90"), ~
-        case_when( # change certainty to almost certainty
-            .x == 100 ~ 99,
-            .x == 0 ~ 1,
-            .default = .x
-        ) / 100)) %>%
-    rename(ex1 = exlo80, ex2 = exlo90, ex3 = prob110) %>%
-    mutate(t1 = case_when( ## rules for the age that the probability is for
-        age <= 65 ~ 75 - age,
-        age > 65 ~ 80 - age
-    )) %>%
-    mutate(t2 = 85 - age) %>%
-    mutate(t3 = 110 - age) %>%
-    filter(!is.na(t1) & !is.na(t2) & !is.na(t3) & t1 > 0 & t2 > 0 & t3 > 0) %>%
-    filter(ex1 > ex2) # make the expectation
+  ungroup() %>%
+  select(idauniq, exlo80, exlo90, prob110, wave, age = age_at_interview) %>%
+  filter(!is.na(exlo80) & !is.na(exlo90) & !is.na(prob110)) %>%
+  filter(exlo80 >= 0, exlo80 <= 100) %>% # do not allow expectations out of the unit interval
+  filter(exlo90 >= 0, exlo90 <= 100) %>%
+  mutate(across(c("exlo80", "exlo90"), ~
+    case_when( # change certainty to almost certainty
+      .x == 100 ~ 99,
+      .x == 0 ~ 1,
+      .default = .x
+    ) / 100)) %>%
+  rename(ex1 = exlo80, ex2 = exlo90, ex3 = prob110) %>%
+  mutate(t1 = case_when( ## rules for the age that the probability is for
+    age <= 65 ~ 75 - age,
+    age > 65 ~ 80 - age
+  )) %>%
+  mutate(t2 = 85 - age) %>%
+  mutate(t3 = 110 - age) %>%
+  filter(!is.na(t1) & !is.na(t2) & !is.na(t3) & t1 > 0 & t2 > 0 & t3 > 0) %>%
+  filter(ex1 > ex2) # make the expectation
 
 # convert to long, answer level data. I.e. one expectation per row
 long_ready <- ready_for_nls %>%
-    melt(
-        measure.vars = patterns(
-            t = "t",
-            exlo = "ex"
-        ),
-        variable.name = "names"
-    )
+  melt(
+    measure.vars = patterns(
+      t = "t",
+      exlo = "ex"
+    ),
+    variable.name = "names"
+  )
 
 long_ready[, id_wave := paste0(idauniq, "-", wave)]
 
@@ -187,28 +187,28 @@ long_ready[, id_wave := paste0(idauniq, "-", wave)]
 
 # Make a grid of initial values
 pars <- expand.grid(
-    k = seq(1, 5, len = 100),
-    lambda = seq(0.1, 50, len = 100)
+  k = seq(1, 5, len = 100),
+  lambda = seq(0.1, 50, len = 100)
 )
 
 # Run for a random id_wave and then use the correct
 #   answer to this as the default starting point
 random_id <- long_ready[, id_wave[floor(
-    runif(1, min = 1, max = nrow(long_ready))
+  runif(1, min = 1, max = nrow(long_ready))
 )]]
 
 temp_dt <- long_ready[id_wave == random_id]
 
 res_rand <- nls2(exlo ~ exp(-(t / lambda)^k),
-    data = temp_dt,
-    start = pars,
-    algorithm = "brute-force"
+  data = temp_dt,
+  start = pars,
+  algorithm = "brute-force"
 )
 
 output_rand <- nls(
-    exlo ~ exp(-((t / lambda)^k)),
-    data = temp_dt,
-    start = as.list(coef(res_rand))
+  exlo ~ exp(-((t / lambda)^k)),
+  data = temp_dt,
+  start = as.list(coef(res_rand))
 )
 
 top_start_values <- as.list(coef(output_rand))
@@ -221,19 +221,19 @@ BruteForce <- function(id_wave_to_try,
                        end_k = 5,
                        end_lam = 40,
                        grid_len = 100) {
-    ## make a grid
-    pars <- expand.grid(
-        k = seq(0.1, end_k, len = grid_len),
-        lambda = seq(0.1, end_lam, len = grid_len)
-    )
+  ## make a grid
+  pars <- expand.grid(
+    k = seq(0.1, end_k, len = grid_len),
+    lambda = seq(0.1, end_lam, len = grid_len)
+  )
 
-    # try all points on the grid
-    res <- nls2(exlo ~ exp(-(t / lambda)^k),
-        data = long_ready[id_wave == id_wave_to_try],
-        start = pars,
-        algorithm = "brute-force"
-    )
-    as.list(coef(res))
+  # try all points on the grid
+  res <- nls2(exlo ~ exp(-(t / lambda)^k),
+    data = long_ready[id_wave == id_wave_to_try],
+    start = pars,
+    algorithm = "brute-force"
+  )
+  as.list(coef(res))
 }
 
 
@@ -242,36 +242,36 @@ BruteForce <- function(id_wave_to_try,
 # make grid larger and finer. This will make evaluation of it slower
 # but makes finding a good starting value more likely
 grid_types_to_try <- data.frame(
-    end_k = seq(5, 40, len = 7),
-    end_lam = seq(40, 100, len = 7),
-    grid_len = seq(50, 100, len = 7)
+  end_k = seq(5, 40, len = 7),
+  end_lam = seq(40, 100, len = 7),
+  grid_len = seq(50, 100, len = 7)
 )
 
 
 ## Create directory for jsons
 if (!dir.exists("../../data/ELSA/subjective_tables/jsons")) {
-    dir.create(
-        "../../data/ELSA/subjective_tables/jsons",
-        recursive = TRUE
-    )
+  dir.create(
+    "../../data/ELSA/subjective_tables/jsons",
+    recursive = TRUE
+  )
 }
 
 
 # function to read in json data
 read_json_idwave <- function(id_wave) {
-    read_json(paste0(
-        "../../data/ELSA/subjective_tables/jsons/",
-        id_wave, ".json"
-    ), simplifyVector = T)
+  read_json(paste0(
+    "../../data/ELSA/subjective_tables/jsons/",
+    id_wave, ".json"
+  ), simplifyVector = T)
 }
 
 # checks the ids that we have already made
 check_ids_done <- function() {
-    ids_done_already <- str_extract(
-        dir("../../data/ELSA/subjective_tables/jsons/"),
-        "\\d{6}-\\d{1}"
-    )
-    return(ids_done_already)
+  ids_done_already <- str_extract(
+    dir("../../data/ELSA/subjective_tables/jsons/"),
+    "\\d{6}-\\d{1}"
+  )
+  return(ids_done_already)
 }
 
 
@@ -282,35 +282,35 @@ check_ids_done <- function() {
 # Now that a few have done, we read in all the parameters that were run
 # and then use different pairings of the distribution of lambda and k
 read_json_get_params <- function() {
-    # Note this can only be run if we have have found some jsons already
-    json_dir <- dir("../../data/ELSA/subjective_tables/jsons", full.names = T)
+  # Note this can only be run if we have have found some jsons already
+  json_dir <- dir("../../data/ELSA/subjective_tables/jsons", full.names = T)
 
-    # If no jsons (i.e. havent run the code below yet) we just return start values
-    if (length(json_dir) == 0) {
-        return(data.table(
-            k = rep(top_start_values$k, 5),
-            lambda = rep(top_start_values$lambda)
-        ))
-    }
+  # If no jsons (i.e. havent run the code below yet) we just return start values
+  if (length(json_dir) == 0) {
+    return(data.table(
+      k = rep(top_start_values$k, 5),
+      lambda = rep(top_start_values$lambda)
+    ))
+  }
 
-    # get 200 of the jsons at random
-    random_ints <- floor(runif(200, 1, length(json_dir)))
+  # get 200 of the jsons at random
+  random_ints <- floor(runif(200, 1, length(json_dir)))
 
-    params <- lapply(json_dir[random_ints], fromJSON)
+  params <- lapply(json_dir[random_ints], fromJSON)
 
-    params_dt <- rbindlist(params)
+  params_dt <- rbindlist(params)
 
-    params_dt %>%
-        ggplot(aes(x = k, y = lambda)) +
-        geom_point()
+  params_dt %>%
+    ggplot(aes(x = k, y = lambda)) +
+    geom_point()
 
-    # want 5 sets of starting values
-    # use k means clustering to group
-    # then return
+  # want 5 sets of starting values
+  # use k means clustering to group
+  # then return
 
-    clusters <- kmeans(params_dt, 5, iter.max = 10, nstart = 1)
+  clusters <- kmeans(params_dt, 5, iter.max = 10, nstart = 1)
 
-    return(clusters$centers)
+  return(clusters$centers)
 }
 
 typical_values <- read_json_get_params()
@@ -320,68 +320,68 @@ ids_that_are_done <- check_ids_done()
 run_nls_function <- function(id_wave_to_try,
                              starting = top_start_values,
                              typval_df = typical_values) {
-    # print(id_wave_to_try) # useful for debugging
+  # print(id_wave_to_try) # useful for debugging
 
-    # Loop with different starting values
-    # try a couple of escalating grids
-    counter <- 1
+  # Loop with different starting values
+  # try a couple of escalating grids
+  counter <- 1
 
-    id_data <- long_ready[id_wave == id_wave_to_try]
+  id_data <- long_ready[id_wave == id_wave_to_try]
 
-    while (counter <= 12) {
-        output <- NULL
-        counter <- counter + 1
-        # first try initial random guess
-        # tryCatch(output <- nls(exlo ~ exp(-((t / lambda)^k)),
-        #     data = id_data,
-        #     start = starting
-        # )) # does not stop in the case of error
+  while (counter <= 12) {
+    output <- NULL
+    counter <- counter + 1
+    # first try initial random guess
+    # tryCatch(output <- nls(exlo ~ exp(-((t / lambda)^k)),
+    #     data = id_data,
+    #     start = starting
+    # )) # does not stop in the case of error
 
-        tryCatch(
-            {
-                output <- nls(exlo ~ exp(-((t / lambda)^k)),
-                    data = id_data,
-                    start = starting
-                )
-            },
-            error = function(e) {
-                print(counter)
-            }
+    tryCatch(
+      {
+        output <- nls(exlo ~ exp(-((t / lambda)^k)),
+          data = id_data,
+          start = starting
         )
+      },
+      error = function(e) {
+        print(counter)
+      }
+    )
 
-        if (!is.null(output)) break # if nls works, then quit from the loop
+    if (!is.null(output)) break # if nls works, then quit from the loop
 
-        if (counter <= 5) {
-            # try a different starting value from an id that didnt work
-            starting <- as.list(typval_df[counter, ])
-        } else if (counter > 5) {
-            # Now try the expanding values of the grid
-            grid_deets <- as.list(grid_types_to_try[counter - 5, ])
+    if (counter <= 5) {
+      # try a different starting value from an id that didnt work
+      starting <- as.list(typval_df[counter, ])
+    } else if (counter > 5) {
+      # Now try the expanding values of the grid
+      grid_deets <- as.list(grid_types_to_try[counter - 5, ])
 
-            # create new grid
-            starting <- BruteForce(
-                id_wave_to_try,
-                end_k = grid_deets$end_k,
-                end_lam = grid_deets$end_lam,
-                grid_len = grid_deets$grid_len
-            )
-        } else if (counter > 12) { # stop if try too many times
-            stop()
-        }
-
-        # iterate counter
+      # create new grid
+      starting <- BruteForce(
+        id_wave_to_try,
+        end_k = grid_deets$end_k,
+        end_lam = grid_deets$end_lam,
+        grid_len = grid_deets$grid_len
+      )
+    } else if (counter > 12) { # stop if try too many times
+      stop()
     }
 
-    # save as json so when we run we dont have to do the ones we have already found
-    # when running check if the json exists
-    write_json(
-        as.list(coef(output)),
-        paste0(
-            "../../data/ELSA/subjective_tables/jsons/",
-            id_wave_to_try, ".json"
-        ),
-        simplifyVector = FALSE
-    )
+    # iterate counter
+  }
+
+  # save as json so when we run we dont have to do the ones we have already found
+  # when running check if the json exists
+  write_json(
+    as.list(coef(output)),
+    paste0(
+      "../../data/ELSA/subjective_tables/jsons/",
+      id_wave_to_try, ".json"
+    ),
+    simplifyVector = FALSE
+  )
 }
 
 # Only run for ids that we havent done before
@@ -390,8 +390,8 @@ all_ids <- unique(long_ready$id_wave)
 ids_to_do <- all_ids[!all_ids %in% ids_that_are_done]
 
 outputs <- lapply(
-    ids_to_do,
-    run_nls_function
+  ids_to_do,
+  run_nls_function
 )
 # wow this is so much faster once we have done a couple of hundred
 
@@ -399,10 +399,10 @@ outputs <- lapply(
 
 # read back the data
 dt_with_params <- lapply(
-    long_ready[, unique(id_wave)],
-    read_json_idwave
+  long_ready[, unique(id_wave)],
+  read_json_idwave
 ) %>%
-    rbindlist()
+  rbindlist()
 
 dt_with_params$id_wave <- long_ready[, unique(id_wave)]
 
@@ -414,12 +414,12 @@ years_into_future_to_predict <- 60
 # take the pdf and find the probs that it implies for different age groups
 MakeLifeTable <- function(params = params,
                           years_into_the_future) {
-    sub_life <- sapply(
-        c(1:years_into_the_future),
-        \(t)exp(-(t / params$lambda)^params$k)
-    )
+  sub_life <- sapply(
+    c(1:years_into_the_future),
+    \(t)exp(-(t / params$lambda)^params$k)
+  )
 
-    return(sub_life)
+  return(sub_life)
 }
 
 # create list for the sub life tables
@@ -427,10 +427,10 @@ sub_life_tab_list <- vector("list", length = length(dt_with_params$id_wave))
 
 # populate list
 for (i in seq_along(dt_with_params$id_wave)) {
-    sub_life_tab_list[[i]] <- MakeLifeTable(
-        as.list(dt_with_params[i, ]),
-        years_into_future_to_predict
-    )
+  sub_life_tab_list[[i]] <- MakeLifeTable(
+    as.list(dt_with_params[i, ]),
+    years_into_future_to_predict
+  )
 }
 
 # probably save this is long form
@@ -440,32 +440,32 @@ for (i in seq_along(dt_with_params$id_wave)) {
 # and then we can have prob of surviving until age x
 
 sub_life_dt <- mapply(
-    function(prob_vec, id) {
-        data.table(
-            prob = prob_vec,
-            id_wave = id
-        )
-    },
-    prob_vec = sub_life_tab_list,
-    id = dt_with_params$id_wave,
-    SIMPLIFY = FALSE
+  function(prob_vec, id) {
+    data.table(
+      prob = prob_vec,
+      id_wave = id
+    )
+  },
+  prob_vec = sub_life_tab_list,
+  id = dt_with_params$id_wave,
+  SIMPLIFY = FALSE
 ) %>%
-    rbindlist()
+  rbindlist()
 
 sub_life_dt[, years_into_future := rep(
-    c(1:years_into_future_to_predict),
-    length(dt_with_params$id_wave)
+  c(1:years_into_future_to_predict),
+  length(dt_with_params$id_wave)
 )]
 
 # give age back to id-waves
 sub_life_dt <- merge.data.table(
-    sub_life_dt,
-    joined_harm[!is.na(age_at_interview), .(
-        id_wave = paste0(idauniq, "-", wave),
-        age = age_at_interview
-    )],
-    by = "id_wave",
-    all.x = TRUE
+  sub_life_dt,
+  joined_harm[!is.na(age_at_interview), .(
+    id_wave = paste0(idauniq, "-", wave),
+    age = age_at_interview
+  )],
+  by = "id_wave",
+  all.x = TRUE
 )
 
 # add years into the future onto current age
@@ -473,8 +473,8 @@ sub_life_dt[, expected_age := age + years_into_future]
 
 # ok great we now have subjective done
 fwrite(
-    sub_life_dt,
-    "../../data/ELSA/subjective_tables/subjective_survival_probs.csv"
+  sub_life_dt,
+  "../../data/ELSA/subjective_tables/subjective_survival_probs.csv"
 )
 names(sub_life_dt)
 # "id_wave" "prob" "years_into_future"

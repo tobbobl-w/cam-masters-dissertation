@@ -11,41 +11,41 @@ elsa <- fread("../../data/ELSA/elsa_to_use/elsa_ifs_finance.csv")
 
 # Have a look at attrition in ELSA
 elsa[, .(idauniq, wave)][, .(num_waves = length(unique(wave))), by = .(idauniq)] %>%
-    ggplot(aes(x = num_waves)) +
-    geom_histogram()
+  ggplot(aes(x = num_waves)) +
+  geom_histogram()
 
 # plot percent with annuity income and avg annuity inc
 # by wave and age of respondent.
 annuity_age_wave_means <- elsa[, .(
-    mean_annuity_inc =
-        mean(anin_r_i[anin_r_i > 0], na.rm = T),
-    per_annuity =
-        mean(anin_r_i > 0, na.rm = T)
+  mean_annuity_inc =
+    mean(anin_r_i[anin_r_i > 0], na.rm = T),
+  per_annuity =
+    mean(anin_r_i > 0, na.rm = T)
 ), by = .(age, file_wave)]
 head(annuity_age_wave_means$file_wave)
 
 # Plot percentage who have any annuity income against age shaded by wave.
 ggplot(
-    annuity_age_wave_means[
-        age > 60
-    ][file_wave %in% c("wave_1", "wave_8")],
-    aes(x = age, y = per_annuity, colour = file_wave)
+  annuity_age_wave_means[
+    age > 60
+  ][file_wave %in% c("wave_1", "wave_8")],
+  aes(x = age, y = per_annuity, colour = file_wave)
 ) +
-    geom_point() +
-    geom_line()
+  geom_point() +
+  geom_line()
 # ok nice it looks like fewer people do have annuities
 # but still a small portion of the sample have any annuity income.
 # can we do a cross tab
 
 
 ggplot(
-    annuity_age_wave_means[
-        age > 60
-    ][file_wave %in% c("wave_1", "wave_8")],
-    aes(x = age, y = mean_annuity_inc, colour = file_wave)
+  annuity_age_wave_means[
+    age > 60
+  ][file_wave %in% c("wave_1", "wave_8")],
+  aes(x = age, y = mean_annuity_inc, colour = file_wave)
 ) +
-    geom_point() +
-    geom_line()
+  geom_point() +
+  geom_line()
 
 
 
@@ -64,11 +64,11 @@ length(names(elsa))
 
 
 elsa[age == 65][, .(prop_annuity_inc = mean(anin_r_i + anin_p_i > 0, na.rm = T)),
-    by = .(intdaty)
+  by = .(intdaty)
 ] %>%
-    ggplot(., aes(x = intdaty, y = prop_annuity_inc)) +
-    geom_line() +
-    geom_point()
+  ggplot(., aes(x = intdaty, y = prop_annuity_inc)) +
+  geom_line() +
+  geom_point()
 .libPaths()
 
 # quite variable
@@ -125,10 +125,10 @@ elsa_hh_prop_an <- elsa_hh[, .(prop_anin = mean(hh_anin > 0, na.rm = T)), by = .
 # grouped bars for all the means
 
 ggplot(
-    elsa_hh_prop_an[age %in% c(60, 65, 70)],
-    aes(x = age, fill = file_wave, y = prop_anin)
+  elsa_hh_prop_an[age %in% c(60, 65, 70)],
+  aes(x = age, fill = file_wave, y = prop_anin)
 ) +
-    geom_col(position = "dodge")
+  geom_col(position = "dodge")
 # relatively large changes at later ages.
 
 
@@ -140,25 +140,25 @@ ggplot(
 search_names(elsa_hh, "anin")
 
 ggplot(elsa_hh[netfw_bu_s > 0][netfw_bu_s < 100000], aes(x = netfw_bu_s)) +
-    geom_histogram()
+  geom_histogram()
 
 elsa_hh[, .(pension_inc = mean(wppp_bu_i > 0, na.rm = T)), by = .(file_wave, age)][age %in% c(55, 60, 65, 70)] %>%
-    ggplot(
-        aes(x = age, fill = file_wave, y = pension_inc)
-    ) +
-    geom_col(position = "dodge")
+  ggplot(
+    aes(x = age, fill = file_wave, y = pension_inc)
+  ) +
+  geom_col(position = "dodge")
 # I want to see what happened to pension wealth and what happened to pension income
 
 elsa_hh[netfw_bu_s > 10000][, .(prop_anin = mean(hh_anin > 0, na.rm = T)), by = .(file_wave, age)][age %in% c(55, 60, 65, 70)] %>%
-    ggplot(
-        aes(x = age, fill = file_wave, y = prop_anin)
-    ) +
-    geom_col(position = "dodge")
+  ggplot(
+    aes(x = age, fill = file_wave, y = prop_anin)
+  ) +
+  geom_col(position = "dodge")
 
 elsa_hh[, .(count = .N), by = .(age, wave)] %>%
-    ggplot(aes(x = age, y = count, group = wave)) +
-    geom_point() +
-    geom_line()
+  ggplot(aes(x = age, y = count, group = wave)) +
+  geom_point() +
+  geom_line()
 
 
 # Ok all waves have above 150 at around age 63.

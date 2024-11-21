@@ -44,9 +44,14 @@ Thumbs.db
 *.blg
 *.aux
 *.fdb_latexmk
-
+*.bcf
+*.out
+*.toc
+*.run.xml
 
 # R ###
 *.Rhistory
 
+*test*
 
+data/*

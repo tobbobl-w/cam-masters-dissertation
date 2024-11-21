@@ -7,53 +7,56 @@ library(readxl)
 source("__ELSA_functions.R")
 
 search_files <- function(string, ...) {
-    dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
-        pattern = "wave",
-        full.names = TRUE
-    ) %>%
-        grep(string, ., value = T, ...)
+  dir("../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/",
+    pattern = "wave",
+    full.names = TRUE
+  ) %>%
+    grep(string, ., value = T, ...)
 }
 
 # ---------------- Get Pension Wealth files ----------------
-pension_wealth_files <- search_files("(3|4|5)_pension_wealth") %>% 
-    lapply(fread) %>% 
-    Reduce(function(x, y) full_join(x, y,  by = "idauniq"), .)  %>% # bind together
-    setnames(str_to_lower)
+pension_wealth_files <- search_files("(3|4|5)_pension_wealth") %>%
+  lapply(fread) %>%
+  Reduce(function(x, y) full_join(x, y, by = "idauniq"), .) %>% # bind together
+  setnames(str_to_lower)
 
 pw_long <- melt(
-    pension_wealth_files,
-    id.vars = c("idauniq", "file_wave"),
-    measure = patterns(
-        "totpenw_\\d{2}", "inreceipt_\\d{2}", "currentdc_\\d{2}",
-        "currentdb_\\d{2}", "retaineddc_\\d{2}", "retaineddb_\\d{2}",
-        "stpenw_\\d{2}", "bsp_\\d{2}", "addpen_\\d{2}", "pripenw_\\d{2}"),
-    value.name = c(
-        "total_pension_wealth","in_receipt",
-        "current_dc", "current_db", 
-        "retained_dc", "retained_db",
-        "state_pw", "bsp_wealth",
-        "add_pw", "private_pw"
-    ), 
-    variable.name = "file_index"
+  pension_wealth_files,
+  id.vars = c("idauniq", "file_wave"),
+  measure = patterns(
+    "totpenw_\\d{2}", "inreceipt_\\d{2}", "currentdc_\\d{2}",
+    "currentdb_\\d{2}", "retaineddc_\\d{2}", "retaineddb_\\d{2}",
+    "stpenw_\\d{2}", "bsp_\\d{2}", "addpen_\\d{2}", "pripenw_\\d{2}"
+  ),
+  value.name = c(
+    "total_pension_wealth", "in_receipt",
+    "current_dc", "current_db",
+    "retained_dc", "retained_db",
+    "state_pw", "bsp_wealth",
+    "add_pw", "private_pw"
+  ),
+  variable.name = "file_index"
 )
 
-pw_long[, wave  := fcase(
-    file_index == 1, 3,
-    file_index == 2, 4, 
-    file_index == 3, 5)]
+pw_long[, wave := fcase(
+  file_index == 1, 3,
+  file_index == 2, 4,
+  file_index == 3, 5
+)]
 
-# really we only use individuals from waves 3, 4, 5 
+# really we only use individuals from waves 3, 4, 5
 # check file 1 pension wealth files are the same
 
 # Assume pension pots accrue at a rate of 3% a year
 # find last size of dc pension then
-# for every year after that just increase by three percent 
-accural_rate = 1.03
+# for every year after that just increase by three percent
+accural_rate <- 1.03
 
 
 id_date <- fread(
-    "../../data/ELSA/elsa_to_use/harmonised_data_long.csv",
-    select = c("idauniq", "int_month_date", "wave"))
+  "../../data/ELSA/elsa_to_use/harmonised_data_long.csv",
+  select = c("idauniq", "int_month_date", "wave")
+)
 
 id_date <- id_date[wave == 5][, int_year := year(int_month_date)]
 
@@ -63,20 +66,21 @@ wave_5_dt <- merge.data.table(id_date, wave_5_dt, by = c("idauniq"))
 
 # Create a dt going nine years into the future
 future_years <- data.table(
-    idauniq = unlist(lapply(wave_5_dt$idauniq, function(id) rep(id, 10))), 
-    years_into_future = rep(c(0:9), length(wave_5_dt$idauniq))) %>% 
-    merge.data.table(wave_5_dt, by = c("idauniq"))
+  idauniq = unlist(lapply(wave_5_dt$idauniq, function(id) rep(id, 10))),
+  years_into_future = rep(c(0:9), length(wave_5_dt$idauniq))
+) %>%
+  merge.data.table(wave_5_dt, by = c("idauniq"))
 
 future_years[, dc_pot := init_total_dc * (accural_rate^years_into_future)]
 future_years[, year := int_year + years_into_future]
 
-future_years[init_total_dc >0, .(dc_pot = mean(dc_pot)), by = .(year)]
+future_years[init_total_dc > 0, .(dc_pot = mean(dc_pot)), by = .(year)]
 # Looks good
 # Do we only care about the size of DC pots?
 # Yes i think so.
 # Then we can just save this
 
-future_years = future_years[, .(idauniq, year, dc_pot)]
+future_years <- future_years[, .(idauniq, year, dc_pot)]
 
 
 
@@ -177,6 +181,6 @@ fwrite(future_years, "../../data/ELSA/elsa_to_use/elsa_dc_pen_wealth_predictions
 
 # pension_wealth <- fread(
 #     "../../data/ELSA/elsa_unziped/UKDA-5050-tab/tab/wave_2_pension_wealth.tab")
-    
+
 
 # getwd()

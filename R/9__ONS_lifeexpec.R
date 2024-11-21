@@ -196,56 +196,56 @@ source("__ELSA_functions.R")
 
 
 CreateDeathProbMatrix <- function(gender = "Males") {
-    # Function that creates the transition matrix from ons data.
+  # Function that creates the transition matrix from ons data.
 
-    sheet_to_get <- paste0(gender, " cohort lx")
+  sheet_to_get <- paste0(gender, " cohort lx")
 
-    ons_surv <- read_excel(
-        "../../data/ONS/ONS life tables 1841 onwards.xls",
-        sheet = sheet_to_get,
-        skip = 8
-    ) %>%
-        # rename_with(Vectorize(change_numeric_names)) %>%
-        rename(age = `age (years)`) %>%
-        tidyr::pivot_longer(
-            -age,
-            values_to = "alive",
-            names_to = "birth_year"
-        )
-
-    # want year by year death rate
-
-    ons_surv <- ons_surv %>%
-        mutate(birth_year = as.numeric(birth_year)) %>%
-        group_by(birth_year) %>%
-        arrange(age) %>%
-        mutate(deaths = lead(lag(alive) - alive)) %>% # alive yesterday minus alive today, shifted back to today
-        mutate(death_rate = deaths / alive) %>%
-        ungroup() %>%
-        filter(birth_year >= 1920, birth_year <= 1975) %>%
-        mutate(year = age + birth_year) %>%
-        filter(year >= 2005) %>%
-        filter(age >= 50, age <= 110) %>%
-        arrange(-birth_year)
-
-    ons_surv %>%
-        filter(age == 59 & year == 2016)
-
-    min(ons_surv$birth_year)
-
-    ons_surv_matrix <- ons_surv %>%
-        tidyr::pivot_wider(
-            id_cols = age,
-            names_from = birth_year,
-            values_from = death_rate
-        )
-
-    fwrite(
-        ons_surv_matrix,
-        str_to_lower(paste0("../../data/ONS/", gender, "_transition_probs.csv"))
+  ons_surv <- read_excel(
+    "../../data/ONS/ONS life tables 1841 onwards.xls",
+    sheet = sheet_to_get,
+    skip = 8
+  ) %>%
+    # rename_with(Vectorize(change_numeric_names)) %>%
+    rename(age = `age (years)`) %>%
+    tidyr::pivot_longer(
+      -age,
+      values_to = "alive",
+      names_to = "birth_year"
     )
-    to_ret <- ons_surv_matrix %>%
-        mutate(gender = gender)
+
+  # want year by year death rate
+
+  ons_surv <- ons_surv %>%
+    mutate(birth_year = as.numeric(birth_year)) %>%
+    group_by(birth_year) %>%
+    arrange(age) %>%
+    mutate(deaths = lead(lag(alive) - alive)) %>% # alive yesterday minus alive today, shifted back to today
+    mutate(death_rate = deaths / alive) %>%
+    ungroup() %>%
+    filter(birth_year >= 1920, birth_year <= 1975) %>%
+    mutate(year = age + birth_year) %>%
+    filter(year >= 2005) %>%
+    filter(age >= 50, age <= 110) %>%
+    arrange(-birth_year)
+
+  ons_surv %>%
+    filter(age == 59 & year == 2016)
+
+  min(ons_surv$birth_year)
+
+  ons_surv_matrix <- ons_surv %>%
+    tidyr::pivot_wider(
+      id_cols = age,
+      names_from = birth_year,
+      values_from = death_rate
+    )
+
+  fwrite(
+    ons_surv_matrix,
+    str_to_lower(paste0("../../data/ONS/", gender, "_transition_probs.csv"))
+  )
+  to_ret <- ons_surv_matrix %>%
+    mutate(gender = gender)
 }
 
 lapply(c("Males", "Females"), CreateDeathProbMatrix)
@@ -253,37 +253,37 @@ lapply(c("Males", "Females"), CreateDeathProbMatrix)
 
 
 CreateLifeExpectancyTables <- function(gender) {
-    sheet_to_get <- paste0(gender, " cohort lx")
+  sheet_to_get <- paste0(gender, " cohort lx")
 
-    ons_surv <- read_excel(
-        "../../data/ONS/ONS life tables 1841 onwards.xls",
-        sheet = sheet_to_get,
-        skip = 8
-    ) %>%
-        # rename_with(Vectorize(change_numeric_names)) %>%
-        rename(age = `age (years)`) %>%
-        tidyr::pivot_longer(
-            -age,
-            values_to = "alive",
-            names_to = "birth_year"
-        )
+  ons_surv <- read_excel(
+    "../../data/ONS/ONS life tables 1841 onwards.xls",
+    sheet = sheet_to_get,
+    skip = 8
+  ) %>%
+    # rename_with(Vectorize(change_numeric_names)) %>%
+    rename(age = `age (years)`) %>%
+    tidyr::pivot_longer(
+      -age,
+      values_to = "alive",
+      names_to = "birth_year"
+    )
 
-    # life expectancy = sum(life years)/(alive currently)
+  # life expectancy = sum(life years)/(alive currently)
 
-    # life exp is dividing all the remaining life years by the number of people at that age
+  # life exp is dividing all the remaining life years by the number of people at that age
 
-    life_exps <- ons_surv %>%
-        group_by(birth_year) %>%
-        arrange(-age) %>%
-        mutate(life_years_left = cumsum(alive)) %>%
-        mutate(life_exp = life_years_left / alive) %>%
-        mutate(gender = gender) %>%
-        select(birth_year, age, gender, life_exp)
+  life_exps <- ons_surv %>%
+    group_by(birth_year) %>%
+    arrange(-age) %>%
+    mutate(life_years_left = cumsum(alive)) %>%
+    mutate(life_exp = life_years_left / alive) %>%
+    mutate(gender = gender) %>%
+    select(birth_year, age, gender, life_exp)
 
-    return(life_exps)
+  return(life_exps)
 }
 
 life_exps_dt <- lapply(c("Males", "Females"), CreateLifeExpectancyTables) %>%
-    rbindlist()
+  rbindlist()
 
 fwrite(life_exps_dt, "../../data/ONS/objective_life_expectancies.csv")
