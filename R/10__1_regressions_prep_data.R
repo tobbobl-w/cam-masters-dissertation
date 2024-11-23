@@ -17,21 +17,22 @@ Policy_year <- 2014
 
 # ------- Pension wealth data --------------
 pension_wealth_dt <- fread(
-  "../../data/ELSA/elsa_to_use/elsa_dc_pen_wealth_predictions.csv"
+  "data/ELSA/elsa_to_use/elsa_dc_pen_wealth_predictions.csv"
 )
 
 # ------- Life expectancy data -----------
-obj_life_exps_dt <- fread("../../data/ONS/objective_life_expectancies.csv")[, gender_string := fcase(
-  gender == "Males", "male",
-  gender == "Females", "female"
-)]
+obj_life_exps_dt <- fread("data/ONS/objective_life_expectancies.csv") |>
+  _[, gender_string := fcase(
+    gender == "Males", "male",
+    gender == "Females", "female"
+  )]
 
-sub_life_exps_dt <- fread("../../data/ELSA/subjective_tables/subjective_life_expectancies.csv")
+sub_life_exps_dt <- fread("data/ELSA/subjective_tables/subjective_life_expectancies.csv")
 
 
 # ---------- ELSA data -----------
 harm_long <- fread(
-  "../../data/ELSA/elsa_to_use/harmonised_data_long.csv"
+  "data/ELSA/elsa_to_use/harmonised_data_long.csv"
 )[in_wave == 1]
 
 harm_long[, int_year := year(int_month_date)]
@@ -118,7 +119,6 @@ by = .(idauniq)
 harm_long[, years_since_retirement := age_at_interview - retired_age]
 
 
-
 # Now we want people in the three years after they have retired.
 AddYearsAround <- function(year, add = 2) {
   if (is.na(year)) {
@@ -136,7 +136,41 @@ harm_long[, ":="(
 
 harm_long[ret_in & ret_equals, .(retired_age, age_at_interview, ret_in)]
 
+names(harm_long)
 
+harm_long[, .N, expected_retired_age]
+harm_long[, expected_retired_year := rabyear + expected_retired_age]
+
+harm_long[, hist(rabyear)]
+setorder(harm_long, int_year)
+
+harm_long[, .(
+  expected_retired_year_nm =
+    expected_retired_year[!is.na(expected_retired_year)][1]
+), by = .(idauniq)]
+
+wide_dt <- dcast(harm_long,
+  idauniq + expected_retired_year + rabyear ~ int_year,
+  value.var = c("total_monthly_consumption", "public_pension")
+)
+
+wide_dt[, rv_ex := 2013 - expected_retired_year]
+wide_dt[, rv_dob := rabyear - (2013 - 65)]
+
+MakePlot <- function(rv_variable) {
+  wide_dt[!is.na(rv) & rv >= -3 & rv <= 3,
+    lapply(.SD, \(x) list(mean = mean(x, na.rm = TRUE), non_missing = sum(!is.na(x)))),
+    .SDcols = patterns("total_monthly_consumption"),
+    by = .(rv),
+    env = list(rv = rv_variable)
+  ]
+}
+
+MakePlot("rv_dob")
+
+
+
+# Ran all of my regressions wrong oops
 
 # We want recent retirees in the three years after they have retired.
 data_for_regressions <- harm_long[ret_in == TRUE & !is.na(pre_post_ref)] %>%
