@@ -366,8 +366,7 @@ empirical section to check whether this reform biases my results.
 
 Table~\ref{tab:sum_stats} shows various summary statistics for each variable of interest from ELSA and the ONS.
 
-An individual is defined as treated if they retired between and including 2015 and 2017, and an individual is in the control group if they retired in 2014 or earlier.
-Since I am interested in consumption in early retirement, an individuals interview date needs to be within the first three years of them retiring.
+An individual is defined as treated if they retired between and including 2015 and 2017, and an individual is in the control group if they retired in 2014 or earlier. I use retirement year relative to 2014 as the running variable, and restrict the bandwidth to 3 years.
 
 The treated retirement group is smaller with just 303 non missing observations for gender as opposed to 765 individuals in the control group.
 The control group are more male, retired at a slightly younger age and expected to retire slightly earlier.
@@ -481,10 +480,6 @@ and sudden decline in annuity purchases. Moreover, anecdotal evidence from media
 and business sources at the time of the announcement show that there was
 surprise the government put forward the reform, with Money Marketing describing
 the change as a ``bombshell'' (\cite{money-marketing-announcement}).
-
-I use consumption data of individuals up to 3 years into their retirement so
-that the sample size is larger. So, if someone retired in 2015 and had
-consumption data in 2015 and 2017, I include both values.
 
 Because of the differences in financial characteristics between the groups, I
 add controls for financial wealth, housing wealth, whether an individual owns
