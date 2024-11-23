@@ -8,5 +8,6 @@
         "**/*.fdb_latexmk": true,
         "**/*.out": true,
         "**/*.toc": true
-    }
+    },
+    "git.ignoreLimitWarning": true
 }
