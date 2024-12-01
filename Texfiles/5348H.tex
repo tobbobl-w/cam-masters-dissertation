@@ -5,6 +5,7 @@
 \usepackage[style=authoryear]{biblatex}
 \addbibresource{references.bib} %Import the bibliography file
 
+\usepackage{setspace}
 \usepackage{enumerate}
 \usepackage{booktabs}
 \usepackage{siunitx}
@@ -48,98 +49,67 @@
 \newpage
 \maketitle
 \begin{abstract}
-  I identify the consumption responses of retirees to the UK's `pensions
-  freedom act', a landmark law change that meant defined contribution pension
-  holders were no longer forced to annuitise their funds and could instead
-  access their pensions in a variety of ways. I use a discontinuity in year of
-  retirement and a difference-in-difference approach, harnessing those who
-  were unaffected by the policy reform as a natural control group. I then
-  solve three sets of lifecycle models, tracking assets from retirement until an
-  agent reaches age 110. I simulate their consumption with and without
-  annuities, mimicking the policy reform, and match their consumption
-  responses to what was seen in the empirical models. I find that a lifecycle
-  model with a bequest motive best fits the identified consumption response —
-  a result that could inform policymakers in designing optimal pension
-  policies for an ageing population.
+  \begin{singlespace}
+    Countries around the world are reforming the way individuals contribute to and withdraw from retirement savings accounts.
+    I evaluate the effect that the United Kingdom's `Pensions Freedom Act'---a landmark law change that meant defined contribution pension
+    holders were no longer forced to annuitise their funds---had on consumption in retirement.
+    I use a regression discontinuity specification using the year an individual turns 65 as the running variable.
+    I complement this with a difference-in-difference setup, harnessing those who were unaffected by the policy reform as a natural control group.
+    I find that the rates of annuitisation drop to almost zero after the reform---this is consistent with the literature on the annuity puzzle.
+    I find some evidence that individuals increase consumption in early retirement as a result of the policy change---in particular spending on food outside the house increases.
+    Two features of lifecycle models can explain the annuity puzzle.
+    A lifecycle model with a bequest motive would predict a rise in consumption when individuals no longer annuitise their pensions, whereas a lifecycle model with pessimistic life expectancy would predict a fall in consumption.
+    I show this by solving the consumption paths in retirement with and without annuities, mimicking the policy reform.
+    I then apply the empirical models to this simulated data and measure the consumption change in early retirement that results from annuitisation.
+    I find that a lifecycle model with a bequest motive best fits the identified consumption response---a result that could inform policymakers in designing optimal pension policies for an ageing population.
+  \end{singlespace}
 \end{abstract}
-\newpage
-\tableofcontents
 \newpage
 
 \section{Introduction}
-Classical economic theory suggests that retirement annuities, which provide a
-guaranteed income stream until the end of life, should be highly valued by
-individuals as a way to insure against late death (\cite{yaari-65}). However, in
-developed countries, rates of annuitisation are far below the levels that theory
-predicts --- this phenomenon has been termed the ``annuity puzzle''. The literature
-has suggested several reasons for this, but there is no consensus about which
-mechanism is dominant. I exploit early retirees' consumption responses to a
-reform to annuity policy in the UK to add to this literature.
 
-In the UK, adults have three methods of funding retirement: the state pension;
-defined benefit (DB) employee pension schemes, which provide an income in
-retirement based on years of service and wages; and defined
-contribution (DC) pensions, under which individuals save and invest in a
-tax-advantaged account that is usually supplemented with employer contributions.
-Under the 2010--2015 coalition government in the UK, the law regarding the use of
-private DC pensions at retirement changed. Individuals were no longer forced to
-annuitise their pension pots and could access them in a variety of ways, such as
-a lump sum withdrawal or income drawdown, involving a steady withdrawal of
-assets from the pension pot---common advice is to take 4\% a year---whilst the
-rest remains invested. Subsequently, the number of annuities sold in the UK
-dropped precipitously.
+The importance of retirement policy to the UK, and across the developed world, is growing.
+The number of individuals of pensionable age is expected to increase from 11.9 million in 2020 to 15.2 million in 2045 according to the latest projections from the Office for National Statistics (ONS), and for every 1,000 people of working age there will be 341 of pensionable age in 2045 compared to 280 in 2020 (\cite{ons-population-predictions-2020}).
+The increase in absolute and relative numbers of elderly people makes retirement policy more consequential.
+Moreover, private DC pensions are becoming increasingly common and are predicted to grow
+as current cohorts age (\cite{cribb-karjalainen-ifs-2023}).
+Therefore, policies regarding how private pensions can be accessed will have a larger impact on the overall welfare of retirees.
 
-In this paper, I first use the policy reform as a discontinuity to measure the
-impact of forced annuitisation on the consumption levels of individuals in the
-first few years of retirement. Given that the reform was implemented suddenly
-and without advanced notice before the Spring 2014 budget, I claim that
-individuals who retired in 2015, 2016 and 2017 are otherwise similar to those
-who retired in 2011, 2012 and 2013 except for the fact that the later retirees
-do not need to annuitise their DC pension pots. Therefore, I can use a
-regression discontinuity to identify the effect that forced annuitisation has on
-the consumption of retirees.
+Moreover, understanding how retirees spend their money over retirement is an important micro and macroeconomic policy question of its own.
+If retirees spend too much in early retirement, the state may need to provide for them towards the end of their lives.
+This has implications for government budgets, especially since population aging means more individuals may require expensive end of life care.
+On the other hand, if retirees over-save and do not spend, perhaps in order to bequest wealth or because of expectations around life expectancy and medical expenditures, the economy may be dynamically inefficient---a state in which the capital stock is too high.
+In this case consumption, per capita could be increased if savings were decreased.
 
-I then test two competing hypotheses for the annuity puzzle: bequests and
-pessimistic life expectancy. A bequest motive means that individuals want to
-leave an estate for their heirs to inherit --- which they cannot do if they
-annuitise their wealth. On the other hand, individuals may believe that they
-will not live as long as annuity providers think they will, and therefore
-annuities that are on the market do not appear to be good value. Depending on
-the reason for the lack of annuitisation in the UK, the consumption response of
-retirees to the pension reform will differ. If individuals do not annuitise
-because of pessimistic life expectancy, their consumption should increase after
-the reform. If, on the other hand, individuals do not annuitise because of a
-bequest motive, consumption should not change as much as a result of the reform.
+In the UK, adults have three methods of funding retirement: the state pension; defined benefit (DB) employee pension schemes, which provide an income in retirement based on some function of tenure and wages; and defined contribution (DC) pensions, under which individuals save and invest in a tax-advantaged account that is usually supplemented with employer contributions.
+Under the 2010--2015 coalition government in the UK, the law regarding the use of private DC pensions at retirement changed.
+Individuals were no longer forced to buy annuities, which provide a guaranteed income stream until the end of life, with their pension pots and could access them in a variety of ways, such as a lump sum withdrawal or income drawdown, involving a steady withdrawal of assets from the pension pot---common advice is to take 4\% a year---whilst the rest remains invested.
+Subsequently, the number of annuities sold in the UK dropped precipitously.
 
-I will solve lifecycle models for both of these cases and simulate consumption
-decisions with and without annuitisation. I will then apply the empirical models
-to this simulated data and measure the consumption change in early retirement
-that results from annuitisation. The sign and magnitude of these coefficients
-relative to the coefficients from the real data will be indicative of the
-mechanism causing the annuitisation puzzle.
+In this paper, I first use the policy reform as a discontinuity to measure the impact of forced annuitisation on the consumption levels of individuals in the first few years of retirement.
+And then I simulate consumption responses to annuities using three different lifecycle models, and compare the predicted effect of forced annuitisation on consumption to the effect observed in the data.
 
-The importance of retirement policy to the UK is growing. The
-number of individuals of pensionable age is expected to increase from 11.9
-million in 2020 to 15.2 million in 2045 according to the latest projections from
-the Office for National Statistics (ONS), and for every 1,000 people of working
-age there will be 341 of pensionable age in 2045 compared to 280 in 2020
-(\cite{ons-population-predictions-2020}). The increase in absolute and relative
-numbers of elderly people makes retirement policy more consequential. Moreover,
-private DC pensions are becoming increasingly common and are predicted to grow
-as current cohorts age (\cite{cribb-karjalainen-ifs-2023}). Therefore, policies
-regarding how private pensions can be accessed will have a larger impact on
-overall welfare for retirees.
+Given that the reform was implemented suddenly and without advanced notice before the Spring 2014 budget, my primary regression discontinuity specification uses the year an individual turns 65, the state pension age in the UK in 2014, as the running variable---if individuals turn 65 after 2014 they are considered treated.
+This rests on the assumption that individuals who retired in 2015, 2016 and 2017 are otherwise similar to those who retired in 2011, 2012 and 2013 except for the fact that the later retirees do not need to annuitise their DC pension pots.
+I also run a difference in difference estimator, comparing the change in consumption at retirement for individuals who retired before the reform to those who retired after the reform.
+I find some evidence that individuals increase consumption in early retirement as a result of the policy change, in particular I find a slight increase in consumption of food away from the home.
 
-Moreover, understanding how retirees spend their money over retirement is an
-important policy question of its own. If retirees spend too much in early
-retirement, the state may need to provide for them towards the end of their
-lives. This has implications for government budgets, especially since population
-aging means more individuals may require expensive end of life care. On the
-other hand, if retirees over-save and do not spend, perhaps in order to bequest
-wealth, the economy may be dynamically inefficient --- a state in which the
-capital stock is too high. In this case consumption, per capita could be
-increased if savings were decreased.
+Classical economic theory suggests that these retirement annuities should be highly valued by individuals as a way to insure against late death (\cite{yaari-65}).
+However, in developed countries, rates of annuitisation are far below the levels that theory predicts---this phenomenon has been termed the ``annuity puzzle''.
+The literature has suggested several reasons for this, but there is no consensus about which mechanism is dominant.
+I exploit early retirees' consumption responses to the change in policy in the UK to add to this literature.
 
+I test two competing hypotheses for the annuity puzzle: bequests and pessimistic life expectancy.
+A bequest motive means that individuals want to leave an estate for their heirs to inherit---which they cannot do if they annuitise their wealth.
+On the other hand, individuals may believe that they will not live as long as annuity providers think they will, and therefore annuities that are on the market do not appear to be good value.
+Depending on the reason for the lack of annuitisation in the UK, the consumption response of retirees to the pension reform will differ.
+If individuals do not annuitise because of pessimistic life expectancy, their consumption should increase after the reform.
+If, on the other hand, individuals do not annuitise because of a bequest motive, consumption should not change as much as a result of the reform.
+
+I solve lifecycle models for both of these cases and simulate consumption decisions with and without annuitisation.
+I then apply the empirical models to this simulated data and measure the consumption change in early retirement that results from annuitisation.
+The sign and magnitude of these coefficients relative to the coefficients from the real data will be indicative of the mechanism causing the annuitisation puzzle.
+I find that the lifecycle model with bequests best matches the coefficients from the regression discontinuity models, and interpret this as evidence that bequests are the dominant reason for the annuity puzzle.
 
 \subsection{Literature review}
 My paper draws on three main strands of literature: that of the annuity puzzle,
@@ -210,10 +180,10 @@ from common lifecycle models for this particular policy change.
 \subsection{Data}
 
 The main dataset I use is the English Longitudinal Study of Ageing (ELSA)
-(\cite{main-elsa-citation}). ELSA picks individuals over the age of 50 to survey
-every two years until death. If individuals leave the survey, ELSA replaces them
-so that it is representative of the over 50 population in the UK. Individuals
-are asked a range of questions relating to their income and wealth as well as
+(\cite{main-elsa-citation}).
+ELSA follows a sample of individuals over the age of 50, interviewing them every two years until death.
+If individuals leave the survey, ELSA replaces them so that it is representative of the over 50 population in the UK.
+Individuals are asked a range of questions relating to their income and wealth as well as
 expectations about the future. One benefit of using ELSA is that it includes
 data on pension types for individuals who are working. Therefore, I can
 differentiate between individuals who have a DC pension and those who have a DB
@@ -312,12 +282,10 @@ to buy Lamborghinis' if retirees wanted to (\cite{guardian-lambos}). The
 government also announced plans to make switches between DB and DC pension
 schemes possible although this was only realised in the next parliament.
 
-The impact of the reforms on annuity demand has been documented by
-\cite{cannon-et-al-nier-2016}. Figure \ref{fig:annovertime} shows
-purchases of annuities over time and demonstrates the sharp decrease in purchases
-that ocurred from 2014 to 2015. There was an increase in the number of pensions
-that were being accessed using an income drawdown product, but these only partly
-account for the drop in annuitisation as is shown by the graph.
+The impact of the reforms on annuity demand has been documented by~\cite{cannon-et-al-nier-2016}.
+Figure~\ref{fig:annovertime} shows purchases of annuities over time and demonstrates the sharp decrease in purchases
+that occurred from 2014 to 2015.
+There was an increase in the number of pensions that were being accessed using an income drawdown product, but these only partly account for the drop in annuitisation as is shown by the graph.
 
 \begin{figure}[h]
 
@@ -372,7 +340,7 @@ The treated retirement group is smaller with just 303 non missing observations f
 The control group are more male, retired at a slightly younger age and expected to retire slightly earlier.
 This could be because this period was affected by the increase in the
 state pension age for women from age 60 in 2010 to age 65 in 2018, so early cohorts had slightly earlier state pension eligibility ages.
-But, this change happened gradually and ocurred over the whole period, so I do not expect it to influence the results.
+But, this change happened gradually and occurred over the whole period, so I do not expect it to influence the results.
 The DifferenceAge row tracks the difference between expected and actual retirement age.
 
 The treatment group has higher financial wealth with a median of £67,000 at the
